@@ -1,0 +1,97 @@
+.livetable {
+    margin: 20px 10px;
+    width: 98.9%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+}
+
+table {
+    min-width: 100%;
+    border-collapse: collapse;
+}
+
+.middle {
+    text-align: center;
+}
+
+.right {
+    text-align: right;
+}
+
+td,
+th {
+    padding: 8px 5px;
+    border-collapse: collapse;
+    border-bottom: 1px solid white !important;
+}
+
+th:first-child,
+td:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+}
+
+th {
+    background-color: rgb(64, 133, 133);
+    border-color: rgb(64, 133, 133);
+}
+
+tr.positive {
+    /* background-color: #e6f4ea;
+    color: #137333; */
+    background-color: #37b24d;
+}
+
+tr.positive td:first-child {
+    background-color: #37b24d;
+}
+
+tr.negative {
+    /* background-color: #fce8e6;
+    color: #a50e0e; */
+    background: #e96565;
+}
+
+tr.negative td:first-child {
+    background: #e96565;
+}
+
+tr.unchanged {
+    /* background-color: #f1f3f4; 
+    color: #5f6368; */
+    background: #57abf7;
+}
+
+tr.unchanged td:first-child {
+    background: #57abf7;
+}
+
+.top {
+    display: flex;
+    align-items: center;
+    background-color: #d4d4d4;
+    padding: 8px 12px;
+    justify-content: space-between;
+}
+
+.positiveCount {
+    color: #37b24d;
+    font-weight: 600;
+}
+
+.negativeCount {
+    color: #e96565;
+    font-weight: 600;
+}
+
+.unchangedCount {
+    color: #495057;
+    font-weight: 600;
+}
+
+/* #live-market {
+    font-size: larger;
+    margin-left: 25px;
+} */
