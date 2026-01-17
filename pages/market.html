@@ -6,45 +6,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WealthEngine - Market</title>
     <link rel="icon" type="image/png" href="/images/wealth.png">
-    <link rel="stylesheet" href="..//src/css/style.css">
+    <link rel="stylesheet" href="../src/css/style.css">
+    <link rel="stylesheet" href="/src/css/market.css">
 </head>
 
 <body>
     <nav class="sidebar">
         <header class="navhead">
             <h3>WealthEngine</h3>
-            </header>
-            <div class="burger ope">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-        
+        </header>
+        <div class="burger ope">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
         <ul class="dropdown">
             <li class="link"><a class="butt" href="/index.html">Home </a></li>
-            <li class="link"><button class="butt" onclick="document.location='order.html'">     Order     </button></li>
-            <li class="link"><button class="butt" onclick="document.location='market.html'">    Market    </button></li>
-            <li class="link"><button class="butt" onclick="document.location='holdings.html'">  Holdings  </button></li>
+            <li class="link"><button class="butt" onclick="document.location='order.html'"> Order </button></li>
+            <li class="link"><button class="butt" onclick="document.location='market.html'"> Market </button></li>
+            <li class="link"><button class="butt" onclick="document.location='holdings.html'"> Holdings </button></li>
             <li class="drop">
                 <button class="link but" id="booksBtn">Books<span class="tri">&#9660;</span></button>
                 <ul class="dropdown-menu">
-                    <li class="link"><button class="butt" onclick="document.location='orderbook.html'">Order Book   </button></li>
-                    <li class="link"><button class="butt" onclick="document.location='tradebook.html'">Trade Book   </button></li>
+                    <li class="link"><button class="butt" onclick="document.location='orderbook.html'">Order Book
+                        </button></li>
+                    <li class="link"><button class="butt" onclick="document.location='tradebook.html'">Trade Book
+                        </button></li>
                 </ul>
             </li>
             <li class="link"><button class="butt" onclick="document.location='charts.html'"> Charts </button></li>
             <li class="drop">
                 <button class="link but" id="booksBtn">NEPSE Data<span class="tri">&#9660;</span></button>
                 <ul class="dropdown-menu">
-                    <li class="link"><button class="butt" onclick="document.location='datewise-index.html'">   Datewise Index     </button></li>
-                    <li class="link"><button class="butt" onclick="document.location='mktsummary.html'">   Market Summary     </button></li>
+                    <li class="link"><button class="butt" onclick="document.location='datewise-index.html'"> Datewise
+                            Index </button></li>
+                    <li class="link"><button class="butt" onclick="document.location='mktsummary.html'"> Market Summary
+                        </button></li>
                 </ul>
             </li>
             <li class="drop">
                 <button class="link but">Calculator<span class="tri">&#9660;</span></button>
                 <ul class="dropdown-menu">
-                    <li class="link"><button class="butt" onclick="document.location='calculator/buysell.html'">Buy/Sell Calculator </button></li>
-                    <li class="link"><button class="butt" onclick="document.location='calculator/dividend.html'">Dividend Calculator </button></li>
+                    <li class="link"><button class="butt" onclick="document.location='calculator/buysell.html'">Buy/Sell
+                            Calculator </button></li>
+                    <li class="link"><button class="butt"
+                            onclick="document.location='calculator/dividend.html'">Dividend Calculator </button></li>
                 </ul>
             </li>
             <li class="link"><button class="butt" onclick="document.location='contact.html'">Contact</button></li>
@@ -74,12 +81,45 @@
                 </status>
             </div>
         </header>
+
+        <section>
+            <div class="livetable top">
+                <!-- Count Adv. Dec. Unc. -->
+                <div style="display: flex; gap:25px;">
+                    <p class="positiveCount">Advances: <span id="positiveCount">0</span></p>
+                    <p class="negativeCount">Declines: <span id="negativeCount">0</span></p>
+                    <p class="unchangedCount">Neutral: <span id="unchangedCount">0</span></p>
+                </div>
+                
+                <h3 id="live-market"> Live Market</h3>
+            </div>
+
+            <div class="livetable">
+                <table id="dataTable">
+                    <thead>
+                        <tr>
+                            <th>Symbol</th>
+                            <th>LTP</th>
+                            <th>LTV</th>
+                            <th>Point Change</th>
+                            <th>%Change</th>
+                            <th>Open</th>
+                            <th>High</th>
+                            <th>Low</th>
+                            <th>Prev Close</th>
+                            <th>Volume</th>
+                            <th>Turnover</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="nepse-body"></tbody>
+                </table>
+            </div>
+        </section>
     </main>
-    <script src="/src/js/date.js"></script>
     <script src="/src/js/dropdown.js"></script>
-    <script src="/src/js/activetab.js"></script>
     <script src="/src/js/burger.js"></script>
-    <script src="/src/js/nepseMarketStatus.js"></script>
+    <script src="/src/js/livemkt.js"></script>
 </body>
 
 </html>
