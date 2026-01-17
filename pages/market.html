@@ -38,8 +38,6 @@
                 <ul class="dropdown-menu">
                     <li class="link"><button class="butt" onclick="document.location='datewise-index.html'">   Datewise Index     </button></li>
                     <li class="link"><button class="butt" onclick="document.location='mktsummary.html'">   Market Summary     </button></li>
-                    <li class="link"><button class="butt" onclick="document.location='pages/historyorder.html'">Historic Order Book</button></li>
-                    <li class="link"><button class="butt" onclick="document.location='pages/historytrade.html'">Historic Trade Book</button></li>
                 </ul>
             </li>
             <li class="drop">
@@ -54,10 +52,26 @@
     </nav>
     <main>
         <header class="open">
-            <h2>Market</h2>
+            <index>
+                <nepse>
+                    <h4>NEPSE</h4>
+                    <div style="display: flex; flex-direction: row; gap: 8px; align-items: center;">
+                        <p style="font-size: 13px; color: #00ff0d;">2,633.87</p>
+                        <p id="change">4.59 &#11205;</p>
+                    </div>
+                </nepse>
+                <data>
+                    <p class="tv">Total Turnover: 4,908,094,092.74</p>
+                    <p class="tv">Total Volume: 10,633,717</p>
+                </data>
+            </index>
+            <h2>Live Market</h2>
             <div class="time">
                 <p id="date"></p>
-                <p id="market-status"></p>
+                <status class="status">
+                    <span id="market-pill" class="market-pill"></span>
+                    <div id="market-countdown"></div>
+                </status>
             </div>
         </header>
     </main>
