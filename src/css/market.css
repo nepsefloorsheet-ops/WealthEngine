@@ -95,3 +95,8 @@ tr.unchanged td:first-child {
     font-size: larger;
     margin-left: 25px;
 } */
+
+.last-updated{
+    color: #010101;
+    font-weight: 600;
+}
