@@ -1,43 +1,47 @@
+let nepseTimer = null;
+const REFRESH_INTERVAL = 20000; // 20 seconds
+
 async function loadNepse() {
     try {
         const res = await fetch("https://nepseapi-ouhd.onrender.com/api/live-nepse");
         const json = await res.json();
 
-        console.log("API RESPONSE:", json); // DEBUG
+        console.log("API RESPONSE:", json);
 
-        // ✅ HANDLE BOTH array & object responses
+        // Handle array & object responses
         const data = Array.isArray(json)
             ? json
             : json.data || json.liveNepse || [];
 
-        // Sort data by lastUpdatedDateTime (newest first)
+        // Sort by latest update time (newest first)
         data.sort((a, b) => new Date(b.lastUpdatedDateTime) - new Date(a.lastUpdatedDateTime));
 
         const tbody = document.getElementById("nepse-body");
         tbody.innerHTML = "";
 
-        if (data.length === 0) {
+        if (!data.length) {
             tbody.innerHTML = "<tr><td colspan='15'>No data available</td></tr>";
+            scheduleNext();
             return;
         }
+
+        document.dispatchEvent(
+            new CustomEvent("nepse:data", { detail: data })
+        );
+
 
         let positive = 0;
         let negative = 0;
         let unchanged = 0;
 
+        const formatNumber = value =>
+            Number(value || 0).toLocaleString("en-IN", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+
         data.forEach(item => {
             const row = document.createElement("tr");
-
-            //format number
-            const formatNumber = (value, decimals = 2) => {
-                return Number(value || 0).toLocaleString("en-IN", {
-                    maximumFractionDigits: 2,
-                    minimumFractionDigits: 2
-                });
-            };
-
-            // row color + count
-            row.classList.remove("positive", "negative", "unchanged");
 
             if (item.change > 0) {
                 row.classList.add("positive");
@@ -67,18 +71,36 @@ async function loadNepse() {
             tbody.appendChild(row);
         });
 
-        // write counts to IDs (LIVE)
         document.getElementById("positiveCount").textContent = positive;
         document.getElementById("negativeCount").textContent = negative;
         document.getElementById("unchangedCount").textContent = unchanged;
 
     } catch (err) {
-        console.error("JS ERROR:", err);
+        console.error("NEPSE ERROR:", err);
+    } finally {
+        scheduleNext();
     }
 }
 
+function scheduleNext() {
+    clearTimeout(nepseTimer);
+
+    // Refresh ONLY when tab is active
+    if (!document.hidden) {
+        nepseTimer = setTimeout(loadNepse, REFRESH_INTERVAL);
+    }
+}
+
+// Resume when tab becomes active again
+document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) {
+        loadNepse();
+    }
+});
+
+// Initial load
 loadNepse();
-setInterval(loadNepse, 20000);
+
 
 
 function updateMarketColor() {

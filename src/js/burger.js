@@ -93,7 +93,6 @@ setInterval(showDateTime, 1000);
 
   // ---- NEPSE Holidays (YYYY-MM-DD) ----
   const HOLIDAYS = [
-    "2026-01-11",
     "2026-01-15",
     "2026-01-19",
     "2026-01-30",
@@ -142,6 +141,68 @@ setInterval(showDateTime, 1000);
     pill.textContent = state.text;
     pill.className = `market-pill ${state.class}`;
   }
+
+  function formatDateTime(date) {
+    return date.toLocaleString("en-GB", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false
+    }).replace(",", "");
+  }
+
+  function getLastTradingDate() {
+    const now = getKathmanduTime();
+    const minutes = now.getHours() * 60 + now.getMinutes();
+
+    let date = new Date(now);
+
+    // ⛔ Before market close today → go back one day
+    if (minutes < 900) { // 15:00
+      date.setDate(date.getDate() - 1);
+    }
+
+    while (true) {
+      const day = date.getDay();
+      const iso = date.toISOString().split("T")[0];
+
+      if (day !== 5 && day !== 6 && !HOLIDAYS.includes(iso)) {
+        return date;
+      }
+
+      date.setDate(date.getDate() - 1);
+    }
+  }
+
+  // 🔥 THIS IS THE KEY PART
+  function updateLastUpdated(data) {
+    const el = document.getElementById("lastUpdated");
+    if (!el || !data || !data.length) return;
+
+    const market = getNepseMarketState();
+
+    if (market.open) {
+      const latest = data.reduce((max, item) => {
+        const t = new Date(item.lastUpdatedDateTime);
+        return t > max ? t : max;
+      }, new Date(0));
+
+      el.textContent = `As of: ${formatDateTime(latest)}`;
+    } else {
+      const lastTrade = getLastTradingDate();
+      lastTrade.setHours(15, 0, 0, 0);
+
+      el.textContent = `As of: ${formatDateTime(lastTrade)}`;
+    }
+  }
+
+  // ✅ LISTEN FOR DATA FROM load-nepse.js
+  document.addEventListener("nepse:data", e => {
+    updateLastUpdated(e.detail);
+  });
 
   // Initial load
   updateMarketPill();
