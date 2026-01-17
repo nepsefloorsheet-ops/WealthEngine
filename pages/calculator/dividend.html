@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WealthEngine</title>
+    <link rel="icon" type="image/png" href="images/wealth.png">
+    <link rel="stylesheet" href="/src/css/style.css">
+    <link rel="stylesheet" href="/src/css/calculator.css">
+</head>
+
+<body>
+    <nav class="sidebar">
+        <header class="navhead">
+            <h3>WealthEngine</h3> <!-- <img src="images/wealth.png" style="width: 25px;"> -->
+        </header>
+        <div class="burger ope">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <ul class="dropdown">
+            <li class="link"><button class="butt" onclick="document.location='/index.html'">Home </button></li>
+            <li class="link"><button class="butt" onclick="document.location='/pages/order.html'">Order </button></li>
+            <li class="link"><button class="butt" onclick="document.location='/pages/market.html'">Market </button></li>
+            <li class="link"><button class="butt" onclick="document.location='/pages/holdings.html'">Holdings </button>
+            </li>
+            <li class="drop">
+                <button class="link but">Books<span class="tri">&#9660;</span></button>
+                <ul class="dropdown-menu">
+                    <li class="link"><button class="butt" onclick="document.location='/pages/orderbook.html'">Daily
+                            Order
+                            Book </button></li>
+                    <li class="link"><button class="butt" onclick="document.location='/pages/tradebook.html'">Daily
+                            Trade
+                            Book </button></li>
+                    <li class="link"><button class="butt"
+                            onclick="document.location='/pages/historyorder.html'">Historic
+                            Order Book</button></li>
+                    <li class="link"><button class="butt"
+                            onclick="document.location='/pages/historytrade.html'">Historic
+                            Trade Book</button></li>
+                </ul>
+            </li>
+            <li class="link"><button class="butt" onclick="document.location='/pages/charts.html'">Charts </button></li>
+            <li class="drop">
+                <button class="link but">NEPSE Data<span class="tri">&#9660;</span></button>
+                <ul class="dropdown-menu">
+                    <li class="link"><button class="butt" onclick="document.location='/pages/datewise-index.html'">
+                            Datewise Index </button></li>
+                    <li class="link"><button class="butt" onclick="document.location='/pages/mktsummary.html'"> Market
+                            Summary </button></li>
+                    <li class="link"><button class="butt"
+                            onclick="document.location='/pages/historyorder.html'">Historic
+                            Order Book</button></li>
+                    <li class="link"><button class="butt"
+                            onclick="document.location='/pages/historytrade.html'">Historic
+                            Trade Book</button></li>
+                </ul>
+            </li>
+            <li class="drop">
+                <button class="link but">Calculator<span class="tri">&#9660;</span></button>
+                <ul class="dropdown-menu">
+                    <li class="link"><button class="butt" onclick="document.location='buysell.html'">Buy/Sell Calculator
+                        </button></li>
+                    <li class="link"><button class="butt" onclick="document.location='dividend.html'">Dividend
+                            Calculator</button></li>
+                </ul>
+            </li>
+            <li class="link"><button class="butt" onclick="document.location='/pages/contact.html'">Contact</button>
+            </li>
+        </ul>
+    </nav>
+    <main>
+        <header class="open">
+            <index>
+                <nepse>
+                    <h4>NEPSE</h4>
+                    <div style="display: flex; flex-direction: row; gap: 8px; align-items: center;">
+                        <p style="font-size: 13px; color: #00ff0d;">2,633.87</p>
+                        <p id="change">4.59 &#11205;</p>
+                    </div>
+                </nepse>
+                <data>
+                    <p class="tv">Total Turnover: 4,908,094,092.74</p>
+                    <p class="tv">Total Volume: 10,633,717</p>
+                </data>
+            </index>
+            <h2>Dashboard</h2>
+            <div class="time">
+                <p id="date"></p>
+                <status>
+                    <span id="market-pill" class="market-pill"></span>
+                    <div id="market-countdown"></div>
+                </status>
+            </div>
+        </header>
+        <div id="content">
+            <div id="#buycalculator" class="calculator">
+                <div class="calcalign">
+                    <div class="area">
+                        <div class="calhead">
+                            <p>Dividend Calculator</p>
+                        </div>
+                        <div class="maincalc">
+                            <div class="entry">
+                                <div class="inputs">
+                                    <div class="ite">
+                                        <p><strong>Quantity</strong></p>
+                                        <p><strong>% of Bonus</strong></p>
+                                        <p><strong>% of Cash</strong></p>
+                                        <p><strong>Paid-up Value per Share</strong></p>
+                                    </div>
+                                    <div class="ite">
+                                        <input id="qty" type="number" placeholder="Enter Buy Amount">
+                                        <input id="bonus" type="number" placeholder="Enter Buy Amount">
+                                        <input id="cash" type="number" placeholder="Enter Buy Amount">
+                                        <select id="paidup">
+                                            <option value="100">100</option>
+                                            <option value="50">50</option>
+                                            <option value="10">10</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="it">
+                                    <div class="butto">
+                                        <button id="calculate" type="button"
+                                            onclick="calculatedividend()">Calculate</button>
+                                        <button id="clear" type="reset" onclick="clearDividendCalculator()">Clear</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="results">
+                                <div class="ite">
+                                    <p><strong>Cash Amount</strong></p>
+                                    <p><strong>Bonus Share Tax</strong></p>
+                                    <p><strong>Cash Amount Tax</strong></p>
+                                    <p><strong>Total Tax Payable</strong></p>
+                                    <p><strong>Receivable Bonus Quantity</strong></p>
+                                </div>
+                                <div class="itemm">
+                                    <p id="total">-</p>
+                                    <p id="bsharetax">-</p>
+                                    <p id="catax">-</p>
+                                    <p id="totaltax">-</p>
+                                    <p id="rbqty">-</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p>WealthEngine © <span id="we-year"></span></p>
+    </footer>
+    <script src="/src/js/burger.js"></script>
+    <script src="/src/js/dropdown.js"></script>
+    <script src="/src/js/calculator.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WealthEngine</title>
+    <link rel="icon" type="image/png" href="images/wealth.png">
+    <link rel="stylesheet" href="/src/css/style.css">
+    <link rel="stylesheet" href="/src/css/calculator.css">
+</head>
+
+<body>
+    <nav class="sidebar">
+        <header class="navhead">
+            <h3>WealthEngine</h3> <!-- <img src="images/wealth.png" style="width: 25px;"> -->
+        </header>
+        <div class="burger ope">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <ul class="dropdown">
+            <li class="link"><button class="butt" onclick="document.location='/index.html'">Home </button></li>
+            <li class="link"><button class="butt" onclick="document.location='/pages/order.html'">Order </button></li>
+            <li class="link"><button class="butt" onclick="document.location='/pages/market.html'">Market </button></li>
+            <li class="link"><button class="butt" onclick="document.location='/pages/holdings.html'">Holdings </button>
+            </li>
+            <li class="drop">
+                <button class="link but">Books<span class="tri">&#9660;</span></button>
+                <ul class="dropdown-menu">
+                    <li class="link"><button class="butt" onclick="document.location='/pages/orderbook.html'">Daily
+                            Order
+                            Book </button></li>
+                    <li class="link"><button class="butt" onclick="document.location='/pages/tradebook.html'">Daily
+                            Trade
+                            Book </button></li>
+                    <li class="link"><button class="butt"
+                            onclick="document.location='/pages/historyorder.html'">Historic
+                            Order Book</button></li>
+                    <li class="link"><button class="butt"
+                            onclick="document.location='/pages/historytrade.html'">Historic
+                            Trade Book</button></li>
+                </ul>
+            </li>
+            <li class="link"><button class="butt" onclick="document.location='/pages/charts.html'">Charts </button></li>
+            <li class="drop">
+                <button class="link but">NEPSE Data<span class="tri">&#9660;</span></button>
+                <ul class="dropdown-menu">
+                    <li class="link"><button class="butt" onclick="document.location='/pages/datewise-index.html'">
+                            Datewise Index </button></li>
+                    <li class="link"><button class="butt" onclick="document.location='/pages/mktsummary.html'"> Market
+                            Summary </button></li>
+                    <li class="link"><button class="butt"
+                            onclick="document.location='/pages/historyorder.html'">Historic
+                            Order Book</button></li>
+                    <li class="link"><button class="butt"
+                            onclick="document.location='/pages/historytrade.html'">Historic
+                            Trade Book</button></li>
+                </ul>
+            </li>
+            <li class="drop">
+                <button class="link but">Calculator<span class="tri">&#9660;</span></button>
+                <ul class="dropdown-menu">
+                    <li class="link"><button class="butt" onclick="document.location='buysell.html'">Buy/Sell Calculator
+                        </button></li>
+                    <li class="link"><button class="butt" onclick="document.location='dividend.html'">Dividend
+                            Calculator</button></li>
+                </ul>
+            </li>
+            <li class="link"><button class="butt" onclick="document.location='/pages/contact.html'">Contact</button>
+            </li>
+        </ul>
+    </nav>
+    <main>
+        <header class="open">
+            <index>
+                <nepse>
+                    <h4>NEPSE</h4>
+                    <div style="display: flex; flex-direction: row; gap: 8px; align-items: center;">
+                        <p style="font-size: 13px; color: #00ff0d;">2,633.87</p>
+                        <p id="change">4.59 &#11205;</p>
+                    </div>
+                </nepse>
+                <data>
+                    <p class="tv">Total Turnover: 4,908,094,092.74</p>
+                    <p class="tv">Total Volume: 10,633,717</p>
+                </data>
+            </index>
+            <h2>Dashboard</h2>
+            <div class="time">
+                <p id="date"></p>
+                <status>
+                    <span id="market-pill" class="market-pill"></span>
+                    <div id="market-countdown"></div>
+                </status>
+            </div>
+        </header>
+        <div id="content">
+            <div id="buycalculator" class="calculator">
+                <div class="calcalign">
+                    <div class="area">
+                        <div class="calhead">
+                            <p>Buy Calculator</p>
+                        </div>
+                        <div class="maincalc">
+                            <div class="entry">
+                                <div class="inputs">
+                                    <div class="ite">
+                                        <p><strong>Quantity</strong></p>
+                                        <p><strong>Buy Price</strong></p>
+                                    </div>
+                                    <div class="ite">
+                                        <input id="buyqty" type="number" placeholder="Enter Buy Amount">
+                                        <input id="buyamt" type="number" placeholder="Enter Buy Amount">
+                                    </div>
+                                </div>
+                                <div class="it">
+                                    <div class="butto">
+                                        <button id="calculate" type="button" onclick="calculatebuy()">Calculate</button>
+                                        <button id="clear" type="reset" onclick="clearBuyCalculator()">Clear</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="results">
+                                <div class="ite">
+                                    <p><strong> Amount</strong></p>
+                                    <p><strong>B* Commission</strong></p>
+                                    <p><strong>SEBON Fee</strong></p>
+                                    <p><strong>DP Charge</strong></p>
+                                    <p><strong>Amount Paybale</strong></p>
+                                    <p><strong>WACC</strong></p>
+                                </div>
+                                <div class="itemm">
+                                    <p id="total">-</p>
+                                    <p id="com">-</p>
+                                    <p id="fee">-</p>
+                                    <p id="DP">-</p>
+                                    <p id="payable">-</p>
+                                    <p id="wacc">-</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="area">
+                        <div class="calhead">
+                            <p>Sell Calculator</p>
+                        </div>
+                        <div class="maincalc">
+                            <div class="entry">
+                                <div class="inputs">
+                                    <div class="ite">
+                                        <p><strong>WACC</strong></p>
+                                        <p><strong>Quantity</strong></p>
+                                        <p><strong>Sell Price</strong></p>
+                                        <p><strong>Holding</strong></p>
+                                    </div>
+                                    <div class="ite">
+                                        <input id="buywacc" type="number" placeholder="Enter WACC">
+                                        <input id="sellqty" type="number" placeholder="Enter Quantity">
+                                        <input id="sellamt" type="number" placeholder="Enter Sell Price">
+                                        <select id="holdingType">
+                                            <option value="short_term">Short-Term</option>
+                                            <option value="long_term">Long-Term</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="it">
+                                    <div class="butto">
+                                        <button id="calculate" type="button"
+                                            onclick="calculatesell()">Calculate</button>
+                                        <button id="clear" type="reset" onclick="clearSellCalculator()">Clear</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="results">
+                                <div class="ite">
+                                    <p><strong>Total Value</strong></p>
+                                    <p><strong>B* Commission</strong></p>
+                                    <p><strong>SEBON Fee</strong></p>
+                                    <p><strong>DP Charge</strong></p>
+                                    <p><strong>CGT*</strong></p>
+                                    <p><strong>Net Profit/Loss</strong></p>
+                                    <p><strong>Net Profit/Loss%</strong></p>
+                                    <p><strong>Amount Receivable</strong></p>
+                                    <p><strong>WACC</strong></p>
+                                </div>
+                                <div class="itemm">
+                                    <p id="sellTotal">-</p>
+                                    <p id="sellcom">-</p>
+                                    <p id="sellfee">-</p>
+                                    <p id="sellDP">-</p>
+                                    <p id="cgt">-</p>
+                                    <p id="netProfitLoss">-</p>
+                                    <p id="netProfitLossPercent">-</p>
+                                    <p id="receivable">-</p>
+                                    <p id="sellWacc">-</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p>WealthEngine © <span id="we-year"></span></p>
+    </footer>
+    <script src="/src/js/burger.js"></script>
+    <script src="/src/js/dropdown.js"></script>
+    <script src="/src/js/nepseMarketStatus.js"></script>
+    <script src="/src/js/calculator.js"></script>
+</body>
+
+</html>
