@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WealthEngine</title>
+    <link rel="icon" type="image/png" href="images/wealth.png">
+    <link rel="stylesheet" href="src/css/style.css">
+    <link rel="stylesheet" href="src/css/dashboard.css">
+</head>
+
+<body>
+    <nav class="sidebar">
+        <header class="navhead">
+            <h3>WealthEngine</h3> <!--  <img src="images/wealth.png" style="width: 25px;"> -->
+        </header>
+        <div class="burger ope">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <ul class="dropdown">
+            <li class="link"><button class="butt" onclick="document.location='index.html'">Home </button></li>
+            <li class="link"><button class="butt" onclick="document.location='pages/order.html'">Order </button></li>
+            <li class="link"><button class="butt" onclick="document.location='pages/market.html'">Market </button></li>
+            <li class="link"><button class="butt" onclick="document.location='pages/holdings.html'">Holdings </button></li>
+            <li class="drop">
+                <button class="link but">Books<span class="tri">&#9660;</span></button>
+                <ul class="dropdown-menu">
+                    <li class="link"><button class="butt" onclick="document.location='pages/orderbook.html'">Daily Order Book </button></li>
+                    <li class="link"><button class="butt" onclick="document.location='pages/tradebook.html'">Daily Trade Book </button></li>
+                </ul>
+            </li>
+            <li class="link"><button class="butt" onclick="document.location='pages/charts.html'">Charts </button></li>
+            <li class="drop">
+                <button class="link but">NEPSE Data<span class="tri">&#9660;</span></button>
+                <ul class="dropdown-menu">
+                    <li class="link"><button class="butt"
+                            onclick="document.location='pages/datewise-index.html'">Datewise Index </button></li>
+                    <li class="link"><button class="butt" onclick="document.location='pages/mktsummary.html'"> Market Summary </button></li>
+                    <li class="link"><button class="butt" onclick="document.location='pages/historyorder.html'">TBD</button></li>
+                    <li class="link"><button class="butt" onclick="document.location='pages/historytrade.html'">TBD</button></li>
+                </ul>
+            </li>
+            <li class="drop">
+                <button class="link but">Calculator<span class="tri">&#9660;</span></button>
+                <ul class="dropdown-menu">
+                    <li class="link"><button class="butt" onclick="document.location='pages/calculator/buysell.html'">Buy/Sell Calculator </button></li>
+                    <li class="link"><button class="butt" onclick="document.location='pages/calculator/dividend.html'">Dividend Calculator </button></li>
+                </ul>
+            </li>
+            <li class="link"><button class="butt" onclick="document.location='pages/contact.html'">Contact</button></li>
+        </ul>
+    </nav>
+    <main>
+        <header class="open">
+            <index>
+                <nepse>
+                    <h4>NEPSE</h4>
+                    <div style="display: flex; flex-direction: row; gap: 8px; align-items: center;">
+                        <p style="font-size: 13px; color: #00ff0d;">2,633.87</p>
+                        <p id="change">4.59 &#11205;</p>
+                    </div>
+                </nepse>
+                <data>
+                    <p class="tv">Total Turnover: 4,908,094,092.74</p>
+                    <p class="tv">Total Volume: 10,633,717</p>
+                </data>
+            </index>
+            <h2>Dashboard</h2>
+            <div class="time">
+                <p id="date"></p>
+                <status class="status">
+                    <span id="market-pill" class="market-pill"></span>
+                    <div id="market-countdown"></div>
+                </status>
+            </div>
+        </header>
+        <div id="content">
+            <div class="contents">
+                <div class="one">
+                    <div class="chart">
+                        <h2 style="text-align: center; padding-top: 20px;">Chart will go here</h2>
+                    </div>
+                    <div class="summary">
+                        <div class="all-summary">
+                            <h4 id="sum-h">Market Summary</h2>
+                                <div class="summary-data">
+                                    <p>Total turnover</p>
+                                    <p>4,908,094,092.74</p>
+                                </div>
+                                <div class="summary-data">
+                                    <p>Total Traded Shares</p>
+                                    <p>10,633,717</p>
+                                </div>
+                                <div class="summary-data">
+                                    <p>Total Transactions</p>
+                                    <p>69,261</p>
+                                </div>
+                        </div>
+                        <div class="all-summary">
+                            <h4 id="sum-h">My Trade Summary</h4>
+                            <div class="summary-data">
+                                <p>Total Shares Traded</p>
+                                <p>100</p>
+                            </div>
+                            <div class="summary-data">
+                                <p>Total Scrip Traded</p>
+                                <p>1</p>
+                            </div>
+                            <div class="summary-data">
+                                <p>Total Turnover</p>
+                                <p>₹17,995</p>
+                            </div>
+                            <div class="summary-data">
+                                <div style="width: 50%; font-size:14px; color: #0fc218;">
+                                    <p>Buy Count:<span id="buycnt">0</span></p>
+                                    <p>Buy Amount:<span id="buyamt">₹0</span></p>
+                                </div>
+                                <div style="width: 50%; text-align: left;font-size:14px; color: rgb(255, 3, 3);">
+                                    <p>Sell Count:<span id="sellcnt">2</span></p>
+                                    <p>Sell Amount:<span id="sellamt">₹17,995</span></p>
+                                </div>
+                            </div>
+                            <div class="trade-summary-bar">
+                                <div class="buy-bar">
+                                    <p class="buy-text"></p>
+                                </div>
+                                <div class="sell-bar">
+                                    <p class="sell-text"></p>
+                                </div>
+                                <div class="no-trade-text">No Trade</div>
+                            </div>
+                        </div>
+                        <div class="all-summary">
+                            <h4 id="sum-h">Collateral Summary</h4>
+                            <div class="collateral-bar">
+                                <div class="collateral-utilized">
+                                    <p class="percent-text utilized-percent">0%</p>
+                                </div>
+                                <div class="collateral-available">
+                                    <p class="percent-text available-percent">0%</p>
+                                </div>
+                            </div>
+                            <div class="summary-data">
+                                <div style="display: grid; gap: 2px;">
+                                    <span class="label utilized">Utilized</span>
+                                    <span class="value utilized-value">0</span>
+                                </div>
+                                <div style="display: grid; gap: 2px;">
+                                    <span class="label available">Available</span>
+                                    <span class="value available-value">₹5,00,00,000</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="two">
+                    <div class="mkt-mover">
+                        <div class="gnl">
+                            <div class="head">
+                                <a href="#indwch" class="lin active" data-target="head-indwch">Index Watch</a>
+                                <a href="#dpwch" class="lin" data-target="head-dpwch">DP Watchlist</a>
+                                <a href="#wch" class="lin" data-target="head-wch">Watchlist</a>
+                            </div>
+                            <div class="wch-table">
+                                <div class="watch-table-wrapper">
+                                    <table class="watch-table">
+                                        <thead id="head-indwch">
+                                            <tr>
+                                                <th>Index Code</th>
+                                                <th>High</th>
+                                                <th>Low</th>
+                                                <th>LTP</th>
+                                                <th>Change</th>
+                                                <th>%Change</th>
+                                            </tr>
+                                        </thead>
+                                        <thead id="head-dpwch" style="display:none;">
+                                            <tr>
+                                                <th>Symbol</th>
+                                                <th>Open</th>
+                                                <th>High</th>
+                                                <th>Low</th>
+                                                <th>LTP</th>
+                                                <th>Change</th>
+                                                <th>%Change</th>
+                                            </tr>
+                                        </thead>
+                                        <thead id="head-wch" style="display:none;">
+                                            <tr>
+                                                <th>Symbol</th>
+                                                <th>Open</th>
+                                                <th>High</th>
+                                                <th>Low</th>
+                                                <th>LTP</th>
+                                                <th>Change</th>
+                                                <th>%Change</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody id="watch-body">
+                                            <!-- JS inserts rows here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="gnl">
+                            <!-- <span class="mid-line"></span> -->
+                            <div class="head">
+                                <span>Top Gainer</span>
+                                <span>Top Loser</span>
+                            </div>
+
+                            <div class="top-mover-body wch-table">
+                                <!-- GAINER -->
+                                <div class="mover-table-wrapper">
+                                    <table class="mover-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Symbol</th>
+                                                <th>LTP</th>
+                                                <th>Change</th>
+                                                <th>%Change</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="gainer-body"></tbody>
+                                    </table>
+                                </div>
+
+                                <!-- LOSER -->
+                                <div class="mover-table-wrapper">
+                                    <table class="mover-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Symbol</th>
+                                                <th>LTP</th>
+                                                <th>Change</th>
+                                                <th>%Change</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="loser-body"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="three">
+                    <div class="gnl" id="gnl">
+                        <div style="padding: 9px;">
+                            <div class="head">
+                                <span>Top Turnover</span>
+                                <span>Top Volume</span>
+                            </div>
+                            <div class="top-mover-body wch-table">
+                                <!-- GAINER -->
+                                <div class="mover-table-wrapper">
+                                    <table class="mover-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Symbol</th>
+                                                <th>Turnover</th>
+                                                <th>LTP</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="turnover-body"></tbody>
+                                    </table>
+                                </div>
+
+                                <!-- LOSER -->
+                                <div class="mover-table-wrapper">
+                                    <table class="mover-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Symbol</th>
+                                                <th>Volume</th>
+                                                <th>LTP</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="volume-body"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mid-box">
+                            <!-- SETTLEMENT -->
+                            <div class="settlement-box">
+                                <h4 class="head">Settlement</h4>
+                                <div class="settle-row">
+                                    <span>Payable</span>
+                                    <strong id="payable">₹0</strong>
+                                </div>
+                                <div class="settle-row">
+                                    <span>Receivable</span>
+                                    <strong id="receivable">₹0</strong>
+                                </div>
+                                <hr>
+                                <div class="settle-net receivable" id="net-status">
+                                    Net Receivable
+                                </div>
+                            </div>
+                            <!-- DP HOLDING -->
+                            <div class="dp-holding">
+                                <h4 class="head">DP Holding</h4>
+                                <div class="dp-row">
+                                    <span>Total Scrips</span>
+                                    <strong id="dp-count">0</strong>
+                                </div>
+                                <div class="dp-row">
+                                    <span>Total Amount</span>
+                                    <strong id="dp-amount">₹0</strong>
+                                </div>
+                                <hr>
+                                <div id="dp-profit">
+                                    <p>Today’s P/L:</p>
+                                    <span id="dailypnl">₹0</span>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a href="dashboardtem.html">Click Me</a>
+    </main>
+    <footer>
+        <p>WealthEngine © <span id="we-year"></span></p>
+    </footer>
+    <script src="src/js/dropdown.js"></script>
+    <script src="src/js/burger.js"></script>
+    <script src="src/js/dashboard.js"></script>
+</body>
+
+</html>
