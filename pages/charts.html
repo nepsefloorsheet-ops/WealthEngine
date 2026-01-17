@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WealthEngine - Charts</title>
+    <link rel="icon" type="image/png" href="/images/wealth.png">
+    <link rel="stylesheet" href="..//src/css/style.css">
+</head>
+
+<body>
+    <nav class="sidebar">
+        <header class="navhead">
+            <h3>WealthEngine</h3>
+            </header>
+            <div class="burger ope">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        
+        <ul class="dropdown">
+            <li class="link"><a class="butt" href="/index.html">Home </a></li>
+            <li class="link"><button class="butt" onclick="document.location='order.html'">     Order     </button></li>
+            <li class="link"><button class="butt" onclick="document.location='market.html'">    Market    </button></li>
+            <li class="link"><button class="butt" onclick="document.location='holdings.html'">  Holdings  </button></li>
+            <li class="drop">
+                <button class="link but" id="booksToggle">Books<span class="tri">&#9660;</span></button>
+                <ul class="dropdown-menu">
+                    <li class="link"><button class="butt" onclick="document.location='orderbook.html'">Order Book   </button></li>
+                    <li class="link"><button class="butt" onclick="document.location='tradebook.html'">Trade Book   </button></li>
+                </ul>
+            </li>
+            <li class="link"><button class="butt" onclick="document.location='charts.html'"> Charts </button></li>
+            <li class="drop">
+                <button class="link but" id="booksToggle">NEPSE Data<span class="tri">&#9660;</span></button>
+                <ul class="dropdown-menu">
+                    <li class="link"><button class="butt" onclick="document.location='datewise-index.html'">   Datewise Index     </button></li>
+                    <li class="link"><button class="butt" onclick="document.location='mktsummary.html'">   Market Summary     </button></li>
+                    <li class="link"><button class="butt" onclick="document.location='pages/historyorder.html'">Historic Order Book</button></li>
+                    <li class="link"><button class="butt" onclick="document.location='pages/historytrade.html'">Historic Trade Book</button></li>
+                </ul>
+            </li>
+            <li class="drop">
+                <button class="link but">Calculator<span class="tri">&#9660;</span></button>
+                <ul class="dropdown-menu">
+                    <li class="link"><button class="butt" onclick="document.location='calculator/buysell.html'">Buy/Sell Calculator </button></li>
+                    <li class="link"><button class="butt" onclick="document.location='calculator/dividend.html'">Dividend Calculator </button></li>
+                </ul>
+            </li>
+            <li class="link"><button class="butt" onclick="document.location='contact.html'">Contact</button></li>
+        </ul>
+    </nav>
+    <main>
+        <header class="open">
+            <h2>Chart</h2>
+            <div class="time">
+                <p id="date"></p>
+                <p id="market-status"></p>
+            </div>
+        </header>
+    </main>
+    <script src="/src/js/dropdown.js"></script>
+    <script src="/src/js/activetab.js"></script>
+    <script src="/src/js/burger.js"></script>
+    <script src="/src/js/nepseMarketStatus.js"></script>
+</body>
+
+</html>

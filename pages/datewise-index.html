@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WealthEngine - Index</title>
+    <link rel="icon" type="image/png" href="/images/wealth.png">
+    <link rel="stylesheet" href="../src/css/style.css">
+    <link rel="stylesheet" href="../src/css/date-wise-index.css">
+</head>
+
+<body>
+    <nav class="sidebar">
+        <header class="navhead">
+            <h3>WealthEngine</h3>
+        </header>
+        <div class="burger ope">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+        <ul class="dropdown">
+            <li class="link"><a class="butt" href="/index.html">Home </a></li>
+            <li class="link"><button class="butt" onclick="document.location='order.html'"> Order </button></li>
+            <li class="link"><button class="butt" onclick="document.location='market.html'"> Market </button></li>
+            <li class="link"><button class="butt" onclick="document.location='holdings.html'"> Holdings </button></li>
+            <li class="drop">
+                <button class="link but" id="booksBtn">Books<span class="tri">&#9660;</span></button>
+                <ul class="dropdown-menu">
+                    <li class="link"><button class="butt" onclick="document.location='orderbook.html'">Order Book
+                        </button></li>
+                    <li class="link"><button class="butt" onclick="document.location='tradebook.html'">Trade Book
+                        </button></li>
+                </ul>
+            </li>
+            <li class="link"><button class="butt" onclick="document.location='charts.html'"> Charts </button></li>
+            <li class="drop">
+                <button class="link but" id="booksBtn">NEPSE Data<span class="tri">&#9660;</span></button>
+                <ul class="dropdown-menu">
+                    <li class="link"><button class="butt" onclick="document.location='datewise-index.html'"> Datewise Index </button></li>
+                    <li class="link"><button class="butt" onclick="document.location='mktsummary.html'"> Market Summary</button></li>
+                    <li class="link"><button class="butt" onclick="document.location='pages/historyorder.html'">Historic Order Book</button></li>
+                    <li class="link"><button class="butt" onclick="document.location='pages/historytrade.html'">Historic Trade Book</button></li>
+                </ul>
+            </li>
+            <li class="drop">
+                <button class="link but">Calculator<span class="tri">&#9660;</span></button>
+                <ul class="dropdown-menu">
+                    <li class="link"><button class="butt" onclick="document.location='calculator/buysell.html'">Buy/Sell Calculator </button></li>
+                    <li class="link"><button class="butt" onclick="document.location='calculator/dividend.html'">Dividend Calculator </button></li>
+                </ul>
+            </li>
+            <li class="link"><button class="butt" onclick="document.location='contact.html'">Contact</button></li>
+        </ul>
+    </nav>
+    <main>
+        <header class="open">
+            <index>
+                <nepse>
+                    <h4>NEPSE</h4>
+                    <div style="display: flex; flex-direction: row; gap: 8px; align-items: center;">
+                        <p style="font-size: 13px; color: #00ff0d;">2,639.37</p>
+                        <p id="change">28.73 &#11205;</p>
+                    </div>
+                </nepse>
+                <data>
+                    <p class="tv">Total Turnover: 6,473,736,099.27</p>
+                    <p class="tv">Total Volume: 12,459,951</p>
+                </data>
+            </index>
+            <h2>Date-wise Index</h2>
+            <div class="time">
+                <p id="date"></p>
+                <status>
+                    <span id="market-pill" class="market-pill"></span>
+                    <div id="market-countdown"></div>
+                </status>
+            </div>
+        </header>
+        <div id="loader" class="loading-state">
+            <div class="loading-spinner">⏳</div>
+            <p>Loading....</p>
+        </div>
+        <div id="content" class="hidden">
+            <div>
+                <table id="nepse-table">
+                    <thead>
+                        <tr>
+                            <th>S.N.</th>
+                            <th class="call">Date</th>
+                            <th class="call">Open</th>
+                            <th class="call">High</th>
+                            <th class="call">Low</th>
+                            <th class="call">Close</th>
+                            <th class="cal">Absolute Change</th>
+                            <th class="cal">% Change</th>
+                            <th class="call o">52 Weeks High</th>
+                            <th class="call o">52 Weeks Low</th>
+                            <th class="val">Turnover Value</th>
+                            <th class="vol">Turnover Volume</th>
+                            <th class="txn">Transactions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="nepse-table-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p>WealthEngine © <span id="we-year"></span></p>
+    </footer>
+    <script src="/src/js/dropdown.js"></script>
+    <script src="/src/js/burger.js"></script>
+    <script src="/src/js/daily-nepse-data.js"></script>
+</body>
+
+</html>
