@@ -1,0 +1,98 @@
+/* Card */
+.contact-card {
+  max-width: 500px;
+  margin: auto;
+  margin-top: 12px;
+  padding: 20px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #0b1220, #1e293b);
+}
+
+/* Form layout */
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group input,
+.form-group textarea {
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  background: #020617;
+  color: #fff;
+  font-size: 14px;
+}
+
+/* Button */
+.contact-btn {
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  background: #22c55e;
+  color: #000;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.contact-btn:hover {
+  background: #16a34a;
+}
+
+/* Toast success message */
+.toast {
+  position: fixed;
+  top: 80px;
+  right: -300px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  color: #fff;
+  font-weight: 600;
+  transition: right 0.4s ease;
+  z-index: 9999;
+}
+
+.toast.show {
+  right: 20px;
+}
+
+.toast.success {
+  background: linear-gradient(135deg, #16a34a, #22c55e);
+}
+
+.toast.error {
+  background: linear-gradient(135deg, #dc2626, #ef4444);
+}
+
+.contact-info-card{
+  max-width: 500px;
+  margin: 20px auto 0;
+  padding: 18px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #0b1220, #1e293b);
+}
+
+.contact-info-card h3{
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.info-item{
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+  gap: 10px;
+  font-size: 14px;
+}
+
+.info-item span{
+  font-size: 18px;
+}
