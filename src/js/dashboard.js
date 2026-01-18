@@ -126,27 +126,27 @@ document.addEventListener("DOMContentLoaded", () => {
     const watchData = {
       indwch: [
         { symbol: "BANKSUBIND", high: "1376.68", low: "1367.52", ltp: "1375.98", change: '4.23', pchange: "0.31" },
-      { symbol: "DEVBANKIND", high: "5575.07", low: "5523.61", ltp: "5575.07", change: '10.12', pchange: "0.18" },
-      { symbol: "FININD", high: "2404.76", low: "2376.63", ltp: "2382.65", change: '-10.58', pchange: "-0.44" },
-      { symbol: "FLOATIND", high: "181.26", low: "180.16", ltp: "181.26", change: '0.46', pchange: "0.25" },
-      { symbol: "HOTELIND", high: "7067.05", low: "6957.45", ltp: "7048.58", change: '28.62', pchange: "0.41" },
-      { symbol: "HYDPOWIND", high: "3350.33", low: "3321.15", ltp: "3349.06", change: '10.71', pchange: "0.32" },
-      { symbol: "INVIDX", high: "102.63", low: "101.93", ltp: "102.36", change: '-0.22', pchange: "-0.21" },
-      { symbol: "LIFINSIND", high: "12915.30", low: "12772.00", ltp: "12915.30", change: '42.77', pchange: "0.33" },
-      { symbol: "MANPROCIND", high: "8811.80", low: "8723.28", ltp: "8789.50", change: '43.53', pchange: "0.50" },
-      { symbol: "MICRFININD", high: "4934.76", low: "4904.56", ltp: "4933.63", change: '-2.20', pchange: "-0.04" },
-      { symbol: "NEPSE", high: "2640.56", low: "2626.88", ltp: "2640.54", change: '4.60', pchange: "0.17" },
-      { symbol: "NONLIFIND", high: "10918.56", low: "10848.21", ltp: "10914.03", change: '29.31', pchange: "0.27" },
-      { symbol: "OTHERSIND", high: "2357.68", low: "2342.22", ltp: "2349.50", change: '-1.71', pchange: "-0.07" },
-      { symbol: "SENSFLTIND", high: "155.23", low: "154.34", ltp: "155.17", change: '0.36', pchange: "0.23" },
-      { symbol: "SENSIND", high: "455.95", low: "453.71", ltp: "455.93", change: '0.92', pchange: "0.20" }
+        { symbol: "DEVBANKIND", high: "5575.07", low: "5523.61", ltp: "5575.07", change: '10.12', pchange: "0.18" },
+        { symbol: "FININD", high: "2404.76", low: "2376.63", ltp: "2382.65", change: '-10.58', pchange: "-0.44" },
+        { symbol: "FLOATIND", high: "181.26", low: "180.16", ltp: "181.26", change: '0.46', pchange: "0.25" },
+        { symbol: "HOTELIND", high: "7067.05", low: "6957.45", ltp: "7048.58", change: '28.62', pchange: "0.41" },
+        { symbol: "HYDPOWIND", high: "3350.33", low: "3321.15", ltp: "3349.06", change: '10.71', pchange: "0.32" },
+        { symbol: "INVIDX", high: "102.63", low: "101.93", ltp: "102.36", change: '-0.22', pchange: "-0.21" },
+        { symbol: "LIFINSIND", high: "12915.30", low: "12772.00", ltp: "12915.30", change: '42.77', pchange: "0.33" },
+        { symbol: "MANPROCIND", high: "8811.80", low: "8723.28", ltp: "8789.50", change: '43.53', pchange: "0.50" },
+        { symbol: "MICRFININD", high: "4934.76", low: "4904.56", ltp: "4933.63", change: '-2.20', pchange: "-0.04" },
+        { symbol: "NEPSE", high: "2640.56", low: "2626.88", ltp: "2640.54", change: '4.60', pchange: "0.17" },
+        { symbol: "NONLIFIND", high: "10918.56", low: "10848.21", ltp: "10914.03", change: '29.31', pchange: "0.27" },
+        { symbol: "OTHERSIND", high: "2357.68", low: "2342.22", ltp: "2349.50", change: '-1.71', pchange: "-0.07" },
+        { symbol: "SENSFLTIND", high: "155.23", low: "154.34", ltp: "155.17", change: '0.36', pchange: "0.23" },
+        { symbol: "SENSIND", high: "455.95", low: "453.71", ltp: "455.93", change: '0.92', pchange: "0.20" }
       ],
       dpwch: [
         { symbol: "HDHPC", open: 180, high: 182.5, low: 176.4, ltp: 176.8, change: -3.2, pchange: -1.78 },
         { symbol: "MBJC", open: 278.8, high: 282, low: 278.8, ltp: 510.25, change: 4.1, pchange: 0.8 },
-      { symbol: "NICA", open: 346.0, high: 348.9, low: 339, ltp: 510.25, change: 4.1, pchange: 0.8 },
-      { symbol: "RHGCL", open: 245.3, high: 246.5, low: 242.6, ltp: 510.25, change: 4.1, pchange: 0.8 },
-      { symbol: "UPpER", open: 175, high: 176, low: 173.5, ltp: 510.25, change: 4.1, pchange: 0.8 },
+        { symbol: "NICA", open: 346.0, high: 348.9, low: 339, ltp: 510.25, change: 4.1, pchange: 0.8 },
+        { symbol: "RHGCL", open: 245.3, high: 246.5, low: 242.6, ltp: 510.25, change: 4.1, pchange: 0.8 },
+        { symbol: "UPpER", open: 175, high: 176, low: 173.5, ltp: 510.25, change: 4.1, pchange: 0.8 },
       ],
       wch: [
         { symbol: "GFCL", open: 625, high: 642, low: 625, ltp: 632, change: 7.1, pchange: 1.14 }
@@ -285,67 +285,159 @@ document.addEventListener("DOMContentLoaded", () => {
     news: ["NEPSE index gains 28 points"]
   };
 
+
+
   /* =========================================================
-   LIVE TOP MARKET (GAINERS / LOSERS / TURNOVER / VOLUME)
-========================================================= */
+     LIVE TOP MARKET MODULE
+     - Top Gainers
+     - Top Losers
+     - Top Turnover
+     - Top Volume
+     - Manual refresh only
+  ========================================================= */
 
-const LiveTopMarket = (() => {
-  const API_URL = "https://nepseapi-ouhd.onrender.com/api/live-nepse";
+  const LiveTopMarket = (() => {
 
-  const EXCLUDED_SECTORS = [
-    "Mutual Fund",
-    "Non-Convertible Debenture"
-  ];
+    /* ---------------- CONFIG ---------------- */
+    const API_URL = "https://nepseapi-ouhd.onrender.com/api/live-nepse";
 
-  let gainers = [];
-  let losers = [];
-  let turnover = [];
-  let volume = [];
+    // Exclude non-tradable instruments
+    const EXCLUDED_SECTORS = [
+      "Mutual Fund",
+      "Non-Convertible Debenture"
+    ];
 
-  function fetchData() {
-    fetch(API_URL)
-      .then(res => res.json())
-      .then(res => {
-        const data = res.data || [];
+    /* ---------------- STATE ---------------- */
+    let gainers = [];
+    let losers = [];
+    let turnover = [];
+    let volume = [];
 
-        const filtered = data.filter(
-          d => !EXCLUDED_SECTORS.includes(d.sector)
-        );
+    /* =========================================================
+       MAIN FETCH (FULL REFRESH)
+       - Used on initial load
+       - Used by manual refresh button
+    ========================================================= */
+    function fetchData() {
+      const btn = document.getElementById("refresh-market");
+      if (btn) btn.disabled = true;
 
-        gainers = filtered
-          .filter(d => d.percentageChange > 0)
-          .sort((a, b) => b.percentageChange - a.percentageChange)
-          .slice(0, 10);
+      fetch(API_URL)
+        .then(res => res.json())
+        .then(res => {
+          const data = res.data || [];
 
-        losers = filtered
-          .filter(d => d.percentageChange < 0)
-          .sort((a, b) => a.percentageChange - b.percentageChange)
-          .slice(0, 10);
+          // Filter unwanted sectors once
+          const filtered = data.filter(
+            d => !EXCLUDED_SECTORS.includes(d.sector)
+          );
 
-        turnover = [...filtered]
-          .sort((a, b) => b.totalTradeValue - a.totalTradeValue)
-          .slice(0, 10);
+          /* ---------- TOP GAINERS ---------- */
+          gainers = filtered
+            .filter(d => d.percentageChange > 0)
+            .sort((a, b) => b.percentageChange - a.percentageChange)
+            .slice(0, 10);
 
-        volume = [...filtered]
-          .sort((a, b) => b.totalTradeQuantity - a.totalTradeQuantity)
-          .slice(0, 10);
+          /* ---------- TOP LOSERS ---------- */
+          losers = filtered
+            .filter(d => d.percentageChange < 0)
+            .sort((a, b) => a.percentageChange - b.percentageChange)
+            .slice(0, 10);
 
-        renderGainers();
-        renderLosers();
-        renderTurnover();
-        renderVolume();
+          /* ---------- TOP TURNOVER ---------- */
+          turnover = [...filtered]
+            .sort((a, b) => b.totalTradeValue - a.totalTradeValue)
+            .slice(0, 10);
+
+          /* ---------- TOP VOLUME ---------- */
+          volume = [...filtered]
+            .sort((a, b) => b.totalTradeQuantity - a.totalTradeQuantity)
+            .slice(0, 10);
+
+          // Render all sections
+          renderGainers();
+          renderLosers();
+          renderTurnover();
+          renderVolume();
+        })
+        .catch(() => {
+          // silent fail (no UI noise)
+        })
+        .finally(() => {
+          if (btn) btn.disabled = false;
+        });
+    }
+
+    /* =========================================================
+       PARTIAL REFRESH
+       - Click "Top Turnover" title
+       - Click "Top Volume" title
+    ========================================================= */
+
+    function refreshTurnover() {
+      fetch(API_URL)
+        .then(res => res.json())
+        .then(res => {
+          const filtered = (res.data || []).filter(
+            d => !EXCLUDED_SECTORS.includes(d.sector)
+          );
+
+          turnover = [...filtered]
+            .sort((a, b) => b.totalTradeValue - a.totalTradeValue)
+            .slice(0, 10);
+
+          renderTurnover();
+        })
+        .catch(() => { });
+    }
+
+    function refreshVolume() {
+      fetch(API_URL)
+        .then(res => res.json())
+        .then(res => {
+          const filtered = (res.data || []).filter(
+            d => !EXCLUDED_SECTORS.includes(d.sector)
+          );
+
+          volume = [...filtered]
+            .sort((a, b) => b.totalTradeQuantity - a.totalTradeQuantity)
+            .slice(0, 10);
+
+          renderVolume();
+        })
+        .catch(() => { });
+    }
+
+    /* =========================================================
+       RENDER FUNCTIONS
+    ========================================================= */
+
+    function renderGainers() {
+      const el = document.getElementById("gainer-body");
+      if (!el) return;
+
+      el.innerHTML = "";
+      gainers.forEach(r => {
+        el.insertAdjacentHTML("beforeend", `
+        <tr>
+          <td>${r.symbol}</td>
+          <td>${Utils.formatNepaliNumber(r.lastTradedPrice)}</td>
+          <td class="chg-driver">${r.change}</td>
+          <td>${r.percentageChange}%</td>
+        </tr>
+      `);
       });
-  }
 
-  /* ---------- RENDERERS ---------- */
+      RowColor.apply();
+    }
 
-  function renderGainers() {
-    const el = document.getElementById("gainer-body");
-    if (!el) return;
+    function renderLosers() {
+      const el = document.getElementById("loser-body");
+      if (!el) return;
 
-    el.innerHTML = "";
-    gainers.forEach(r => {
-      el.insertAdjacentHTML("beforeend", `
+      el.innerHTML = "";
+      losers.forEach(r => {
+        el.insertAdjacentHTML("beforeend", `
         <tr>
           <td>${r.symbol}</td>
           <td>${Utils.formatNepaliNumber(r.lastTradedPrice)}</td>
@@ -353,74 +445,78 @@ const LiveTopMarket = (() => {
           <td>${r.percentageChange}%</td>
         </tr>
       `);
-    });
+      });
 
-    RowColor.apply();
-  }
+      RowColor.apply();
+    }
 
-  function renderLosers() {
-    const el = document.getElementById("loser-body");
-    if (!el) return;
+    function renderTurnover() {
+      const el = document.getElementById("turnover-body");
+      if (!el) return;
 
-    el.innerHTML = "";
-    losers.forEach(r => {
-      el.insertAdjacentHTML("beforeend", `
-        <tr>
-          <td>${r.symbol}</td>
-          <td>${Utils.formatNepaliNumber(r.lastTradedPrice)}</td>
-          <td class="chg-driver">${r.change}</td>
-          <td>${r.percentageChange}%</td>
-        </tr>
-      `);
-    });
-
-    RowColor.apply();
-  }
-
-  function renderTurnover() {
-    const el = document.getElementById("turnover-body");
-    if (!el) return;
-
-    el.innerHTML = "";
-    turnover.forEach(r => {
-      el.insertAdjacentHTML("beforeend", `
+      el.innerHTML = "";
+      turnover.forEach(r => {
+        el.insertAdjacentHTML("beforeend", `
         <tr>
           <td>${r.symbol}</td>
           <td>${Utils.formatNepaliNumber(r.totalTradeValue)}</td>
           <td>${Utils.formatNepaliNumber(r.lastTradedPrice)}</td>
         </tr>
       `);
-    });
-  }
+      });
+    }
 
-  function renderVolume() {
-    const el = document.getElementById("volume-body");
-    if (!el) return;
+    function renderVolume() {
+      const el = document.getElementById("volume-body");
+      if (!el) return;
 
-    el.innerHTML = "";
-    volume.forEach(r => {
-      el.insertAdjacentHTML("beforeend", `
+      el.innerHTML = "";
+      volume.forEach(r => {
+        el.insertAdjacentHTML("beforeend", `
         <tr>
           <td>${r.symbol}</td>
           <td>${Utils.formatNepaliNumber(r.totalTradeQuantity)}</td>
           <td>${Utils.formatNepaliNumber(r.lastTradedPrice)}</td>
         </tr>
       `);
-    });
-  }
+      });
+    }
 
-  return { fetchData };
-})();
+    /* =========================================================
+       EVENT BINDINGS (SAFE)
+    ========================================================= */
 
+    const refreshBtn = document.getElementById("refresh-market");
+    if (refreshBtn) {
+      refreshBtn.addEventListener("click", fetchData);
+    }
 
+    const turnoverTitle = document.getElementById("refresh-turnover");
+    if (turnoverTitle) {
+      turnoverTitle.addEventListener("click", refreshTurnover);
+    }
+
+    const volumeTitle = document.getElementById("refresh-volume");
+    if (volumeTitle) {
+      volumeTitle.addEventListener("click", refreshVolume);
+    }
+
+    /* ---------------- PUBLIC API ---------------- */
+    return {
+      fetchData
+    };
+
+  })();
+
+  /* =========================================================
+     INITIAL LOAD
+  ========================================================= */
+  LiveTopMarket.fetchData();
   // Initialize
   TradeSummary.update();
   Collateral.update();
   Watchlist.render("indwch");
-  LiveTopMarket.fetchData();
   Settlement.render(dashboardData.settlement);
   DPHolding.render(dashboardData.dpHolding);
   News.render(dashboardData.news);
-
-  setInterval(LiveTopMarket.fetchData, 30000);
 });
