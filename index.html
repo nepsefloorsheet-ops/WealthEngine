@@ -24,12 +24,15 @@
             <li class="link"><button class="butt" onclick="document.location='index.html'">Home </button></li>
             <li class="link"><button class="butt" onclick="document.location='pages/order.html'">Order </button></li>
             <li class="link"><button class="butt" onclick="document.location='pages/market.html'">Market </button></li>
-            <li class="link"><button class="butt" onclick="document.location='pages/holdings.html'">Holdings </button></li>
+            <li class="link"><button class="butt" onclick="document.location='pages/holdings.html'">Holdings </button>
+            </li>
             <li class="drop">
                 <button class="link but">Books<span class="tri">&#9660;</span></button>
                 <ul class="dropdown-menu">
-                    <li class="link"><button class="butt" onclick="document.location='pages/orderbook.html'">Daily Order Book </button></li>
-                    <li class="link"><button class="butt" onclick="document.location='pages/tradebook.html'">Daily Trade Book </button></li>
+                    <li class="link"><button class="butt" onclick="document.location='pages/orderbook.html'">Daily Order
+                            Book </button></li>
+                    <li class="link"><button class="butt" onclick="document.location='pages/tradebook.html'">Daily Trade
+                            Book </button></li>
                 </ul>
             </li>
             <li class="link"><button class="butt" onclick="document.location='pages/charts.html'">Charts </button></li>
@@ -38,14 +41,19 @@
                 <ul class="dropdown-menu">
                     <li class="link"><button class="butt"
                             onclick="document.location='pages/datewise-index.html'">Datewise Index </button></li>
-                    <li class="link"><button class="butt" onclick="document.location='pages/mktsummary.html'"> Market Summary </button></li>
+                    <li class="link"><button class="butt" onclick="document.location='pages/mktsummary.html'"> Market
+                            Summary </button></li>
                 </ul>
             </li>
             <li class="drop">
                 <button class="link but">Calculator<span class="tri">&#9660;</span></button>
                 <ul class="dropdown-menu">
-                    <li class="link"><button class="butt" onclick="document.location='pages/calculator/buysell.html'">Buy/Sell Calculator </button></li>
-                    <li class="link"><button class="butt" onclick="document.location='pages/calculator/dividend.html'">Dividend Calculator </button></li>
+                    <li class="link"><button class="butt"
+                            onclick="document.location='pages/calculator/buysell.html'">Buy/Sell Calculator </button>
+                    </li>
+                    <li class="link"><button class="butt"
+                            onclick="document.location='pages/calculator/dividend.html'">Dividend Calculator </button>
+                    </li>
                 </ul>
             </li>
             <li class="link"><button class="butt" onclick="document.location='pages/contact.html'">Contact</button></li>
@@ -62,8 +70,8 @@
                     </div>
                 </nepse>
                 <data>
-                    <p class="tv"><strong>Turnover:</strong> <span id="turnover" >0</span></p>
-                    <p class="tv"><strong>Total Volume:</strong>  <span id="volume">0</span></p>
+                    <p class="tv"><strong>Turnover:</strong> <span id="turnover">0</span></p>
+                    <p class="tv"><strong>Total Volume:</strong> <span id="volume">0</span></p>
                 </data>
             </index>
             <h2>Dashboard</h2>
@@ -207,9 +215,14 @@
                         </div>
                         <div class="gnl">
                             <!-- <span class="mid-line"></span> -->
-                            <div class="head">
-                                <span>Top Gainer</span>
-                                <span>Top Loser</span>
+                            <div class="flex">
+                                <div class="topgnl">
+                                    <span>Top Gainer</span>
+                                    <span>Top Loser</span>
+                                </div>
+                                <button id="refresh-market" class="refresh-btn">
+                                    ↻
+                                </button>
                             </div>
 
                             <div class="top-mover-body wch-table">
@@ -250,8 +263,10 @@
                     <div class="gnl" id="gnl">
                         <div style="padding: 9px;">
                             <div class="head">
-                                <span style="background-color: white; padding: 5px; color: black; margin-bottom: 5px; border-radius: 8px;">Top Turnover</span>
-                                <span style="background-color: white; padding: 5px; color: black; margin-bottom: 5px; border-radius: 8px;">Top Volume</span>
+                                <span id="refresh-turnover">Top
+                                    Turnover</span>
+                                <span id="refresh-volume">Top
+                                    Volume</span>
                             </div>
                             <div class="top-mover-body wch-table">
                                 <!-- GAINER -->
@@ -285,39 +300,39 @@
                         </div>
                     </div>
                     <div class="mid-box">
-                            <!-- SETTLEMENT -->
-                            <div class="settlement-box">
-                                <h4 class="head">Settlement</h4>
-                                <div class="settle-row">
-                                    <span>Payable</span>
-                                    <strong id="payable">₹0</strong>
-                                </div>
-                                <div class="settle-row">
-                                    <span>Receivable</span>
-                                    <strong id="receivable">₹0</strong>
-                                </div>
-                                <hr>
-                                <div class="settle-net receivable" id="net-status">
-                                    Net Receivable
-                                </div>
+                        <!-- SETTLEMENT -->
+                        <div class="settlement-box">
+                            <h4 class="head">Settlement</h4>
+                            <div class="settle-row">
+                                <span>Payable</span>
+                                <strong id="payable">₹0</strong>
                             </div>
-                            <!-- DP HOLDING -->
-                            <div class="dp-holding">
-                                <h4 class="head">DP Holding</h4>
-                                <div class="dp-row">
-                                    <span>Total Scrips</span>
-                                    <strong id="dp-count">0</strong>
-                                </div>
-                                <div class="dp-row">
-                                    <span>Total Amount</span>
-                                    <strong id="dp-amount">₹0</strong>
-                                </div>
-                                <hr>
-                                <div id="dp-profit">
-                                    <p>Today’s P/L:</p>
-                                    <span id="dailypnl">₹0</span>
-                                </div>
+                            <div class="settle-row">
+                                <span>Receivable</span>
+                                <strong id="receivable">₹0</strong>
                             </div>
+                            <hr>
+                            <div class="settle-net receivable" id="net-status">
+                                Net Receivable
+                            </div>
+                        </div>
+                        <!-- DP HOLDING -->
+                        <div class="dp-holding">
+                            <h4 class="head">DP Holding</h4>
+                            <div class="dp-row">
+                                <span>Total Scrips</span>
+                                <strong id="dp-count">0</strong>
+                            </div>
+                            <div class="dp-row">
+                                <span>Total Amount</span>
+                                <strong id="dp-amount">₹0</strong>
+                            </div>
+                            <hr>
+                            <div id="dp-profit">
+                                <p>Today’s P/L:</p>
+                                <span id="dailypnl">₹0</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
