@@ -1,5 +1,5 @@
 let nepseTimer = null;
-const REFRESH_INTERVAL = 20000; // 20 seconds
+const REFRESH_INTERVAL = 15000; // 20 seconds
 
 async function loadNepse() {
     try {
@@ -56,7 +56,7 @@ async function loadNepse() {
 
             row.innerHTML = `
                 <td class="middle"><strong>${item.symbol}</strong></td>
-                <td class="right">${formatNumber(item.lastTradedPrice)}</td>
+                <td class="right">${(formatNumber(item.lastTradedPrice))}</td>
                 <td class="right">${item.lastTradedVolume}</td>
                 <td class="right">${formatNumber(item.change)}</td>
                 <td class="right">${item.percentageChange}%</td>
@@ -64,8 +64,8 @@ async function loadNepse() {
                 <td class="right">${formatNumber(item.highPrice)}</td>
                 <td class="right">${formatNumber(item.lowPrice)}</td>
                 <td class="right">${formatNumber(item.previousClose)}</td>
-                <td class="right">${item.totalTradeQuantity}</td>
-                <td class="right">${formatNumber(item.totalTradeValue)}</td>
+                <td class="right">${(item.totalTradeQuantity).toLocaleString('en-IN')}</td>
+                <td class="right">NPR ${formatNumber(item.totalTradeValue)}</td>
             `;
 
             tbody.appendChild(row);
@@ -125,7 +125,7 @@ function updateMarketColor() {
             liveMarket.style.color = 'green';
             break;
         default:
-            liveMarket.style.color = 'white';
+            liveMarket.style.color = 'black';
     }
 }
 
