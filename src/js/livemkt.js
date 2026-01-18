@@ -1,10 +1,19 @@
 let nepseTimer = null;
+let isLoading = false;
 const REFRESH_INTERVAL = 15000; // 20 seconds
 
 async function loadNepse() {
+    if (isLoading) return; // 🔒 prevent overlap
+    isLoading = true;
+
     try {
-        const res = await fetch("https://nepseapi-ouhd.onrender.com/api/live-nepse");
+        const res = await fetch(
+            "https://nepseapi-ouhd.onrender.com/api/live-nepse",
+            { cache: "no-store" } // 🚫 disable cache
+        );
+
         const json = await res.json();
+        console.log("API RESPONSE LENGTH:", json?.data?.length || json?.length);
 
         console.log("API RESPONSE:", json);
 
