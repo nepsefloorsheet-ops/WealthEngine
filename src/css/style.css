@@ -358,12 +358,6 @@ status {
   color: #ff4949;
 } */
 
-#change {
-    font-size: 13px;
-    color: #00ff0d;
-    padding: 0 0 2px 0;
-}
-
 index {
     display: flex;
     gap: 100px;
@@ -418,6 +412,12 @@ footer {
 
 .hidden {
   display: none;
+}
+
+
+.change {
+    font-size: 13px;
+    padding: 0 0 2px 0;
 }
 
 @media (max-width:1190px){
