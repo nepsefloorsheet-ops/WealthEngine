@@ -64,7 +64,7 @@ async function loadNepse() {
                 <td class="right">${formatNumber(item.highPrice)}</td>
                 <td class="right">${formatNumber(item.lowPrice)}</td>
                 <td class="right">${formatNumber(item.previousClose)}</td>
-                <td class="right">${(item.totalTradeQuantity).toLocaleString('en-IN')}</td>
+                <td class="right">${(item.totalTradeQuantity).toLocaleString("en-IN")}</td>
                 <td class="right">${formatNumber(item.totalTradeValue)}</td>
             `;
 
