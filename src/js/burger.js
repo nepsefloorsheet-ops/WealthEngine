@@ -334,23 +334,36 @@ document.addEventListener("DOMContentLoaded", () => {
 const API_URL = "https://turnover-19sr.onrender.com/market-turnover";
 
 async function fetchTurnover() {
-    try {
-        const res = await fetch(API_URL);
-        const data = await res.json();
+  try {
+    const res = await fetch(API_URL);
+    const data = await res.json();
 
-        const t = data.totalTurnover;
+    const t = data.totalTurnover;
 
-        document.getElementById("turnover").textContent =
-            t.totalTradedValue.toLocaleString("en-IN");
+    document.getElementById("turnover").textContent =
+      t.totalTradedValue.toLocaleString("en-IN");
 
-        document.getElementById("volume").textContent =
-            t.totalTradedQuantity.toLocaleString("en-IN");
+    document.getElementById("volume").textContent =
+      t.totalTradedQuantity.toLocaleString("en-IN");
 
-    } catch (error) {
-        console.error(error);
-        document.getElementById("turnover").textContent = "Error";
-        document.getElementById("volume").textContent = "Error";
-    }
+    document.querySelectorAll(".turnover").forEach(el => {
+      el.textContent = t.totalTradedValue.toLocaleString("en-IN");
+    });
+
+    document.querySelectorAll(".volume").forEach(el => {
+      el.textContent = t.totalTradedQuantity.toLocaleString("en-IN");
+    });
+
+    document.querySelectorAll(".transactions").forEach(el => {
+      el.textContent = t.transactionCount.toLocaleString("en-IN");
+    });
+
+
+  } catch (error) {
+    console.error(error);
+    document.getElementById("turnover").textContent = "Error";
+    document.getElementById("volume").textContent = "Error";
+  }
 }
 
 /* Initial load */
@@ -358,3 +371,28 @@ fetchTurnover();
 
 /* Auto refresh every 5 seconds */
 setInterval(fetchTurnover, 5000);
+
+async function getNepseIndex() {
+  try {
+    const res = await fetch("https://turnover-19sr.onrender.com/homepage-data");
+    const data = await res.json();
+
+    const nepse = data.indices.find(i => i.symbol === "NEPSE");
+
+    document.querySelectorAll(".nepse").forEach(el => {
+      el.textContent = nepse.currentValue.toLocaleString("en-IN");
+    });
+
+    document.querySelectorAll(".change").forEach(el => {
+      el.textContent = nepse.change.toLocaleString("en-IN");
+    });
+  } catch (error) {
+    console.error("Error fetching NEPSE data:", error);
+  }
+}
+
+// Initial fetch
+getNepseIndex();
+
+// Refresh every 5 seconds (5000 milliseconds)
+setInterval(getNepseIndex, 5000);

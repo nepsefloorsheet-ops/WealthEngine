@@ -222,127 +222,6 @@ document.addEventListener("DOMContentLoaded", () => {
     return { apply };
   })();
 
-
-  /* =========================================================
-     TOP GAINER / LOSER MODULE
-  ========================================================= */
-  const TopMovers = (() => {
-    const gainers = [
-    { symbol: "SANVI", ltp: 795, change: 60, pchange: 8.16 },
-    { symbol: 'SYPNL', ltp: 1558, change: 67.9, pchange: 5.71 },
-    { symbol: 'KKHC', ltp: 225.9, change: 10, pchange: 4.63 },
-    { symbol: 'SAIL', ltp: 1013, change: 42.9, pchange: 4.42 },
-    { symbol: 'BHCL', ltp: 533, change: 20, pchange: 3.90 },
-    { symbol: 'AKJCL', ltp: 205.9, change: 7.7, pchange: 3.88 },
-    { symbol: 'TPC', ltp: 384, change: 14.3, pchange: 3.87 },
-    { symbol: 'DHEL', ltp: 649.8, change: 22.8, pchange: 3.64 },
-    { symbol: 'SSHL', ltp: 160.5, change: 5.4, pchange: 3.48 },
-    { symbol: 'TTL', ltp: 826, change: 25.9, pchange: 3.24 }
-    ];
-
-    const losers = [
-      { symbol: 'SMHL', ltp: 518, change: -21, pchange: -3.90 },
-    { symbol: 'IHL', ltp: 548.7, change: -15.3, pchange: -2.71 },
-    { symbol: 'GMFBS', ltp: 1480.4, change: -38.5, pchange: -2.53 },
-    { symbol: 'NHDL', ltp: 666, change: -16, pchange: -2.35 },
-    { symbol: 'AHL', ltp: 551, change: -12.9, pchange: -2.29 },
-    { symbol: 'SFCL', ltp: 379.7, change: -8.2, pchange: -2.11 },
-    { symbol: 'GFCL', ltp: 624.9, change: -13.1, pchange: -2.05 },
-    { symbol: 'NWCL', ltp: 831.1, change: -16.9, pchange: -1.99 },
-    { symbol: 'BUNGAL', ltp: 637.5, change: -12.6, pchange: -1.94 },
-    { symbol: 'TSHL', ltp: 752, change: -14.1, pchange: -1.84 }
-    ];
-
-    function render(type) {
-      const body = document.getElementById(type === "gainer" ? "gainer-body" : "loser-body");
-      if (!body) return;
-
-      body.innerHTML = "";
-      const data = type === "gainer" ? gainers : losers;
-
-      data.forEach(r => {
-        body.insertAdjacentHTML("beforeend", `
-          <tr>
-            <td>${r.symbol}</td>
-            <td>${Utils.formatNepaliNumber(r.ltp)}</td>
-            <td class="chg-driver">${r.change}</td>
-            <td>${r.pchange}%</td>
-          </tr>
-        `);
-      });
-
-      RowColor.apply();
-    }
-
-    return { render };
-  })();
-
-
-  /* =========================================================
-     TOP TURNOVER / VOLUME MODULE
-  ========================================================= */
-  const TopStats = (() => {
-    const turnoverData = [
-      { symbol: "SYPNL", turnover: 200632769.5, ltp: 1258 },
-      { symbol: "BANDIPUR", turnover: 176060188.5, ltp: 833 },
-      { symbol: "SANVI", turnover: 158958116.7, ltp: 795 },
-      { symbol: "SAGAR", turnover: 150347504.9, ltp: 1980 },
-      { symbol: "SHIVM", turnover: 148926997.6, ltp: 625 },
-      { symbol: "SAIL", turnover: 133165515.1, ltp: 1013 },
-      { symbol: "MFIL", turnover: 132643246.9, ltp: 763 },
-      { symbol: "RADHI", turnover: 115377549.7, ltp: 763 },
-      { symbol: "BHPL", turnover: 113980974, ltp: 555 },
-      { symbol: "BUNGAL", turnover: 95599814.2, ltp: 637.5 }
-    ];
-
-    const volumeData = [
-      { symbol: "SSHL", shares: 559013, ltp: 160.5 },
-      { symbol: "KKHC", shares: 413228, ltp: 225.9 },
-      { symbol: "AKJCL", shares: 297985, ltp: 205.9 },
-      { symbol: "SHIVM", shares: 241681, ltp: 625 },
-      { symbol: "NGPL", shares: 239917, ltp: 392 },
-      { symbol: "BANDIPUR", shares: 214428, ltp: 833 },
-      { symbol: "BHPL", shares: 211257, ltp: 555 },
-      { symbol: "SANVI", shares: 205667, ltp: 795 },
-      { symbol: "LEC", shares: 197024, ltp: 202 },
-      { symbol: "SBL", shares: 188567, ltp: 397.9 }
-    ];
-
-    function renderTurnover() {
-      const el = document.getElementById("turnover-body");
-      if (!el) return;
-
-      el.innerHTML = "";
-      turnoverData.forEach(r => {
-        el.insertAdjacentHTML("beforeend", `
-          <tr>
-            <td>${r.symbol}</td>
-            <td>${Utils.formatNepaliNumber(r.turnover)}</td>
-            <td>${Utils.formatNepaliNumber(r.ltp)}</td>
-          </tr>
-        `);
-      });
-    }
-
-    function renderVolume() {
-      const el = document.getElementById("volume-body");
-      if (!el) return;
-
-      el.innerHTML = "";
-      volumeData.forEach(r => {
-        el.insertAdjacentHTML("beforeend", `
-          <tr>
-            <td>${r.symbol}</td>
-            <td>${Utils.formatNepaliNumber(r.shares)}</td>
-            <td>${Utils.formatNepaliNumber(r.ltp)}</td>
-          </tr>
-        `);
-      });
-    }
-
-    return { renderTurnover, renderVolume };
-  })();
-
   const Settlement = (() => {
     function render(data) {
       const payableEl = document.getElementById("payable");
@@ -406,15 +285,142 @@ document.addEventListener("DOMContentLoaded", () => {
     news: ["NEPSE index gains 28 points"]
   };
 
+  /* =========================================================
+   LIVE TOP MARKET (GAINERS / LOSERS / TURNOVER / VOLUME)
+========================================================= */
+
+const LiveTopMarket = (() => {
+  const API_URL = "https://nepseapi-ouhd.onrender.com/api/live-nepse";
+
+  const EXCLUDED_SECTORS = [
+    "Mutual Fund",
+    "Non-Convertible Debenture"
+  ];
+
+  let gainers = [];
+  let losers = [];
+  let turnover = [];
+  let volume = [];
+
+  function fetchData() {
+    fetch(API_URL)
+      .then(res => res.json())
+      .then(res => {
+        const data = res.data || [];
+
+        const filtered = data.filter(
+          d => !EXCLUDED_SECTORS.includes(d.sector)
+        );
+
+        gainers = filtered
+          .filter(d => d.percentageChange > 0)
+          .sort((a, b) => b.percentageChange - a.percentageChange)
+          .slice(0, 10);
+
+        losers = filtered
+          .filter(d => d.percentageChange < 0)
+          .sort((a, b) => a.percentageChange - b.percentageChange)
+          .slice(0, 10);
+
+        turnover = [...filtered]
+          .sort((a, b) => b.totalTradeValue - a.totalTradeValue)
+          .slice(0, 10);
+
+        volume = [...filtered]
+          .sort((a, b) => b.totalTradeQuantity - a.totalTradeQuantity)
+          .slice(0, 10);
+
+        renderGainers();
+        renderLosers();
+        renderTurnover();
+        renderVolume();
+      });
+  }
+
+  /* ---------- RENDERERS ---------- */
+
+  function renderGainers() {
+    const el = document.getElementById("gainer-body");
+    if (!el) return;
+
+    el.innerHTML = "";
+    gainers.forEach(r => {
+      el.insertAdjacentHTML("beforeend", `
+        <tr>
+          <td>${r.symbol}</td>
+          <td>${Utils.formatNepaliNumber(r.lastTradedPrice)}</td>
+          <td class="chg-driver">${r.change}</td>
+          <td>${r.percentageChange}%</td>
+        </tr>
+      `);
+    });
+
+    RowColor.apply();
+  }
+
+  function renderLosers() {
+    const el = document.getElementById("loser-body");
+    if (!el) return;
+
+    el.innerHTML = "";
+    losers.forEach(r => {
+      el.insertAdjacentHTML("beforeend", `
+        <tr>
+          <td>${r.symbol}</td>
+          <td>${Utils.formatNepaliNumber(r.lastTradedPrice)}</td>
+          <td class="chg-driver">${r.change}</td>
+          <td>${r.percentageChange}%</td>
+        </tr>
+      `);
+    });
+
+    RowColor.apply();
+  }
+
+  function renderTurnover() {
+    const el = document.getElementById("turnover-body");
+    if (!el) return;
+
+    el.innerHTML = "";
+    turnover.forEach(r => {
+      el.insertAdjacentHTML("beforeend", `
+        <tr>
+          <td>${r.symbol}</td>
+          <td>${Utils.formatNepaliNumber(r.totalTradeValue)}</td>
+          <td>${Utils.formatNepaliNumber(r.lastTradedPrice)}</td>
+        </tr>
+      `);
+    });
+  }
+
+  function renderVolume() {
+    const el = document.getElementById("volume-body");
+    if (!el) return;
+
+    el.innerHTML = "";
+    volume.forEach(r => {
+      el.insertAdjacentHTML("beforeend", `
+        <tr>
+          <td>${r.symbol}</td>
+          <td>${Utils.formatNepaliNumber(r.totalTradeQuantity)}</td>
+          <td>${Utils.formatNepaliNumber(r.lastTradedPrice)}</td>
+        </tr>
+      `);
+    });
+  }
+
+  return { fetchData };
+})();
+
+
   // Initialize
   TradeSummary.update();
   Collateral.update();
   Watchlist.render("indwch");
-  TopMovers.render("gainer");
-  TopMovers.render("loser");
-  TopStats.renderTurnover();
-  TopStats.renderVolume();
+  LiveTopMarket.fetchData();
   Settlement.render(dashboardData.settlement);
   DPHolding.render(dashboardData.dpHolding);
   News.render(dashboardData.news);
+
+  setInterval(LiveTopMarket.fetchData, 30000);
 });

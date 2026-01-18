@@ -1,5 +1,5 @@
 let nepseTimer = null;
-const REFRESH_INTERVAL = 20000; // 20 seconds
+const REFRESH_INTERVAL = 10000; // 10 seconds
 
 async function loadNepse() {
     try {
