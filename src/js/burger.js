@@ -330,3 +330,31 @@ document.addEventListener("DOMContentLoaded", () => {
     yearEl.textContent = yearText;
   }
 });
+
+const API_URL = "https://turnover-19sr.onrender.com/market-turnover";
+
+async function fetchTurnover() {
+    try {
+        const res = await fetch(API_URL);
+        const data = await res.json();
+
+        const t = data.totalTurnover;
+
+        document.getElementById("turnover").textContent =
+            t.totalTradedValue.toLocaleString("en-IN");
+
+        document.getElementById("volume").textContent =
+            t.totalTradedQuantity.toLocaleString("en-IN");
+
+    } catch (error) {
+        console.error(error);
+        document.getElementById("turnover").textContent = "Error";
+        document.getElementById("volume").textContent = "Error";
+    }
+}
+
+/* Initial load */
+fetchTurnover();
+
+/* Auto refresh every 5 seconds */
+setInterval(fetchTurnover, 5000);
