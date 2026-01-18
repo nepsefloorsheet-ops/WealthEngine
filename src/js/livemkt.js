@@ -1,19 +1,10 @@
 let nepseTimer = null;
-let isLoading = false;
-const REFRESH_INTERVAL = 15000; // 20 seconds
+const REFRESH_INTERVAL = 20000; // 20 seconds
 
 async function loadNepse() {
-    if (isLoading) return; // 🔒 prevent overlap
-    isLoading = true;
-
     try {
-        const res = await fetch(
-            "https://nepseapi-ouhd.onrender.com/api/live-nepse",
-            { cache: "no-store" } // 🚫 disable cache
-        );
-
+        const res = await fetch("https://nepseapi-ouhd.onrender.com/api/live-nepse");
         const json = await res.json();
-        console.log("API RESPONSE LENGTH:", json?.data?.length || json?.length);
 
         console.log("API RESPONSE:", json);
 
@@ -65,7 +56,7 @@ async function loadNepse() {
 
             row.innerHTML = `
                 <td class="middle"><strong>${item.symbol}</strong></td>
-                <td class="right">${(formatNumber(item.lastTradedPrice))}</td>
+                <td class="right">${formatNumber(item.lastTradedPrice)}</td>
                 <td class="right">${item.lastTradedVolume}</td>
                 <td class="right">${formatNumber(item.change)}</td>
                 <td class="right">${item.percentageChange}%</td>
@@ -74,7 +65,7 @@ async function loadNepse() {
                 <td class="right">${formatNumber(item.lowPrice)}</td>
                 <td class="right">${formatNumber(item.previousClose)}</td>
                 <td class="right">${(item.totalTradeQuantity).toLocaleString('en-IN')}</td>
-                <td class="right">NPR ${formatNumber(item.totalTradeValue)}</td>
+                <td class="right">${formatNumber(item.totalTradeValue)}</td>
             `;
 
             tbody.appendChild(row);
