@@ -73,7 +73,7 @@
                     <p class="tv"><strong>Total Volume:</strong> <span id="volume">0</span></p>
                 </data>
             </index>
-            <h2>Live Market</h2>
+            <h2>Watchlist</h2>
             <div class="time">
                 <p id="date"></p>
                 <status class="status">
@@ -85,44 +85,22 @@
 
         <section>
             <div class="livetable top sticky-header" id="stickyHeader">
-                <!-- Count Adv. Dec. Unc. -->
-                <div class="count-container">
-                    <p class="positiveCount clickable-filter" id="filterPositive" data-filter="positive">Advances: <span
-                            id="positiveCount">0</span></p>
-                    <p class="negativeCount clickable-filter" id="filterNegative" data-filter="negative">Declines: <span
-                            id="negativeCount">0</span></p>
-                    <p class="unchangedCount clickable-filter" id="filterUnchanged" data-filter="unchanged">Neutral:
-                        <span id="unchangedCount">0</span>
-                    </p>
+                <div class="watchlist-stats">
+                    <span class="stat-item">Total: <strong id="totalStocks">0</strong></span>
+                    <span class="stat-item stat-gainers">Gainers: <strong id="totalGainers">0</strong></span>
+                    <span class="stat-item stat-losers">Losers: <strong id="totalLosers">0</strong></span>
+                    <span class="stat-item stat-unchanged">Neutral: <strong id="totalUnchanged">0</strong></span>
                 </div>
-                <span id="market-pill" style="display: none;">Market Closed</span>
-                <h3 id="live-market"> Live Market</h3>
+                <h3 id="live-market">My Watchlist</h3>
                 <div id="lastUpdated" class="last-updated">
                     <span id="refreshIndicator" class="refresh-indicator" style="display: none;">⟳</span>
                     <span id="lastUpdatedText">As of: --</span>
                 </div>
             </div>
 
-            <div class="search-container">
-                <select id="sectorFilter" class="sector-dropdown">
-                    <option value="">All Sectors</option>
-                    <option value="COMMERCIAL BANKS">COMMERCIAL BANKS</option>
-                    <option value="DEVELOPMENT BANKS">DEVELOPMENT BANKS</option>
-                    <option value="HYDRO POWER">HYDRO POWER</option>
-                    <option value="FINANCE">FINANCE</option>
-                    <option value="MICROFINANCE">MICROFINANCE</option>
-                    <option value="Mutual Fund">Mutual Fund</option>
-                    <option value="LIFE INSURANCE">LIFE INSURANCE</option>
-                    <option value="NON LIFE INSURANCE">NON LIFE INSURANCE</option>
-                    <option value="HOTELS AND TOURISM">HOTELS AND TOURISM</option>
-                    <option value="MANUFACTURING AND PROCESSING">MANUFACTURING AND PROCESSING</option>
-                    <option value="INVESTMENT">INVESTMENT</option>
-                    <option value="TRADINGS">TRADINGS</option>
-                    <option value="OTHERS">OTHERS</option>
-                </select>
-                <input type="text" id="symbolSearch" placeholder="Enter symbol to search..." />
-                <button id="searchBtn">Search</button>
-                <button id="clearBtn">Clear</button>
+            <div class="watchlist-empty" id="emptyWatchlist" style="display: none;">
+                <p>Your watchlist is empty.</p>
+                <p>Go to <a href="market.html">Market</a> and click the ⭐ icon to add stocks to your watchlist.</p>
             </div>
 
             <div class="livetable" id="tableContainer">
@@ -131,6 +109,7 @@
                 <table id="dataTable">
                     <thead>
                         <tr>
+                            <th class="drag-handle-col">☰</th>
                             <th>Symbol</th>
                             <th class="right">LTP</th>
                             <th class="right">LTV</th>
@@ -142,18 +121,19 @@
                             <th class="right">Prev Close</th>
                             <th class="right">Volume</th>
                             <th class="right">Turnover</th>
-                            <th class="middle">Watch</th>
+                            <th class="middle">Action</th>
                         </tr>
                     </thead>
 
-                    <tbody id="nepse-body"></tbody>
+                    <tbody id="watchlist-body"></tbody>
                 </table>
             </div>
         </section>
+
     </main>
     <script src="/src/js/dropdown.js"></script>
     <script src="/src/js/burger.js"></script>
-    <script src="/src/js/livemkt.js"></script>
+    <script src="/src/js/watchlist.js"></script>
 </body>
 
 </html>
