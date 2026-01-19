@@ -7,7 +7,7 @@ let activeSectorFilter = null; // Track active sector filter
 async function loadNepse() {
     // Show refresh indicator
     showRefreshIndicator();
-    
+
     try {
         const res = await fetch("https://nepseapi-ouhd.onrender.com/api/live-nepse");
         const json = await res.json();
@@ -21,7 +21,7 @@ async function loadNepse() {
 
         // Sort by latest update time (newest first)
         data.sort((a, b) => new Date(b.lastUpdatedDateTime) - new Date(a.lastUpdatedDateTime));
-        
+
         // Store all data for filtering
         allData = data;
 
@@ -43,7 +43,7 @@ async function loadNepse() {
 
         // Apply active filters (search and count filter)
         applyFilters();
-        
+
     } catch (err) {
         console.error("NEPSE ERROR:", err);
         updateLastUpdated(null, true);
@@ -57,24 +57,24 @@ async function loadNepse() {
 // Format timestamp to readable format (e.g., "2:59 PM")
 function formatTimestamp(dateTimeString) {
     if (!dateTimeString) return null;
-    
+
     try {
         const date = new Date(dateTimeString);
-        
+
         // Check if date is valid
         if (isNaN(date.getTime())) return null;
-        
+
         // Format: "2:59 PM" or "14:59" (12-hour format preferred)
         const hours = date.getHours();
         const minutes = date.getMinutes();
         const ampm = hours >= 12 ? 'PM' : 'AM';
         const displayHours = hours % 12 || 12; // Convert to 12-hour format
         const displayMinutes = minutes.toString().padStart(2, '0');
-        
+
         // Also include date if it's not today
         const today = new Date();
         const isToday = date.toDateString() === today.toDateString();
-        
+
         if (isToday) {
             return `${displayHours}:${displayMinutes} ${ampm}`;
         } else {
@@ -94,12 +94,12 @@ function formatTimestamp(dateTimeString) {
 function updateLastUpdated(dateTimeString, isError = false) {
     const lastUpdatedText = document.getElementById('lastUpdatedText');
     if (!lastUpdatedText) return;
-    
+
     if (isError) {
         lastUpdatedText.textContent = 'As of: Error loading data';
         return;
     }
-    
+
     const formattedTime = formatTimestamp(dateTimeString);
     if (formattedTime) {
         lastUpdatedText.textContent = `Last updated: ${formattedTime}`;
@@ -142,29 +142,29 @@ function displayData(data) {
         });
 
     data.forEach(item => {
-            const row = document.createElement("tr");
-            const percentageChange = parseFloat(item.percentageChange) || 0;
+        const row = document.createElement("tr");
+        const percentageChange = parseFloat(item.percentageChange) || 0;
 
-            if (percentageChange > 0) {
-                row.classList.add("positive");
-            } else if (percentageChange < 0) {
-                row.classList.add("negative");
-            } else {
-                row.classList.add("unchanged");
-            }
+        if (percentageChange > 0) {
+            row.classList.add("positive");
+        } else if (percentageChange < 0) {
+            row.classList.add("negative");
+        } else {
+            row.classList.add("unchanged");
+        }
 
-            // Add significant change class for large moves (>8% or <-8%)
-            if (Math.abs(percentageChange) >= 8) {
-                row.classList.add("significant-change");
-            }
+        // Add significant change class for large moves (>8% or <-8%)
+        if (Math.abs(percentageChange) >= 8) {
+            row.classList.add("significant-change");
+        }
 
-            // Check if symbol is in watchlist
-            const isWatched = window.watchlistUtils && window.watchlistUtils.isInWatchlist(item.symbol);
-            const watchBtnClass = isWatched ? 'watch-btn active' : 'watch-btn';
-            const watchBtnIcon = isWatched ? '⭐' : '☆';
-            const watchBtnTitle = isWatched ? 'Remove from watchlist' : 'Add to watchlist';
+        // Check if symbol is in watchlist
+        const isWatched = window.watchlistUtils && window.watchlistUtils.isInWatchlist(item.symbol);
+        const watchBtnClass = isWatched ? 'watch-btn active' : 'watch-btn';
+        const watchBtnIcon = isWatched ? '⭐' : '☆';
+        const watchBtnTitle = isWatched ? 'Remove from watchlist' : 'Add to watchlist';
 
-            row.innerHTML = `
+        row.innerHTML = `
                 <td class="middle"><strong>${item.symbol}</strong></td>
                 <td class="right">${formatNumber(item.lastTradedPrice)}</td>
                 <td class="right">${item.lastTradedVolume}</td>
@@ -181,8 +181,8 @@ function displayData(data) {
                 </td>
             `;
 
-            tbody.appendChild(row);
-        });
+        tbody.appendChild(row);
+    });
 
     // Add event listeners to watchlist buttons
     document.querySelectorAll('.watch-btn').forEach(btn => {
@@ -285,22 +285,34 @@ function startBlinking() {
     }, 500); // Blink every 500ms
 }
 
-// Initial setup
-updateMarketColor();
-startBlinking();
+// Initialize UI dependent functions after layout injection
+function initUI() {
+    updateMarketColor();
+    startBlinking();
 
-// Optional: If #market-pill text changes dynamically, update color automatically
-const marketPillObserver = new MutationObserver(updateMarketColor);
-marketPillObserver.observe(document.getElementById('market-pill'), { childList: true, characterData: true, subtree: true });
+    // Optional: If #market-pill text changes dynamically, update color automatically
+    const marketPill = document.getElementById('market-pill');
+    if (marketPill) {
+        const marketPillObserver = new MutationObserver(updateMarketColor);
+        marketPillObserver.observe(marketPill, { childList: true, characterData: true, subtree: true });
+    }
+}
+
+// Check if layout is already injected
+if (document.querySelector('#market-pill')) {
+    initUI();
+} else {
+    document.addEventListener('layout-injected', initUI);
+}
 
 // Apply all active filters (search + count filter + sector filter)
 function applyFilters() {
     let filteredData = [...allData];
-    
+
     // Apply sector filter (read from dropdown to keep in sync)
     const sectorDropdown = document.getElementById('sectorFilter');
     const selectedSector = sectorDropdown ? sectorDropdown.value : null;
-    
+
     if (selectedSector) {
         filteredData = filteredData.filter(item => {
             if (!item.sector) return false;
@@ -310,17 +322,17 @@ function applyFilters() {
             return itemSector === filterSector;
         });
     }
-    
+
     // Apply search filter
     const searchInput = document.getElementById('symbolSearch');
     const searchTerm = searchInput ? searchInput.value.trim().toUpperCase() : '';
-    
+
     if (searchTerm) {
-        filteredData = filteredData.filter(item => 
+        filteredData = filteredData.filter(item =>
             item.symbol && item.symbol.toUpperCase().includes(searchTerm)
         );
     }
-    
+
     // Apply count filter (positive/negative/unchanged)
     if (activeCountFilter) {
         filteredData = filteredData.filter(item => {
@@ -334,7 +346,7 @@ function applyFilters() {
             return true;
         });
     }
-    
+
     displayData(filteredData);
 }
 
@@ -351,10 +363,10 @@ function handleCountFilter(filterType) {
     } else {
         activeCountFilter = filterType;
     }
-    
+
     // Update visual indication
     updateFilterIndicators();
-    
+
     // Apply filters
     applyFilters();
 }
@@ -365,7 +377,7 @@ function updateFilterIndicators() {
     document.querySelectorAll('.clickable-filter').forEach(el => {
         el.classList.remove('active-filter');
     });
-    
+
     // Add active class to current filter
     if (activeCountFilter) {
         const activeElement = document.getElementById(`filter${activeCountFilter.charAt(0).toUpperCase() + activeCountFilter.slice(1)}`);
@@ -380,11 +392,11 @@ function initSearch() {
     const searchBtn = document.getElementById('searchBtn');
     const clearBtn = document.getElementById('clearBtn');
     const searchInput = document.getElementById('symbolSearch');
-    
+
     if (searchBtn) {
         searchBtn.addEventListener('click', filterData);
     }
-    
+
     if (clearBtn) {
         clearBtn.addEventListener('click', () => {
             if (searchInput) {
@@ -401,7 +413,7 @@ function initSearch() {
             applyFilters();
         });
     }
-    
+
     // Add event listener for sector dropdown
     const sectorDropdown = document.getElementById('sectorFilter');
     if (sectorDropdown) {
@@ -414,12 +426,12 @@ function initSearch() {
             activeSectorFilter = sectorDropdown.value;
         }
     }
-    
+
     // Add click handlers for count filters
     const positiveFilter = document.getElementById('filterPositive');
     const negativeFilter = document.getElementById('filterNegative');
     const unchangedFilter = document.getElementById('filterUnchanged');
-    
+
     if (positiveFilter) {
         positiveFilter.addEventListener('click', () => handleCountFilter('positive'));
     }
@@ -429,7 +441,7 @@ function initSearch() {
     if (unchangedFilter) {
         unchangedFilter.addEventListener('click', () => handleCountFilter('unchanged'));
     }
-    
+
     // Allow Enter key to trigger search
     if (searchInput) {
         searchInput.addEventListener('keypress', (e) => {
@@ -504,18 +516,18 @@ function loadWatchlistUtils() {
     // Simple watchlist functions if watchlist.js is not loaded
     if (!window.watchlistUtils) {
         window.watchlistUtils = {
-            loadWatchlist: function() {
+            loadWatchlist: function () {
                 const saved = localStorage.getItem('watchlist');
                 return saved ? JSON.parse(saved) : [];
             },
-            addToWatchlist: function(symbol) {
+            addToWatchlist: function (symbol) {
                 let watchlist = this.loadWatchlist();
                 if (!watchlist.includes(symbol)) {
                     watchlist.push(symbol);
                     localStorage.setItem('watchlist', JSON.stringify(watchlist));
                 }
             },
-            removeFromWatchlist: function(symbol) {
+            removeFromWatchlist: function (symbol) {
                 let watchlist = this.loadWatchlist();
                 const index = watchlist.indexOf(symbol);
                 if (index > -1) {
@@ -523,7 +535,7 @@ function loadWatchlistUtils() {
                     localStorage.setItem('watchlist', JSON.stringify(watchlist));
                 }
             },
-            isInWatchlist: function(symbol) {
+            isInWatchlist: function (symbol) {
                 return this.loadWatchlist().includes(symbol);
             }
         };
