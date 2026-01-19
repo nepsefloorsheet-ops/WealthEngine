@@ -4,6 +4,53 @@
     overflow-x: auto;
     overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
+    position: relative;
+}
+
+/* Sticky header */
+.sticky-header {
+    position: sticky;
+    top: 72px;
+    z-index: 90;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Horizontal scroll indicators */
+.scroll-indicator {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(64, 133, 133, 0.8);
+    color: white;
+    width: 30px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: bold;
+    border-radius: 5px;
+    z-index: 10;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    user-select: none;
+}
+
+.scroll-indicator-left {
+    left: 10px;
+}
+
+.scroll-indicator-right {
+    right: 10px;
+}
+
+.scroll-indicator.visible {
+    opacity: 1;
+}
+
+#tableContainer {
+    position: relative;
 }
 
 table {
@@ -31,6 +78,17 @@ td:first-child {
     position: sticky;
     left: 0;
     z-index: 2;
+}
+
+th {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+}
+
+th:first-child {
+    z-index: 4;
+    /* Higher z-index for sticky first column header */
 }
 
 th {
@@ -68,12 +126,52 @@ tr.unchanged td:first-child {
     background: #57abf7;
 }
 
+/* Significant change styling for large moves (>8% or <-8%) */
+tr.significant-change {
+    font-weight: 700;
+    border-left: 4px solid #ffd700 !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+tr.significant-change td {
+    font-weight: 700;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+tr.significant-change.positive {
+    border-left-color: #00ff00;
+    box-shadow: 0 2px 8px rgba(55, 178, 77, 0.4);
+}
+
+tr.significant-change.negative {
+    border-left-color: #ff0000;
+    box-shadow: 0 2px 8px rgba(233, 101, 101, 0.4);
+}
+
+tr.significant-change.unchanged {
+    border-left-color: #0066ff;
+    box-shadow: 0 2px 8px rgba(87, 171, 247, 0.4);
+}
+
+tr.significant-change td:first-child {
+    border-left: none;
+}
+
 .top {
     display: flex;
     align-items: center;
     background-color: #d4d4d4;
     padding: 8px 12px;
     justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.count-container {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
 }
 
 .positiveCount {
@@ -91,12 +189,616 @@ tr.unchanged td:first-child {
     font-weight: 600;
 }
 
+.clickable-filter {
+    cursor: pointer;
+    user-select: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.clickable-filter:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+    transform: scale(1.05);
+}
+
+.clickable-filter.active-filter {
+    background-color: rgba(0, 0, 0, 0.15);
+    font-weight: 700;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
 /* #live-market {
     font-size: larger;
     margin-left: 25px;
 } */
 
-.last-updated{
+.last-updated {
     color: #010101;
     font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.refresh-indicator {
+    display: inline-block;
+    animation: spin 1s linear infinite;
+    font-size: 18px;
+    color: #408585;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+#lastUpdatedText {
+    white-space: nowrap;
+}
+
+.search-container {
+    margin: 20px 10px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 10px;
+    background-color: #f5f5f5;
+    border-radius: 5px;
+    flex-wrap: wrap;
+}
+
+.sector-dropdown {
+    padding: 10px 15px;
+    font-size: 16px;
+    border: 2px solid #408585;
+    border-radius: 5px;
+    background-color: white;
+    color: #333;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.3s;
+    min-width: 200px;
+    font-weight: 500;
+}
+
+.sector-dropdown:focus {
+    border-color: #2d5f5f;
+    box-shadow: 0 0 5px rgba(64, 133, 133, 0.3);
+}
+
+.sector-dropdown:hover {
+    border-color: #2d5f5f;
+}
+
+#symbolSearch {
+    flex: 1;
+    padding: 10px 15px;
+    font-size: 16px;
+    border: 2px solid #408585;
+    border-radius: 5px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+#symbolSearch:focus {
+    border-color: #2d5f5f;
+}
+
+#searchBtn,
+#clearBtn {
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#searchBtn {
+    background-color: #408585;
+    color: white;
+}
+
+#searchBtn:hover {
+    background-color: #2d5f5f;
+}
+
+#clearBtn {
+    background-color: #6c757d;
+    color: white;
+}
+
+#clearBtn:hover {
+    background-color: #5a6268;
+}
+
+/* Navigation */
+.nav-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.nav-link {
+    padding: 8px 16px;
+    text-decoration: none;
+    color: #333;
+    font-weight: 600;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.8);
+    transform: translateY(-1px);
+}
+
+.nav-link.active {
+    background-color: #408585;
+    color: white;
+}
+
+/* Watchlist buttons */
+.watch-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    color: #666;
+}
+
+.watch-btn:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+    transform: scale(1.2);
+}
+
+.watch-btn.active {
+    color: #ffd700;
+}
+
+.remove-btn {
+    background-color: #e96565;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.remove-btn:hover {
+    background-color: #d32f2f;
+    transform: scale(1.1);
+}
+
+/* Empty watchlist message */
+.watchlist-empty {
+    text-align: center;
+    padding: 40px 20px;
+    background-color: #f5f5f5;
+    border-radius: 10px;
+    margin: 20px 10px;
+}
+
+.watchlist-empty p {
+    margin: 10px 0;
+    font-size: 16px;
+    color: #666;
+}
+
+.watchlist-empty a {
+    color: #408585;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.watchlist-empty a:hover {
+    text-decoration: underline;
+}
+
+/* Watchlist Statistics */
+.watchlist-stats {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.stat-item {
+    font-size: 14px;
+    color: #333;
+    font-weight: 500;
+}
+
+.stat-item strong {
+    font-weight: 700;
+    margin-left: 5px;
+}
+
+.stat-gainers {
+    color: #37b24d;
+}
+
+.stat-losers {
+    color: #e96565;
+}
+
+.stat-unchanged {
+    color: #495057;
+}
+
+/* Drag and Drop */
+.drag-handle-col {
+    width: 30px;
+    text-align: center;
+    cursor: move;
+}
+
+.drag-handle {
+    cursor: move;
+    user-select: none;
+    font-size: 18px;
+    color: #666;
+    text-align: center;
+    padding: 5px;
+    transition: color 0.2s;
+}
+
+.drag-handle:hover {
+    color: #408585;
+}
+
+.draggable-row {
+    cursor: move;
+    transition: background-color 0.2s;
+}
+
+.draggable-row.dragging {
+    opacity: 0.5;
+    background-color: #f0f0f0 !important;
+}
+
+.draggable-row.drag-over {
+    border-top: 2px solid #408585;
+}
+
+.draggable-row:hover {
+    background-color: rgba(64, 133, 133, 0.1) !important;
+}
+
+/* Mobile responsive for watchlist stats */
+@media (max-width: 768px) {
+    .watchlist-stats {
+        width: 100%;
+        justify-content: space-between;
+        gap: 10px;
+        margin: 5px 0;
+    }
+
+    .stat-item {
+        font-size: 12px;
+    }
+
+    .drag-handle {
+        font-size: 16px;
+        padding: 3px;
+    }
+}
+
+@media (max-width: 480px) {
+    .watchlist-stats {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+
+    .stat-item {
+        font-size: 11px;
+    }
+}
+
+/* Price Change Indicators */
+.price-up {
+    color: #37b24d;
+    font-weight: bold;
+    font-size: 16px;
+    margin-left: 5px;
+    display: inline-block;
+    animation: bounceUp 0.5s ease;
+}
+
+.price-down {
+    color: #e96565;
+    font-weight: bold;
+    font-size: 16px;
+    margin-left: 5px;
+    display: inline-block;
+    animation: bounceDown 0.5s ease;
+}
+
+@keyframes bounceUp {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+@keyframes bounceDown {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(5px);
+    }
+}
+
+/* Flash animation for price updates */
+.price-updated {
+    position: relative;
+}
+
+.flash-animation {
+    animation: flashUpdate 1s ease;
+}
+
+@keyframes flashUpdate {
+    0% {
+        background-color: rgba(255, 255, 0, 0.3);
+    }
+
+    50% {
+        background-color: rgba(255, 255, 0, 0.6);
+    }
+
+    100% {
+        background-color: transparent;
+    }
+}
+
+.price-increased.flash-animation {
+    animation: flashUpdateGreen 1s ease;
+}
+
+@keyframes flashUpdateGreen {
+    0% {
+        background-color: rgba(55, 178, 77, 0.3);
+    }
+
+    50% {
+        background-color: rgba(55, 178, 77, 0.6);
+    }
+
+    100% {
+        background-color: transparent;
+    }
+}
+
+.price-decreased.flash-animation {
+    animation: flashUpdateRed 1s ease;
+}
+
+@keyframes flashUpdateRed {
+    0% {
+        background-color: rgba(233, 101, 101, 0.3);
+    }
+
+    50% {
+        background-color: rgba(233, 101, 101, 0.6);
+    }
+
+    100% {
+        background-color: transparent;
+    }
+}
+
+/* Highlight significant price changes */
+.significant-price-change {
+    border-left: 3px solid #ffd700 !important;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.significant-price-change.price-increased {
+    border-left-color: #00ff00 !important;
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+}
+
+.significant-price-change.price-decreased {
+    border-left-color: #ff0000 !important;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+}
+
+/* Price cell highlighting */
+.price-cell {
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.price-updated .price-cell {
+    font-weight: 700;
+    font-size: 1.05em;
+}
+
+/* Mobile responsive styles */
+@media (max-width: 768px) {
+    .livetable {
+        margin: 10px 5px;
+        width: calc(100% - 10px);
+    }
+
+    .top {
+        padding: 10px 8px;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .count-container {
+        width: 100%;
+        gap: 10px;
+        justify-content: space-between;
+    }
+
+    .positiveCount,
+    .negativeCount,
+    .unchangedCount {
+        font-size: 14px;
+        padding: 4px 8px;
+    }
+
+    #live-market {
+        font-size: 18px;
+        margin: 5px 0;
+    }
+
+    .last-updated {
+        font-size: 12px;
+        width: 100%;
+    }
+
+    .search-container {
+        margin: 10px 5px;
+        padding: 8px;
+        gap: 8px;
+    }
+
+    .sector-dropdown,
+    #symbolSearch {
+        font-size: 14px;
+        padding: 8px 12px;
+        min-width: auto;
+    }
+
+    .sector-dropdown {
+        width: 100%;
+    }
+
+    #symbolSearch {
+        width: 100%;
+    }
+
+    #searchBtn,
+    #clearBtn {
+        padding: 8px 16px;
+        font-size: 14px;
+        flex: 1;
+    }
+
+    table {
+        font-size: 12px;
+    }
+
+    th,
+    td {
+        padding: 6px 4px;
+        font-size: 11px;
+    }
+
+    .scroll-indicator {
+        width: 25px;
+        height: 50px;
+        font-size: 20px;
+    }
+
+    .scroll-indicator-left {
+        left: 5px;
+    }
+
+    .scroll-indicator-right {
+        right: 5px;
+    }
+
+    .nav-container {
+        width: 100%;
+        justify-content: center;
+        margin-bottom: 5px;
+    }
+
+    .nav-link {
+        padding: 6px 12px;
+        font-size: 14px;
+    }
+
+    .watch-btn {
+        font-size: 18px;
+        padding: 4px 8px;
+    }
+
+    .remove-btn {
+        padding: 4px 8px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .livetable {
+        margin: 5px 2px;
+        width: calc(100% - 4px);
+    }
+
+    .top {
+        padding: 8px 5px;
+    }
+
+    .count-container {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .positiveCount,
+    .negativeCount,
+    .unchangedCount {
+        font-size: 12px;
+        width: 100%;
+    }
+
+    #live-market {
+        font-size: 16px;
+    }
+
+    .last-updated {
+        font-size: 11px;
+    }
+
+    .search-container {
+        margin: 8px 2px;
+        padding: 6px;
+    }
+
+    .sector-dropdown,
+    #symbolSearch,
+    #searchBtn,
+    #clearBtn {
+        font-size: 12px;
+        padding: 6px 10px;
+    }
+
+    table {
+        font-size: 10px;
+    }
+
+    th,
+    td {
+        padding: 4px 2px;
+        font-size: 10px;
+    }
 }
