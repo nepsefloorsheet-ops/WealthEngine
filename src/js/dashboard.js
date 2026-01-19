@@ -141,17 +141,48 @@ document.addEventListener("DOMContentLoaded", () => {
         { symbol: "SENSFLTIND", high: "155.23", low: "154.34", ltp: "155.17", change: '0.36', pchange: "0.23" },
         { symbol: "SENSIND", high: "455.95", low: "453.71", ltp: "455.93", change: '0.92', pchange: "0.20" }
       ],
-      dpwch: [
-        { symbol: "HDHPC", open: 180, high: 182.5, low: 176.4, ltp: 176.8, change: -3.2, pchange: -1.78 },
-        { symbol: "MBJC", open: 278.8, high: 282, low: 278.8, ltp: 510.25, change: 4.1, pchange: 0.8 },
-        { symbol: "NICA", open: 346.0, high: 348.9, low: 339, ltp: 510.25, change: 4.1, pchange: 0.8 },
-        { symbol: "RHGCL", open: 245.3, high: 246.5, low: 242.6, ltp: 510.25, change: 4.1, pchange: 0.8 },
-        { symbol: "UPpER", open: 175, high: 176, low: 173.5, ltp: 510.25, change: 4.1, pchange: 0.8 },
-      ],
-      wch: [
-        { symbol: "GFCL", open: 625, high: 642, low: 625, ltp: 632, change: 7.1, pchange: 1.14 }
-      ]
+      dpwch: [ /* ... (keep existing or empty) ... */],
+      wch: [] // Will be populated dynamically
     };
+
+    // Load symbols from localStorage
+    function getUserSymbols() {
+      try {
+        const saved = localStorage.getItem('watchlist');
+        return saved ? JSON.parse(saved) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    // Update watchlist data from live API result
+    function updateFromLive(liveData) {
+      if (!liveData || !Array.isArray(liveData)) return;
+
+      const userSymbols = getUserSymbols();
+      if (userSymbols.length === 0) {
+        watchData.wch = [];
+      } else {
+        // Filter and Map to match our internal format
+        watchData.wch = liveData
+          .filter(d => userSymbols.includes(d.symbol))
+          .map(d => ({
+            symbol: d.symbol,
+            open: d.openPrice,
+            high: d.highPrice,
+            low: d.lowPrice,
+            ltp: d.lastTradedPrice,
+            change: d.change,
+            pchange: d.percentageChange
+          }));
+      }
+
+      // Re-render if currently viewing watchlist
+      const activeTab = document.querySelector(".head .lin.active");
+      if (activeTab && activeTab.getAttribute("href") === "#wch") {
+        render("wch");
+      }
+    }
 
     function render(type) {
       if (!watchBody || !watchData[type]) return;
@@ -181,7 +212,10 @@ document.addEventListener("DOMContentLoaded", () => {
               <td>${Utils.formatNepaliNumber(r.high)}</td>
               <td>${Utils.formatNepaliNumber(r.low)}</td>
               <td>${Utils.formatNepaliNumber(r.ltp)}</td>
-              <td class="chg-driver">${r.change}</td>
+              <td class="chg-driver">${(r.change).toLocaleString("en-IN", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+          })}</td>
               <td>${r.pchange}%</td>
             </tr>
           `);
@@ -200,7 +234,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
 
-    return { render };
+    return { render, updateFromLive };
   })();
 
 
@@ -266,25 +300,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     return { render };
   })();
-
-  const News = (() => {
-    function render(newsArray) {
-      const el = document.getElementById("news-list");
-      if (!el) return;
-      Utils.clearElement(el);
-      newsArray.forEach(item => el.insertAdjacentHTML("beforeend", `<li>${item}</li>`));
-    }
-
-    return { render };
-  })();
-
-  // Example dashboard data
-  const dashboardData = {
-    settlement: { payable: 0, receivable: 25528.46 },
-    dpHolding: { totalScrips: 5, totalAmount: 153197.6, todayPL: 1412.4 },
-    news: ["NEPSE index gains 28 points"]
-  };
-
 
 
   /* =========================================================
@@ -359,6 +374,9 @@ document.addEventListener("DOMContentLoaded", () => {
           renderLosers();
           renderTurnover();
           renderVolume();
+
+          // UPDATE WATCHLIST WITH LIVE DATA
+          Watchlist.updateFromLive(data);
         })
         .catch(() => {
           // silent fail (no UI noise)
@@ -518,5 +536,4 @@ document.addEventListener("DOMContentLoaded", () => {
   Watchlist.render("indwch");
   Settlement.render(dashboardData.settlement);
   DPHolding.render(dashboardData.dpHolding);
-  News.render(dashboardData.news);
 });

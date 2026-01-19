@@ -177,33 +177,6 @@ setInterval(showDateTime, 1000);
     }
   }
 
-  // 🔥 THIS IS THE KEY PART
-  function updateLastUpdated(data) {
-    const el = document.getElementById("lastUpdated");
-    if (!el || !data || !data.length) return;
-
-    const market = getNepseMarketState();
-
-    if (market.open) {
-      const latest = data.reduce((max, item) => {
-        const t = new Date(item.lastUpdatedDateTime);
-        return t > max ? t : max;
-      }, new Date(0));
-
-      el.textContent = `As of: ${formatDateTime(latest)}`;
-    } else {
-      const lastTrade = getLastTradingDate();
-      lastTrade.setHours(15, 0, 0, 0);
-
-      el.textContent = `As of: ${formatDateTime(lastTrade)}`;
-    }
-  }
-
-  // ✅ LISTEN FOR DATA FROM load-nepse.js
-  document.addEventListener("nepse:data", e => {
-    updateLastUpdated(e.detail);
-  });
-
   // Initial load
   updateMarketPill();
 
