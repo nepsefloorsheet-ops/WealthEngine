@@ -90,6 +90,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const buyAmount = Utils.parseAmount(buyAmtEl.textContent);
       const totalCollateral = Utils.parseAmount(availableValueEl.textContent);
 
+      // [SYNC] Save to localStorage for other pages (like Order Page)
+      localStorage.setItem('userCollateral', totalCollateral);
+
       utilizedValueEl.textContent = Utils.formatNepaliNumber(buyAmount);
 
       if (buyAmount === 0) {
