@@ -12,117 +12,49 @@
 
 <body>
     <nav class="sidebar">
-        <header class="navhead">
-            <h3>WealthEngine</h3>
-        </header>
-        <div class="burger ope">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-
-        <ul class="dropdown">
-            <li class="link"><a class="butt" href="/index.html">Home </a></li>
-            <li class="link"><button class="butt" onclick="document.location='order.html'"> Order </button></li>
-            <li class="link"><button class="butt" onclick="document.location='market.html'"> Market </button></li>
-            <li class="link"><button class="butt" onclick="document.location='watchlist.html'"> Watchlist </button></li>
-            <li class="link"><button class="butt" onclick="document.location='holdings.html'"> Holdings </button></li>
-            <li class="drop">
-                <button class="link but" id="booksBtn">Books<span class="tri">&#9660;</span></button>
-                <ul class="dropdown-menu">
-                    <li class="link"><button class="butt" onclick="document.location='orderbook.html'">Order Book
-                        </button></li>
-                    <li class="link"><button class="butt" onclick="document.location='tradebook.html'">Trade Book
-                        </button></li>
-                </ul>
-            </li>
-            <li class="link"><button class="butt" onclick="document.location='charts.html'"> Charts </button></li>
-            <li class="drop">
-                <button class="link but" id="booksBtn">NEPSE Data<span class="tri">&#9660;</span></button>
-                <ul class="dropdown-menu">
-                    <li class="link"><button class="butt" onclick="document.location='datewise-index.html'"> Datewise
-                            Index </button></li>
-                    <li class="link"><button class="butt" onclick="document.location='mktsummary.html'"> Market
-                            Summary</button></li>
-                </ul>
-            </li>
-            <li class="drop">
-                <button class="link but">Calculator<span class="tri">&#9660;</span></button>
-                <ul class="dropdown-menu">
-                    <li class="link"><button class="butt" onclick="document.location='calculator/buysell.html'">Buy/Sell
-                            Calculator </button></li>
-                    <li class="link"><button class="butt"
-                            onclick="document.location='calculator/dividend.html'">Dividend Calculator </button></li>
-                </ul>
-            </li>
-            <li class="link"><button class="butt" onclick="document.location='contact.html'">Contact</button></li>
-        </ul>
+        <!-- Injected by layout.js -->
     </nav>
     <main>
         <header class="open">
-            <index>
-                <nepse>
-                    <h4>NEPSE</h4>
-                    <div style="display: flex; flex-direction: row; gap: 8px; align-items: center;">
-                        <p class="nepse">0</p>
-                        <p class="change">0</p>
-                    </div>
-                </nepse>
-                <data>
-                    <p class="tv"><strong>Turnover</strong>: <span id="turnover">0</span></p>
-                    <p class="tv"><strong>Total Volume:</strong> <span id="volume">0</span></p>
-                </data>
-            </index>
-            <h2>Contact US</h2>
-            <div class="time">
-                <p id="date"></p>
-                <status>
-                    <span id="market-pill" class="market-pill"></span>
-                    <div id="market-countdown"></div>
-                </status>
-            </div>
+            <!-- Injected by layout.js -->
         </header>
 
-        <div class="contact-card">
-            <form class="contact-form" id="contact-form">
+        <div class="contact-wrapper">
+            <div class="contact-card">
+                <form class="contact-form" id="contact-form">
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input id="name" type="text" placeholder="Your Name" required>
+                    </div>
 
-                <div class="form-group">
-                    <label>Name</label>
-                    <input id="name" type="text" placeholder="Your Name" required>
-                </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input id="email" type="email" placeholder="Your Email" required>
+                    </div>
 
-                <div class="form-group">
-                    <label>Email</label>
-                    <input id="email" type="email" placeholder="Your Email" required>
-                </div>
+                    <div class="form-group">
+                        <label>Message</label>
+                        <textarea id="message" rows="5" placeholder="Your Message" required></textarea>
+                    </div>
 
-                <div class="form-group">
-                    <label>Message</label>
-                    <textarea id="message" rows="5" placeholder="Your Message" required></textarea>
-                </div>
-
-                <button id="submitBtn" type="submit" class="contact-btn">Send Message</button>
-
-            </form>
-        </div>
-
-        <div id="toast" class="toast">
-            ✅ Message sent successfully
-        </div>
-
-        <div class="contact-info-card">
-            <h3>Contact Information</h3>
-            <div class="info-item">
-                <span>📧</span>
-                <p>support@wealthengine.com.np</p>
+                    <button id="submitBtn" type="submit" class="contact-btn">Send Message</button>
+                </form>
             </div>
-            <div class="info-item">
-                <span>📞</span>
-                <p>+977-986*****52</p>
-            </div>
-            <div class="info-item">
-                <span>📍</span>
-                <p>Kathmandu, Nepal</p>
+
+            <div class="contact-info-card">
+                <h3>Contact Information</h3>
+                <div class="info-item">
+                    <span>📧</span>
+                    <p>support@wealthengine.com.np</p>
+                </div>
+                <div class="info-item">
+                    <span>📞</span>
+                    <p>+977-986*****52</p>
+                </div>
+                <div class="info-item">
+                    <span>📍</span>
+                    <p>Kathmandu, Nepal</p>
+                </div>
             </div>
         </div>
 
@@ -133,8 +65,9 @@
         </div>
 
     </main>
-    <script src="/src/js/dropdown.js"></script>
-    <script src="/src/js/burger.js"></script>
+    <script src="../src/js/dropdown.js"></script>
+    <script src="../src/js/layout.js"></script>
+    <script src="../src/js/burger.js"></script>
     <script src="/src/js/contact.js"></script>
 </body>
 
