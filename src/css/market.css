@@ -21,7 +21,7 @@
     top: 50%;
     transform: translateY(-50%);
     background-color: rgba(64, 133, 133, 0.8);
-    color: white;
+    color: var(--text-primary);
     width: 30px;
     height: 60px;
     display: flex;
@@ -70,7 +70,7 @@ td,
 th {
     padding: 8px 5px;
     border-collapse: collapse;
-    border-bottom: 1px solid white !important;
+    border-bottom: 1px solid var(--text-primary) !important;
 }
 
 th:first-child,
@@ -92,33 +92,28 @@ th:first-child {
 }
 
 th {
-    background-color: rgb(64, 133, 133);
-    border-color: rgb(64, 133, 133);
+    background-color: #408585;
+    border-color: #408585;
+    color: var(--text-primary);
 }
 
 tr.positive {
-    /* background-color: #e6f4ea;
-    color: #137333; */
-    background-color: #37b24d;
+    background-color: var(--color-success);
 }
 
 tr.positive td:first-child {
-    background-color: #37b24d;
+    background-color: var(--color-success);
 }
 
 tr.negative {
-    /* background-color: #fce8e6;
-    color: #a50e0e; */
-    background: #e96565;
+    background: var(--color-danger);
 }
 
 tr.negative td:first-child {
-    background: #e96565;
+    background: var(--color-danger);
 }
 
 tr.unchanged {
-    /* background-color: #f1f3f4; 
-    color: #5f6368; */
     background: #57abf7;
 }
 
@@ -175,12 +170,12 @@ tr.significant-change td:first-child {
 }
 
 .positiveCount {
-    color: #37b24d;
+    color: var(--color-success);
     font-weight: 600;
 }
 
 .negativeCount {
-    color: #e96565;
+    color: var(--color-danger);
     font-weight: 600;
 }
 
@@ -207,11 +202,6 @@ tr.significant-change td:first-child {
     font-weight: 700;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
-
-/* #live-market {
-    font-size: larger;
-    margin-left: 25px;
-} */
 
 .last-updated {
     color: #010101;
@@ -303,7 +293,7 @@ tr.significant-change td:first-child {
 
 #searchBtn {
     background-color: #408585;
-    color: white;
+    color: var(--text-primary);
 }
 
 #searchBtn:hover {
@@ -312,7 +302,7 @@ tr.significant-change td:first-child {
 
 #clearBtn {
     background-color: #6c757d;
-    color: white;
+    color: var(--text-primary);
 }
 
 #clearBtn:hover {
@@ -343,7 +333,7 @@ tr.significant-change td:first-child {
 
 .nav-link.active {
     background-color: #408585;
-    color: white;
+    color: var(--text-primary);
 }
 
 /* Watchlist buttons */
@@ -368,8 +358,8 @@ tr.significant-change td:first-child {
 }
 
 .remove-btn {
-    background-color: #e96565;
-    color: white;
+    background-color: var(--color-danger);
+    color: var(--text-primary);
     border: none;
     padding: 5px 10px;
     border-radius: 5px;
@@ -429,11 +419,11 @@ tr.significant-change td:first-child {
 }
 
 .stat-gainers {
-    color: #37b24d;
+    color: var(--color-success);
 }
 
 .stat-losers {
-    color: #e96565;
+    color: var(--color-danger);
 }
 
 .stat-unchanged {
@@ -512,7 +502,7 @@ tr.significant-change td:first-child {
 
 /* Price Change Indicators */
 .price-up {
-    color: #37b24d;
+    color: var(--color-success);
     font-weight: bold;
     font-size: 16px;
     margin-left: 5px;
@@ -521,7 +511,7 @@ tr.significant-change td:first-child {
 }
 
 .price-down {
-    color: #e96565;
+    color: var(--color-danger);
     font-weight: bold;
     font-size: 16px;
     margin-left: 5px;

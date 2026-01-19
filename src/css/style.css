@@ -1,3 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+
+:root {
+    /* Core Colors */
+    --bg-primary: #0b1f33;
+    --bg-secondary: #132f4c;
+    --bg-tertiary: #1f4e79;
+    --text-primary: #ffffff;
+    --text-muted: #9ca3af;
+    /* Using a gray for muted text */
+
+    /* Gradients */
+    --gradient-body: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-tertiary) 100%);
+    --gradient-sidebar: linear-gradient(180deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+    --gradient-header: linear-gradient(50deg, #3b6370 0%, #203a43 50%, #427286 100%);
+
+    /* UI Elements */
+    --link-hover: #2a5298;
+    --link-active: #1c3966;
+
+    /* Status Colors */
+    --color-success: #16a34a;
+    --color-danger: #dc2626;
+    --color-neutral: #9ca3af;
+
+    /* Status Pills */
+    --pill-open-bg: linear-gradient(50deg, #2f7d63, #1f5a4a);
+    --pill-closed-bg: linear-gradient(50deg, #7a2f2f, #4f1f1f);
+    --pill-preopen-bg: linear-gradient(50deg, #b08900, #8a6f00);
+    --pill-matching-bg: linear-gradient(50deg, #457b9d, #1d3557);
+    --pill-holiday-bg: linear-gradient(50deg, #6c757d, #495057);
+}
+
 * {
     margin: 0;
     box-sizing: border-box;
@@ -11,9 +44,10 @@ body {
 }
 
 body {
-    font-family: Arial, sans-serif;
-    background: linear-gradient(180deg, #0b1f33 0%, #132f4c 50%, #1f4e79 100%);
-    color: #ffffff;
+    font-family: 'Outfit', sans-serif;
+    /* Updated to modern font if available, fallback to sans-serif */
+    background: var(--gradient-body);
+    color: var(--text-primary);
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -32,7 +66,7 @@ a {
 
 /* sidebar */
 .sidebar {
-    background-image: linear-gradient(180deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+    background-image: var(--gradient-sidebar);
     left: 0;
     width: 250px;
     min-height: 100vh;
@@ -44,15 +78,11 @@ a {
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    transition: all ease 0.3s;
 }
 
 .sidebar.close {
     width: 70px;
-    transition: all ease 0.3s;
-}
-
-.sidebar {
-    transition: all ease 0.3s;
 }
 
 /* sidebar head */
@@ -70,7 +100,7 @@ a {
 .navhead h3 {
     font-size: 25px;
     padding-right: 10px;
-    color: white;
+    color: var(--text-primary);
 }
 
 .sidebar.close .navhead {
@@ -93,8 +123,9 @@ a {
     display: block;
     width: 30px;
     height: 2px;
-    background-color: white;
+    background-color: var(--text-primary);
     margin-bottom: 5px;
+    transition: all ease-in-out 0.3s;
 }
 
 .burger.ope span:nth-child(1) {
@@ -118,19 +149,12 @@ a {
     z-index: 10;
 }
 
-.burger.ope span {
-    transition: all ease-in-out 0.3s;
-}
-
 .burger span {
     transition: all ease-in-out 0.3s;
-}
-
-.burger span {
     display: block;
     width: 30px;
     height: 2px;
-    background-color: white;
+    background-color: var(--text-primary);
     margin-bottom: 5px;
 }
 
@@ -161,14 +185,14 @@ a {
 }
 
 .link:hover {
-    background-color: #2a5298;
+    background-color: var(--link-hover);
     border-radius: 15px;
 }
 
 .link.active {
-    background-color: #1c3966;
+    background-color: var(--link-active);
     border-radius: 15px;
-    color: white;
+    color: var(--text-primary);
 }
 
 /* buttons */
@@ -177,7 +201,7 @@ a {
     text-align: left;
     display: block;
     cursor: pointer;
-    color: white;
+    color: var(--text-primary);
     background: transparent;
 }
 
@@ -186,7 +210,7 @@ a {
     justify-content: space-between;
     width: 200px;
     cursor: pointer;
-    color: white;
+    color: var(--text-primary);
     background: transparent;
 }
 
@@ -202,14 +226,11 @@ a {
 /* arrow rotate */
 .drop .tri {
     transform: rotate(0deg);
+    transition: transform ease 0.5s;
 }
 
 .drop.dnopen .tri {
     transform: rotate(180deg);
-}
-
-.drop.dnopen .tri {
-    transition: transform ease 0.5s;
 }
 
 /* dropdown menu items */
@@ -223,13 +244,9 @@ main {
     margin-left: 250px;
     max-width: 100%;
     flex: 1;
-}
-
-main {
     transition: margin-left ease 0.3s;
 }
 
-/* main content page when close */
 main.close {
     margin-left: 70px;
     transition: all ease 0.3s;
@@ -237,19 +254,18 @@ main.close {
 
 /* main content head */
 .open {
-    background: linear-gradient(50deg, #3b6370 0%, #203a43 50%, #427286 100%);
+    background: var(--gradient-header);
     padding: 9px 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    color: white;
+    color: var(--text-primary);
     position: sticky;
     top: 0;
     z-index: 100;
 }
 
 .open h2 {
-    /* margin-left: 45%; */
     font-size: 40px;
 }
 
@@ -267,8 +283,7 @@ main.close {
     border-radius: 999px;
     font-size: 12px;
     font-weight: 600;
-    color: #fff;
-    /* display: inline-block; */
+    color: var(--text-primary);
     transition: all 0.3s ease;
 }
 
@@ -292,93 +307,48 @@ status {
     padding-right: 20px;
 }
 
-/* status pill */
-
-
 /* STATES */
 .pill-open {
-    background: linear-gradient(50deg, #2f7d63, #1f5a4a);
+    background: var(--pill-open-bg);
 }
 
 .pill-closed {
-    background: linear-gradient(50deg, #7a2f2f, #4f1f1f);
+    background: var(--pill-closed-bg);
 }
 
 .pill-preopen {
-    background: linear-gradient(50deg, #b08900, #8a6f00);
+    background: var(--pill-preopen-bg);
 }
 
 .pill-matching {
-    background: linear-gradient(50deg, #457b9d, #1d3557);
+    background: var(--pill-matching-bg);
 }
 
 .pill-holiday {
-    background: linear-gradient(50deg, #6c757d, #495057);
+    background: var(--pill-holiday-bg);
 }
-
-
-/* demo */
-/* .dashboard-cards {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-  margin-top: 20px;
-}
-
-.card {
-  background: linear-gradient(50deg, #3b6370 0%, #203a43 50%, #427286 100%);
-  border-radius: 14px;
-  padding: 16px 18px;
-  color: #fff;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
-}
-
-.card-title {
-  font-size: 13px;
-  opacity: 0.85;
-  letter-spacing: 0.4px;
-}
-
-.card h2 {
-  margin-top: 8px;
-  font-size: 22px;
-  font-weight: 600;
-}
-
-.card p {
-  margin-top: 4px;
-  font-size: 14px;
-}
-
-.positive {
-  color: #15ff00;
-}
-
-.negative {
-  color: #ff4949;
-} */
 
 index {
     display: flex;
     gap: 100px;
 }
 
-.tv{
+.tv {
     font-size: 14px;
     font-weight: 700;
 }
 
 /* for values: color */
 .row-pos td {
-    color: #16a34a;
+    color: var(--color-success);
 }
 
 .row-neg td {
-    color: #dc2626;
+    color: var(--color-danger);
 }
 
 .row-neu td {
-    color: #9ca3af;
+    color: var(--color-neutral);
 }
 
 footer {
@@ -389,80 +359,80 @@ footer {
 
 /* spinner */
 .loading-state {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
 }
 
 .loading-spinner {
-  font-size: 50px;
-  animation: spin 1.2s linear infinite;
+    font-size: 50px;
+    animation: spin 1.2s linear infinite;
 }
 
-
 @keyframes spin {
-  100% {
-    transform: rotate(360deg);
-  }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .hidden {
-  display: none;
+    display: none;
 }
-
 
 .change {
     font-size: 13px;
     padding: 0 0 2px 0;
 }
 
-@media (max-width:1190px){
-    .sidebar{
+/* RESPONSIVE */
+
+@media (max-width: 1300px) {
+    .tv {
+        display: none;
+    }
+}
+
+@media (max-width: 1190px) {
+    .sidebar {
         width: 200px;
     }
 
-    .navhead{
+    .navhead {
         max-width: 200px;
         margin-left: 0;
     }
 
-    .navhead h3{
+    .navhead h3 {
         font-size: 19px;
     }
 
-    .but{
+    .but {
         width: 160px;
     }
 
-    main{
+    main {
         margin-left: 200px;
     }
-
 }
 
-@media (max-width: 1300px){
-    .tv{
+@media (max-width: 1000px) {
+    .status {
         display: none;
     }
 }
 
-@media (max-width:1000px){
-    .status{
-        display: none;
-    }
-}
+@media (max-width: 800px) {
 
-@media (max-width:800px){
     .time,
-    index{
+    index {
         display: none;
     }
 
-    .open{
+    .open {
         justify-content: center;
     }
 }

@@ -3,8 +3,10 @@
     margin-right: auto;
     margin-top: 20px;
     margin-bottom: 25px;
-    background-color: #686969;
+    background-color: var(--bg-secondary);
     max-width: 100%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    border-radius: 12px;
 }
 
 table,
@@ -15,7 +17,9 @@ td {
 }
 
 th {
-    background-color: #8fa5a5;
+    background-color: #408585;
+    /* Teal */
+    color: var(--text-primary);
 }
 
 th,
@@ -23,10 +27,12 @@ td {
     font-size: 15px;
     text-align: center;
     padding: 5px;
+    color: var(--text-primary);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 tr:nth-child(even) {
-    background-color: #2b3f5c;
+    background-color: rgba(255, 255, 255, 0.03);
 }
 
 .call {
@@ -34,8 +40,8 @@ tr:nth-child(even) {
 }
 
 tbody tr:hover {
-    background-color: #c9ced6;
-    color: black;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
 }
 
 .val {
@@ -69,4 +75,17 @@ tbody tr:hover {
     text-align: center;
     padding-top: 20px;
     padding-right: 15px;
+}
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 10px;
+}
+
+@media (max-width: 1400px) {
+    #nepse-table {
+        min-width: 1300px;
+    }
 }
