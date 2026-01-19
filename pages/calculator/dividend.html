@@ -12,77 +12,11 @@
 
 <body>
     <nav class="sidebar">
-        <header class="navhead">
-            <h3>WealthEngine</h3> <!-- <img src="images/wealth.png" style="width: 25px;"> -->
-        </header>
-        <div class="burger ope">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-        <ul class="dropdown">
-            <li class="link"><button class="butt" onclick="document.location='/index.html'">Home </button></li>
-            <li class="link"><button class="butt" onclick="document.location='/pages/order.html'">Order </button></li>
-            <li class="link"><button class="butt" onclick="document.location='/pages/market.html'">Market </button></li>
-            <li class="link"><button class="butt" onclick="document.location='/pages/holdings.html'">Holdings </button>
-            </li>
-            <li class="drop">
-                <button class="link but">Books<span class="tri">&#9660;</span></button>
-                <ul class="dropdown-menu">
-                    <li class="link"><button class="butt" onclick="document.location='/pages/orderbook.html'">Daily
-                            Order
-                            Book </button></li>
-                    <li class="link"><button class="butt" onclick="document.location='/pages/tradebook.html'">Daily
-                            Trade
-                            Book </button></li>
-                </ul>
-            </li>
-            <li class="link"><button class="butt" onclick="document.location='/pages/charts.html'">Charts </button></li>
-            <li class="drop">
-                <button class="link but">NEPSE Data<span class="tri">&#9660;</span></button>
-                <ul class="dropdown-menu">
-                    <li class="link"><button class="butt" onclick="document.location='/pages/datewise-index.html'">
-                            Datewise Index </button></li>
-                    <li class="link"><button class="butt" onclick="document.location='/pages/mktsummary.html'"> Market
-                            Summary </button></li>
-                </ul>
-            </li>
-            <li class="drop">
-                <button class="link but">Calculator<span class="tri">&#9660;</span></button>
-                <ul class="dropdown-menu">
-                    <li class="link"><button class="butt" onclick="document.location='buysell.html'">Buy/Sell Calculator
-                        </button></li>
-                    <li class="link"><button class="butt" onclick="document.location='dividend.html'">Dividend
-                            Calculator</button></li>
-                </ul>
-            </li>
-            <li class="link"><button class="butt" onclick="document.location='/pages/contact.html'">Contact</button>
-            </li>
-        </ul>
+        <!-- Injected by layout.js -->
     </nav>
     <main>
         <header class="open">
-            <index>
-                <nepse>
-                    <h4>NEPSE</h4>
-                    <div style="display: flex; flex-direction: row; gap: 8px; align-items: center;">
-                        <p style="font-size: 13px; color: #00ff0d;">2,633.87</p>
-                        <p id="change">4.59 &#11205;</p>
-                    </div>
-                </nepse>
-                <data>
-                    <p class="tv"><strong>Turnover</strong>: <span id="turnover" >0</span></p>
-                    <p class="tv"><strong>Total Volume:</strong>  <span id="volume">0</span></p>
-                </data>
-            </index>
-            <h2>Calculator</h2>
-            <div class="time">
-                <p id="date"></p>
-                <status>
-                    <span id="market-pill" class="market-pill"></span>
-                    <div id="market-countdown"></div>
-                </status>
-            </div>
+            <!-- Injected by layout.js -->
         </header>
         <div id="content">
             <div id="#buycalculator" class="calculator">
@@ -115,7 +49,8 @@
                                     <div class="butto">
                                         <button id="calculate" type="button"
                                             onclick="calculatedividend()">Calculate</button>
-                                        <button id="clear" type="reset" onclick="clearDividendCalculator()">Clear</button>
+                                        <button id="clear" type="reset"
+                                            onclick="clearDividendCalculator()">Clear</button>
                                     </div>
                                 </div>
                             </div>
@@ -145,8 +80,9 @@
     <footer>
         <p>WealthEngine © <span id="we-year"></span></p>
     </footer>
-    <script src="/src/js/burger.js"></script>
-    <script src="/src/js/dropdown.js"></script>
+    <script src="../../src/js/dropdown.js"></script>
+    <script src="../../src/js/layout.js"></script>
+    <script src="../../src/js/burger.js"></script>
     <script src="/src/js/calculator.js"></script>
 </body>
 
