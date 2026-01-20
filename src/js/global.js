@@ -180,6 +180,7 @@ document.addEventListener('layout-injected', () => {
 
             document.querySelectorAll("#turnover").forEach(el => el.textContent = t.totalTradedValue.toLocaleString("en-IN"));
             document.querySelectorAll("#volume").forEach(el => el.textContent = t.totalTradedQuantity.toLocaleString("en-IN"));
+            document.querySelectorAll("#transactions").forEach(el => el.textContent = t.transactionCount.toLocaleString("en-IN"));
             document.querySelectorAll(".nepse").forEach(el => el.textContent = nepse.currentValue.toLocaleString("en-IN"));
             document.querySelectorAll(".change").forEach(el => el.textContent = nepse.change.toLocaleString("en-IN"));
         } catch (error) {
