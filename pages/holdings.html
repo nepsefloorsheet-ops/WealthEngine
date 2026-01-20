@@ -5,8 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WealthEngine - Holdings</title>
-    <link rel="icon" type="image/png" href="/images/wealth.png">
+    <link rel="icon" type="image/png" href="../images/wealth.png">
     <link rel="stylesheet" href="../src/css/style.css">
+    <link rel="stylesheet" href="../src/css/holdings.css">
 </head>
 
 <body>
@@ -17,10 +18,77 @@
         <header class="open">
             <!-- Injected by layout.js -->
         </header>
+        
+        <div id="content" class="holdings-page">
+            <div class="contents">
+                <div class="holdings-header-section">
+                    <h2>Holdings <span class="holding-count" id="holding-count">(0)</span></h2>
+                </div>
+
+                <!-- Summary Cards -->
+                <div class="holdings-summary-container">
+                    <div class="summary-card">
+                        <h3>Total Investment</h3>
+                        <p class="summary-value" id="total-investment">₹0.00</p>
+                    </div>
+                    <div class="summary-card">
+                        <h3>Current Value</h3>
+                        <p class="summary-value" id="current-value">₹0.00</p>
+                    </div>
+                    <div class="summary-card">
+                        <h3>Day's P/L</h3>
+                        <div class="pnl-wrapper">
+                            <span class="pnl-value" id="day-pnl">₹0.00</span>
+                            <span class="pnl-percent" id="day-pnl-percent">(0.00%)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Controls & Actions -->
+                <div class="holdings-controls">
+                    <div class="search-wrapper">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="holdings-search" placeholder="Search by scrip...">
+                    </div>
+                    <div class="holdings-actions">
+                        <button class="btn-action" id="btn-refresh"><i class="fas fa-sync-alt"></i></button>
+                        <button class="btn-action" id="btn-download"><i class="fas fa-download"></i> Download</button>
+                    </div>
+                </div>
+
+                <!-- Holdings Data Table -->
+                <div class="holdings-table-wrapper">
+                    <table class="holdings-table">
+                        <thead>
+                            <tr>
+                                <th>Symbol</th>
+                                <th class="text-right">Total Balance</th>
+                                <th class="text-right">Free Balance</th>
+                                <th class="text-right">WealthEngine</th>
+                                <th class="text-right">Prev. Close</th>
+                                <th class="text-right">Value (CP)</th>
+                                <th class="text-right">LTP</th>
+                                <th class="text-right">Value (LTP)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="holdings-list-body">
+                            <tr class="empty-state">
+                                <td colspan="8" style="text-align: center; padding: 20px; color: var(--text-muted);">
+                                    <i class="fas fa-spinner fa-spin"></i> Loading data...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </main>
+
     <script src="../src/js/dropdown.js"></script>
     <script src="../src/js/layout.js"></script>
     <script src="../src/js/global.js"></script>
+    <script src="../src/js/market.js"></script>
+    <script src="../src/js/holdings.js"></script>
 </body>
 
 </html>
