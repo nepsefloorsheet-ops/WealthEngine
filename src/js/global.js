@@ -189,5 +189,5 @@ document.addEventListener('layout-injected', () => {
     }
 
     fetchData();
-    setInterval(fetchData, 10000);
+    setInterval(fetchData, 5000);
 });
