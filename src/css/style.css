@@ -298,6 +298,15 @@ index {
 .row-pos td {
   color: var(--color-success);
 }
+
+/* Global Utility Classes */
+.text-success {
+  color: var(--color-success) !important;
+}
+
+.text-danger {
+  color: var(--color-danger) !important;
+}
 .row-neg td {
   color: var(--color-danger);
 }
@@ -330,6 +339,84 @@ body.no-scroll main {
   align-items: center;
   overflow: hidden;
   transition: left 0.3s;
+}
+
+/* Hide global ticker on index if we have the top one */
+.page-index .news-ticker {
+  display: none !important;
+}
+
+/* Holdings Ticker Style (Top) */
+.holdings-ticker-wrapper {
+  margin: 15px 20px 0 20px;
+  padding: 2px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.holdings-ticker {
+  position: relative;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.holdings-ticker .ticker-label {
+  background: linear-gradient(135deg, var(--link-active), #16213e);
+  color: #fff;
+  padding: 0 20px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  border-radius: 8px 0 0 8px;
+  z-index: 5;
+  box-shadow: 10px 0 20px rgba(0, 0, 0, 0.3);
+}
+
+.holdings-ticker .ticker-wrap {
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.holdings-ticker .ticker-content {
+  display: inline-block;
+  padding-left: 0; /* No gap for seamless loop */
+  animation: ticker-holdings 40s linear infinite;
+}
+
+.holdings-ticker .holding-item {
+  display: inline-block;
+  padding: 0 25px;
+  font-size: 15px; /* Increased size */
+  font-weight: 600;
+}
+
+.text-neutral {
+  color: #3498db !important; /* Nice blue for unchanged */
+}
+
+.holdings-ticker .h-sym {
+  color: #fff;
+  margin-right: 8px;
+}
+
+.holdings-ticker .h-price {
+  color: var(--text-secondary);
+  font-family: "Inter", monospace;
+}
+
+.holdings-ticker .h-change {
+  margin-left: 8px;
+  font-size: 11px;
 }
 
 .sidebar.close ~ .news-ticker,
@@ -384,6 +471,15 @@ main.close ~ .news-ticker {
   }
   100% {
     transform: translateX(-100%);
+  }
+}
+
+@keyframes ticker-holdings {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%); /* Seamless loop point for duplicated data */
   }
 }
 
