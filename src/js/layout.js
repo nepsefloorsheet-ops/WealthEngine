@@ -46,6 +46,8 @@
         <li class="link"><button class="butt" onclick="document.location='${root}index.html'">Home </button></li>
         <li class="link"><button class="butt" onclick="document.location='${pages}order.html'">Order </button></li>
         <li class="link"><button class="butt" onclick="document.location='${pages}market.html'">Market </button></li>
+        <li class="link"><button class="butt" onclick="document.location='${pages}heatmap.html'">Heatmap </button></li>
+        <li class="link"><button class="butt" onclick="document.location='${pages}floorsheet.html'">Floorsheet </button></li>
         <li class="link"><button class="butt" onclick="document.location='${pages}watchlist.html'">Watchlist </button></li>
         <li class="link"><button class="butt" onclick="document.location='${pages}holdings.html'">Holdings </button></li>
         <li class="drop">
@@ -84,8 +86,8 @@
             </div>
         </nepse>
         <data>
-            <p class="tv"><strong>Turnover:</strong> <span id="turnover">0</span></p>
-            <p class="tv"><strong>Total Volume:</strong> <span id="volume">0</span></p>
+            <p class="tv">Turnover:<span id="turnover">0</span></p>
+            <p class="tv">Total Volume:<span id="volume">0</span></p>
         </data>
     </index>
     <h2 id="page-title">${pageName}</h2>
@@ -95,6 +97,17 @@
             <span id="market-pill" class="market-pill"></span>
             <div id="market-countdown"></div>
         </status>
+    </div>
+  `;
+
+    const tickerHTML = `
+    <div class="news-ticker">
+        <div class="ticker-label">NEWS</div>
+        <div class="ticker-wrap">
+            <div class="ticker-content" id="ticker-content">
+                <!-- News items injected here -->
+            </div>
+        </div>
     </div>
   `;
 
@@ -108,11 +121,69 @@
         const header = document.querySelector("header.open");
         if (header) header.innerHTML = headerHTML;
 
+        // Inject Ticker (Body level)
+        const existingTicker = document.querySelector(".news-ticker");
+        if (!existingTicker) {
+            document.body.insertAdjacentHTML('beforeend', tickerHTML);
+            populateTicker();
+        }
+
         // Set Active Link
         highlightActiveLink();
 
         // Dispatch Event so other scripts know DOM is ready
         document.dispatchEvent(new Event("layout-injected"));
+    }
+
+    async function populateTicker() {
+        const content = document.getElementById("ticker-content");
+        if (!content) return;
+
+        try {
+            const response = await fetch("https://sharehubnepal.com/data/api/v1/announcement?Size=12&Page=1");
+            const json = await response.json();
+            
+            if (json && json.data && json.data.content) {
+                const announcements = json.data.content;
+                let html = "";
+                // Duplicate items for seamless loop
+                const displayNews = [...announcements, ...announcements];
+                displayNews.forEach(item => {
+                    html += `
+                        <span class="news-item">
+                            <i class="fas fa-bullhorn"></i> ${item.title}
+                            <span class="sep">|</span>
+                        </span>
+                    `;
+                });
+                content.innerHTML = html;
+                return;
+            }
+        } catch (error) {
+            console.warn("News API fetch failed, using fallback mock data:", error);
+        }
+
+        // Fallback Mock Data
+        const news = [
+            { text: "NICA declares 10.5% Cash Dividend for the fiscal year 2080/81.", type: "dividend" },
+            { text: "NEPSE reaches a new 52-week high of 2,215.34 points.", type: "market" },
+            { text: "UPPER Tamakoshi to issue 1:1 Right Shares starting next Sunday.", type: "corporate" },
+            { text: "Market hours extended until 4:00 PM for upcoming festival season.", type: "notice" },
+            { text: "Trading of JLI suspended due to merger process with LI.", type: "corporate" },
+            { text: "Total market turnover crosses 12 Billion in a single trading day.", type: "market" }
+        ];
+
+        let html = "";
+        const displayNews = [...news, ...news];
+        displayNews.forEach(item => {
+            html += `
+                <span class="news-item">
+                    <i class="fas fa-bullhorn"></i> ${item.text}
+                    <span class="sep">|</span>
+                </span>
+            `;
+        });
+        content.innerHTML = html;
     }
 
     function highlightActiveLink() {
