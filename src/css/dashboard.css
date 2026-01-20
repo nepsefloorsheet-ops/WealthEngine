@@ -486,6 +486,10 @@ tbody tr {
     min-height: max-content;
   }
 
+  .flex {
+    gap: 366px;
+  }
+
   .three {
     max-height: max-content;
     flex-direction: column;
