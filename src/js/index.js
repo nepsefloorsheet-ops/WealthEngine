@@ -344,7 +344,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const LiveTopMarket = (() => {
 
     /* ---------------- CONFIG ---------------- */
-    const API_URL = "https://turnover-19sr.onrender.com/homepage-data";
+    const API_URL = "https://nepseapi-ouhd.onrender.com/api/live-nepse";
+    const SECONDARY_API_URL = "https://turnover-19sr.onrender.com/homepage-data";
 
     // Exclude non-tradable instruments
     const EXCLUDED_SECTORS = [
@@ -353,10 +354,58 @@ document.addEventListener("DOMContentLoaded", () => {
     ];
 
     /* ---------------- STATE ---------------- */
+    let gainers = [];
     let losers = [];
     let turnoverList = []; // renamed to avoid conflict with var name "turnover"
     let volumeList = [];
     let loading = false;
+
+    /* ---------------- CACHE FUNCTIONS ---------------- */
+    function saveToCache(rawData, subIndices) {
+      try {
+        const cacheData = {
+          gainers: gainers,
+          losers: losers,
+          turnover: turnoverList,
+          volume: volumeList,
+          rawData: rawData,
+          subIndices: subIndices,
+          timestamp: new Date().toISOString()
+        };
+        localStorage.setItem('marketTopData', JSON.stringify(cacheData));
+      } catch (e) {
+        console.error('Failed to save market data to cache:', e);
+      }
+    }
+
+    function loadFromCache() {
+      try {
+        const cached = localStorage.getItem('marketTopData');
+        if (cached) {
+          const data = JSON.parse(cached);
+          gainers = data.gainers || [];
+          losers = data.losers || [];
+          turnoverList = data.turnover || [];
+          volumeList = data.volume || [];
+          
+          // Render cached data immediately
+          renderGainers();
+          renderLosers();
+          renderTurnover();
+          renderVolume();
+          
+          // Restore watchlist if data exists
+          if (data.rawData && data.subIndices) {
+              Watchlist.updateFromLive(data.rawData, data.subIndices);
+          }
+          
+          return true;
+        }
+      } catch (e) {
+        console.error('Failed to load market data from cache:', e);
+      }
+      return false;
+    }
 
     /* =========================================================
        MAIN FETCH (FULL REFRESH)
@@ -365,58 +414,97 @@ document.addEventListener("DOMContentLoaded", () => {
     ========================================================= */
     function fetchData() {
       const btn = document.getElementById("refresh-market");
-      if (btn) btn.disabled = true;
+      if (btn) {
+          btn.disabled = true;
+          btn.classList.add("spin");
+      }
       loading = true;
 
-      // Show Skeletons immediately
-      Skeletons.show("gainer-body", 4, 8);
-      Skeletons.show("loser-body", 4, 8);
-      Skeletons.show("turnover-body", 3, 8);
-      Skeletons.show("volume-body", 3, 8);
-      
-      // Also show for Index Watch/Watchlist if active
-      const activeTab = document.querySelector(".head .lin.active");
-      if (activeTab) {
-          const type = activeTab.getAttribute("href").substring(1);
-          const cols = type === "indwch" ? 4 : 7;
-          Skeletons.show("watch-body", cols, 8);
+      // Show Skeletons ONLY if we don't have data (i.e. first load without cache)
+      if (gainers.length === 0 && losers.length === 0) {
+          Skeletons.show("gainer-body", 4, 8);
+          Skeletons.show("loser-body", 4, 8);
+          Skeletons.show("turnover-body", 3, 8);
+          Skeletons.show("volume-body", 3, 8);
+          
+          // Also show for Index Watch/Watchlist if active
+          const activeTab = document.querySelector(".head .lin.active");
+          if (activeTab) {
+              const type = activeTab.getAttribute("href").substring(1);
+              const cols = type === "indwch" ? 4 : 7;
+              Skeletons.show("watch-body", cols, 8);
+          }
       }
 
-      fetch(API_URL)
-        .then(res => res.json())
-        .then(res => {
-          const data = res.liveCompanyData || [];
-          const subIndices = res.subIndices || [];
-          const summary = res.marketSummary || {};
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout
+
+      Promise.allSettled([
+        fetch(API_URL, { signal: controller.signal }).then(r => r.json()), // Primary (Companies)
+        fetch(SECONDARY_API_URL, { signal: controller.signal }).then(r => r.json()) // Secondary (Summary/Indices)
+      ]).then(results => {
+          
+          let companies = [];
+          let subIndices = [];
+          let summary = {};
+
+          // Process Primary API (Companies)
+          if (results[0].status === 'fulfilled') {
+              const res = results[0].value;
+              // New API returns data in 'data' or 'liveData' field based on my tests
+              // 'data' was confirmed in latest test.
+              if (res.data && Array.isArray(res.data)) {
+                  companies = res.data;
+              } else if (res.liveData && Array.isArray(res.liveData)) {
+                  companies = res.liveData;
+              }
+          } else {
+              console.error("Primary API Failed:", results[0].reason);
+          }
+
+          // Process Secondary API (Summary + Indices)
+          if (results[1].status === 'fulfilled') {
+              const res = results[1].value;
+              subIndices = res.subIndices || [];
+              summary = res.marketSummary || {};
+              
+              // Fallback for companies if Primary failed completely
+              if (companies.length === 0 && res.liveCompanyData) {
+                  console.warn("Using fallback company data from Secondary API");
+                  companies = res.liveCompanyData;
+              }
+          } else {
+              console.error("Secondary API Failed:", results[1].reason);
+          }
 
           // 1. Update Market Summary Cards
           updateMarketSummaryCards(summary);
 
           // 2. Filter unwanted sectors
-          const filtered = data.filter(
+          const filtered = companies.filter(
             d => !EXCLUDED_SECTORS.includes(d.sector)
           );
 
           /* ---------- TOP GAINERS ---------- */
           gainers = filtered
-            .filter(d => d.percentageChange > 0)
+            .filter(d => (d.percentageChange || 0) > 0)
             .sort((a, b) => b.percentageChange - a.percentageChange)
             .slice(0, 10);
 
           /* ---------- TOP LOSERS ---------- */
           losers = filtered
-            .filter(d => d.percentageChange < 0)
+            .filter(d => (d.percentageChange || 0) < 0)
             .sort((a, b) => a.percentageChange - b.percentageChange)
             .slice(0, 10);
 
           /* ---------- TOP TURNOVER ---------- */
           turnoverList = [...filtered]
-            .sort((a, b) => b.totalTradeValue - a.totalTradeValue)
+            .sort((a, b) => (b.totalTradeValue || 0) - (a.totalTradeValue || 0))
             .slice(0, 10);
 
           /* ---------- TOP VOLUME ---------- */
           volumeList = [...filtered]
-            .sort((a, b) => b.totalTradeQuantity - a.totalTradeQuantity)
+            .sort((a, b) => (b.totalTradeQuantity || 0) - (a.totalTradeQuantity || 0))
             .slice(0, 10);
 
           // Render all sections
@@ -426,13 +514,24 @@ document.addEventListener("DOMContentLoaded", () => {
           renderVolume();
 
           // UPDATE WATCHLIST & SECTORS WITH LIVE DATA
-          Watchlist.updateFromLive(data, subIndices);
-        })
+          Watchlist.updateFromLive(companies, subIndices);
+          
+          // Save valid data to cache
+          if (gainers.length > 0) saveToCache(companies, subIndices);
+      })
         .catch((err) => {
-          console.error("Dashboard Fetch Error:", err);
+          if (err.name === 'AbortError') {
+              console.error("Dashboard Fetch Timed Out (15s limit)");
+          } else {
+              console.error("Dashboard Fetch Error:", err);
+          }
         })
         .finally(() => {
-          if (btn) btn.disabled = false;
+          clearTimeout(timeoutId);
+          if (btn) {
+              btn.disabled = false;
+              btn.classList.remove("spin");
+          }
           loading = false;
         });
     }
@@ -552,6 +651,10 @@ document.addEventListener("DOMContentLoaded", () => {
     /* ---------------- PUBLIC API ---------------- */
     return {
       fetchData,
+      init: () => {
+        loadFromCache();
+        fetchData();
+      },
       isLoading: () => loading
     };
 
@@ -560,7 +663,14 @@ document.addEventListener("DOMContentLoaded", () => {
   /* =========================================================
      INITIAL LOAD
   ========================================================= */
-  LiveTopMarket.fetchData();
+  
+  // Default data (placeholder) to prevent crash
+  const dashboardData = {
+    settlement: { payable: 0, receivable: 0 },
+    dpHolding: { totalScrips: 0, totalAmount: 0, todayPL: 0 }
+  };
+
+  LiveTopMarket.init();
   // Initialize
   TradeSummary.update();
   Collateral.update();

@@ -4,9 +4,10 @@
  */
 
 const API_URL = 'https://turnover-19sr.onrender.com/floorsheet';
+const TOTALS_API = 'https://turnover-19sr.onrender.com/floorsheet/totals';
 
 // State management
-let currentPage = 0;
+let currentPage = 1;
 let pageSize = 500;
 let allData = [];
 let filteredData = [];
@@ -33,6 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeElements();
     setupEventListeners();
     fetchFloorsheetData();
+    fetchFloorsheetTotals();
     
     // Set current year in footer
     document.getElementById('we-year').textContent = new Date().getFullYear();
@@ -70,7 +72,7 @@ function setupEventListeners() {
     // Page size change
     elements.pageSizeSelect.addEventListener('change', (e) => {
         pageSize = parseInt(e.target.value);
-        currentPage = 0;
+        currentPage = 1;
         fetchFloorsheetData();
     });
     
@@ -81,7 +83,7 @@ function setupEventListeners() {
     
     // Pagination buttons
     elements.prevBtn.addEventListener('click', () => {
-        if (currentPage > 0) {
+        if (currentPage > 1) {
             currentPage--;
             fetchFloorsheetData();
         }
@@ -109,16 +111,19 @@ async function fetchFloorsheetData() {
         
         const result = await response.json();
         
-        // Handle different response formats
-        if (result.success && result.data) {
-            // Custom format from our API
-            allData = result.data;
-        } else if (result.data && result.data.content) {
-            // Nepselytics format
+        // Handle response format: { success: true, data: { content: [...], totalTrades: ... } }
+        if (result.success && result.data && Array.isArray(result.data.content)) {
             allData = result.data.content;
-            updateHeaderStats(result.data);
+            // Pass the parent 'data' object which contains the stats
+            // updateHeaderStats(result.data); // Removed: Totals fetched separately
+        } else if (Array.isArray(result.data)) {
+             // Fallback: If data is just an array
+             allData = result.data;
+             // updateHeaderStats({...}); // Removed
         } else {
+             // Fallback for empty/unknown
             allData = [];
+           // updateHeaderStats({}); // Removed
         }
         
         filteredData = [...allData];
@@ -137,14 +142,37 @@ async function fetchFloorsheetData() {
  * Update header statistics
  */
 function updateHeaderStats(data) {
-    if (data.totalTrades) {
-        elements.totalTrades.textContent = data.totalTrades.toLocaleString('en-IN');
+    if (!data || !data.data) return;
+
+    const totals = data.data;
+
+    if (totals.totalTrades !== undefined) {
+        elements.totalTrades.textContent = Number(totals.totalTrades).toLocaleString('en-IN');
     }
-    if (data.totalAmount) {
-        elements.totalAmount.textContent = '₹' + (data.totalAmount / 10000000).toFixed(2) + ' Cr';
+    if (totals.totalAmount !== undefined) {
+        elements.totalAmount.textContent = 'Rs ' + Number(totals.totalAmount).toLocaleString('en-IN', {
+            maximumFractionDigits: 2,
+            minimumFractionDigits: 2
+        });
     }
-    if (data.totalQty) {
-        elements.totalQty.textContent = (data.totalQty / 100000).toFixed(2) + ' L';
+    if (totals.totalQty !== undefined) {
+        elements.totalQty.textContent = Number(totals.totalQty).toLocaleString('en-IN');
+    }
+}
+
+
+/**
+ * Fetch floorsheet totals from API
+ */
+async function fetchFloorsheetTotals() {
+    try {
+        const response = await fetch(TOTALS_API);
+        const data = await response.json();
+        
+        // Expected format: { totalAmount: 11858421070.67, totalQty: 25185647, totalTrades: 115181 }
+        updateHeaderStats(data);
+    } catch (error) {
+        console.error('Error fetching totals:', error);
     }
 }
 
@@ -174,7 +202,7 @@ function renderTable() {
     if (filteredData.length === 0) {
         elements.tbody.innerHTML = `
             <tr>
-                <td colspan="7" style="text-align: center; padding: 40px; color: var(--text-muted);">
+                <td colspan="8" style="text-align: center; padding: 40px; color: var(--text-muted);">
                     No floorsheet data available
                 </td>
             </tr>
@@ -182,8 +210,12 @@ function renderTable() {
         return;
     }
     
+    // Adjust start index for 1-based pagination
+    const startIndex = (currentPage - 1) * pageSize;
+
     filteredData.forEach((item, index) => {
-        const row = createTableRow(item, index + 1);
+        const serialNo = startIndex + index + 1;
+        const row = createTableRow(item, serialNo);
         elements.tbody.appendChild(row);
     });
 }
@@ -201,6 +233,7 @@ function createTableRow(item, serialNo) {
     
     row.innerHTML = `
         <td>${serialNo}</td>
+        <td class="symbol-cell">${item.contractId || '-'}</td>
         <td class="symbol-cell">${item.symbol || '-'}</td>
         <td class="broker-cell" title="${item.buyerBrokerName || '-'}">${item.buyerMemberId || '-'}</td>
         <td class="broker-cell" title="${item.sellerBrokerName || '-'}">${item.sellerMemberId || '-'}</td>
@@ -238,10 +271,10 @@ function updatePagination() {
     
     elements.showingCount.textContent = showing.toLocaleString('en-IN');
     elements.totalCount.textContent = total.toLocaleString('en-IN');
-    elements.currentPageSpan.textContent = currentPage + 1;
+    elements.currentPageSpan.textContent = currentPage;
     
     // Update button states
-    elements.prevBtn.disabled = currentPage === 0;
+    elements.prevBtn.disabled = currentPage <= 1;
     elements.nextBtn.disabled = filteredData.length < pageSize;
 }
 
@@ -273,5 +306,6 @@ function showError(message) {
 setInterval(() => {
     if (document.visibilityState === 'visible') {
         fetchFloorsheetData();
+        fetchFloorsheetTotals();
     }
 }, 60000);

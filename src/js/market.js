@@ -8,40 +8,39 @@ async function loadNepse() {
     // Show refresh indicator
     showRefreshIndicator();
 
-    // Show skeletons in the table
-    const tbody = document.getElementById("nepse-body");
-    if (tbody && !allData.length) { // Only show on first load or if empty
-        let skeletons = "";
-        for (let i = 0; i < 20; i++) {
-            skeletons += `
-                <tr>
-                    <td class="middle"><div class="skeleton sk-cell"></div></td>
-                    <td class="right"><div class="skeleton sk-cell"></div></td>
-                    <td class="right"><div class="skeleton sk-cell"></div></td>
-                    <td class="right"><div class="skeleton sk-cell"></div></td>
-                    <td class="right"><div class="skeleton sk-cell"></div></td>
-                    <td class="right"><div class="skeleton sk-cell"></div></td>
-                    <td class="right"><div class="skeleton sk-cell"></div></td>
-                    <td class="right"><div class="skeleton sk-cell"></div></td>
-                    <td class="right"><div class="skeleton sk-cell"></div></td>
-                    <td class="right"><div class="skeleton sk-cell"></div></td>
-                    <td class="right"><div class="skeleton sk-cell"></div></td>
-                    <td class="middle"><div class="skeleton sk-cell"></div></td>
-                </tr>
-            `;
-        }
-        tbody.innerHTML = skeletons;
-    }
-
     try {
+        // Shimmer logic: Only show if we have no data
+        const tbody = document.getElementById("nepse-body");
+        if (tbody && !allData.length) {
+            let skeletons = "";
+            for (let i = 0; i < 20; i++) {
+                skeletons += `
+                    <tr>
+                        <td class="middle"><div class="skeleton sk-cell"></div></td>
+                        <td class="right"><div class="skeleton sk-cell"></div></td>
+                        <td class="right"><div class="skeleton sk-cell"></div></td>
+                        <td class="right"><div class="skeleton sk-cell"></div></td>
+                        <td class="right"><div class="skeleton sk-cell"></div></td>
+                        <td class="right"><div class="skeleton sk-cell"></div></td>
+                        <td class="right"><div class="skeleton sk-cell"></div></td>
+                        <td class="right"><div class="skeleton sk-cell"></div></td>
+                        <td class="right"><div class="skeleton sk-cell"></div></td>
+                        <td class="right"><div class="skeleton sk-cell"></div></td>
+                        <td class="right"><div class="skeleton sk-cell"></div></td>
+                        <td class="middle"><div class="skeleton sk-cell"></div></td>
+                    </tr>
+                `;
+            }
+            tbody.innerHTML = skeletons;
+        }
+
         // user requested to switch to this faster API
-        const res = await fetch("https://turnover-19sr.onrender.com/homepage-data");
+        const res = await fetch("https://nepseapi-ouhd.onrender.com/api/live-nepse");
         const json = await res.json();
 
-        console.log("API RESPONSE:", json);
-
-        // Handle new API structure: data is in `liveCompanyData`
-        const data = json.liveCompanyData || [];
+        // Handle new API structure: data is in `data` (direct array or wrapper)
+        // Based on analysis: json.data is the array
+        const data = Array.isArray(json.data) ? json.data : (json.liveData || []);
 
         // Sort by latest update time (newest first)
         data.sort((a, b) => new Date(b.lastUpdatedDateTime) - new Date(a.lastUpdatedDateTime));
@@ -191,13 +190,13 @@ function displayData(data) {
         row.innerHTML = `
                 <td class="middle"><strong>${item.symbol}</strong></td>
                 <td class="right">${formatNumber(item.lastTradedPrice)}</td>
-                <td class="right">${item.lastTradedVolume}</td>
+                <td class="right">-</td> <!-- LTV Not available in new API -->
                 <td class="right">${formatNumber(item.change)}</td>
                 <td class="right">${item.percentageChange}%</td>
                 <td class="right">${formatNumber(item.openPrice)}</td>
                 <td class="right">${formatNumber(item.highPrice)}</td>
                 <td class="right">${formatNumber(item.lowPrice)}</td>
-                <td class="right">${formatNumber(item.previousClose)}</td>
+                <td class="right">${formatNumber(item.lastTradedPrice - item.change)}</td>
                 <td class="right">${(item.totalTradeQuantity)}</td>
                 <td class="right">${formatNumber(item.totalTradeValue)}</td>
                 <td class="middle">
