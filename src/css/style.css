@@ -212,6 +212,7 @@ main {
   display: flex;
   flex-direction: column;
   transition: margin-left ease 0.3s;
+  padding-bottom: 55px;
 }
 
 main.close {
@@ -317,7 +318,7 @@ body.no-scroll main {
 /* News Ticker */
 .news-ticker {
   position: fixed;
-  bottom: 0;
+  bottom: 0px;
   left: 250px;
   right: 0;
   height: 35px;
