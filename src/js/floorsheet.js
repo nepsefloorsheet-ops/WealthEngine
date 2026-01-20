@@ -274,4 +274,4 @@ setInterval(() => {
     if (document.visibilityState === 'visible') {
         fetchFloorsheetData();
     }
-}, 30000);
+}, 60000);
