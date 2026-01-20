@@ -35,42 +35,39 @@ document.addEventListener('DOMContentLoaded', () => {
     // Listen for live market updates from market.js
     document.addEventListener('nepse:data', (e) => {
         const data = e.detail;
-        console.log('Received Nepse Data:', data); // Debugging
+        console.log('Received Nepse Data:', data); 
 
         if (Array.isArray(data)) {
             data.forEach(stock => {
-                // Strictly load only Prev Close and Last Traded Price as requested
                 const ltp = parseFloat(stock.lastTradedPrice) || 0;
-                
-                // Try to find previous close in likely fields since market.js implies it might not be standard
-                // But strict instruction is "Only load...", so we look for valid property.
                 const prevClose = parseFloat(stock.previousClose) || parseFloat(stock.previousPrice) || 0;
-
+                
                 liveMarketData[stock.symbol] = {
                     ltp: ltp,
-                    prevClose: prevClose
+                    prevClose: prevClose,
+                    sector: stock.sector || 'Others' // Capture Sector
                 };
             });
             
             // Re-render if we have holdings data
             if (rawData.length > 0) {
                 const enriched = enrichData(rawData);
-                // Only render table if it exists
                 if (tableBody) renderTable(enriched);
                 updateSummary(enriched);
+                renderSectorAnalysis(enriched); // Render Sector Analysis
             }
         }
     });
 
-    // Enrich Data with Prices
+    // Enrich Data with Prices & Sector
     const enrichData = (data) => {
         return data.map(item => {
             const symbol = item['Symbol'];
             
             // ALWAYS use Live Data from market.js
-            // If not available yet, default to 0
             const ltp = liveMarketData[symbol]?.ltp || 0;
             const prevClose = liveMarketData[symbol]?.prevClose || 0;
+            const sector = liveMarketData[symbol]?.sector || 'Unknown'; // Map Sector
             const curBal = parseFloat(item['CDS Total Balance']) || 0;
             
             return {
@@ -80,13 +77,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 _valCp: curBal * prevClose,
                 _valLtp: curBal * ltp,
                 _dayPnl: (curBal * ltp) - (curBal * prevClose),
-                _source: 'live' 
+                _source: 'live',
+                _sector: sector // Store for grouping
             };
         });
     };
 
     // Calculate Summary Metrics
     const updateSummary = (data) => {
+        // ... (existing summary logic) ...
         let totalStats = {
             currentValue: 0,
             cpValue: 0
@@ -104,7 +103,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Update Holdings Page DOM
         if (holdingCountEl) holdingCountEl.textContent = `(${data.length})`;
-        
         if (totalInvEl) totalInvEl.textContent = formatCurrency(totalStats.cpValue); 
         if (currentValEl) currentValEl.textContent = formatCurrency(totalStats.currentValue);
         
@@ -127,9 +125,125 @@ document.addEventListener('DOMContentLoaded', () => {
         if (dpAmountEl) dpAmountEl.textContent = formatCurrency(totalStats.currentValue);
         if (dailyPnlEl) {
              dailyPnlEl.textContent = formatCurrency(dayPnl);
-             // Update color for Dashboard P/L
              dailyPnlEl.style.color = dayPnl >= 0 ? 'var(--color-success)' : 'var(--color-danger)';
         }
+
+        // Update Top Ticker Tape (if on Index)
+        renderTickerTape(data);
+    };
+
+    // Render Ticker Tape for Dashboard
+    const renderTickerTape = (data) => {
+        const tickerWrapper = document.getElementById('holdings-ticker-wrapper');
+        const tickerContent = document.getElementById('holdings-ticker-content');
+        if (!tickerWrapper || !tickerContent) return;
+
+        if (data.length === 0) {
+            tickerWrapper.style.display = 'none';
+            return;
+        }
+
+        tickerWrapper.style.display = 'block';
+
+        let html = "";
+        // Duplicate data for a seamless loop effect
+        const displayData = [...data, ...data]; 
+
+        displayData.forEach(item => {
+            const sym = item['Symbol'];
+            const ltp = item._ltp || 0;
+            const prev = item._prevClose || 0;
+            const change = ltp - prev;
+            const pChange = prev > 0 ? (change / prev) * 100 : 0;
+            
+            let pnlClass = 'text-neutral';
+            let icon = '■'; // Square for unchange
+            if (change > 0) {
+                pnlClass = 'text-success';
+                icon = '▲';
+            } else if (change < 0) {
+                pnlClass = 'text-danger';
+                icon = '▼';
+            }
+
+            html += `
+                <span class="holding-item">
+                    <span class="h-sym">${sym}</span>
+                    <span class="h-price">${ltp.toFixed(2)}</span>
+                    <span class="h-change ${pnlClass}">${icon} ${pChange.toFixed(2)}%</span>
+                </span>
+            `;
+        });
+
+        tickerContent.innerHTML = html;
+    };
+
+    // Render Sector Analysis
+    const renderSectorAnalysis = (data) => {
+        // Check if container exists, if not create it
+        let sectorContainer = document.getElementById('sector-analysis-container');
+        if (!sectorContainer) {
+            const summaryContainer = document.querySelector('.holdings-summary-container');
+            if (summaryContainer) {
+                // Insert after summary container
+                sectorContainer = document.createElement('div');
+                sectorContainer.id = 'sector-analysis-container';
+                sectorContainer.className = 'holdings-summary-container'; // Reuse analytics flex/grid style
+                sectorContainer.style.marginTop = '20px';
+                summaryContainer.parentNode.insertBefore(sectorContainer, summaryContainer.nextSibling);
+            } else {
+                return; // Can't find place to insert
+            }
+        }
+
+        // Calculate Sector Metrics
+        const sectorMap = {};
+        let totalPortfolioValue = 0;
+
+        data.forEach(item => {
+            const sector = item._sector || 'Unknown';
+            // Init if not exists
+            if (!sectorMap[sector]) sectorMap[sector] = 0;
+            // Add value
+            sectorMap[sector] += item._valLtp;
+            totalPortfolioValue += item._valLtp;
+        });
+
+        // Convert to Array & Sort
+        const sortedSectors = Object.entries(sectorMap)
+            .map(([name, value]) => ({
+                name,
+                value,
+                percent: totalPortfolioValue > 0 ? (value / totalPortfolioValue) * 100 : 0
+            }))
+            .sort((a, b) => b.value - a.value); // Descending order
+
+        // Render HTML
+        let html = `
+            <div class="summary-card" style="grid-column: 1 / -1;">
+                <h3>Sector Allocation</h3>
+                <div class="sector-bars-wrapper" style="margin-top: 15px; display: grid; gap: 15px;">
+        `;
+
+        sortedSectors.forEach(sec => {
+            html += `
+                <div class="sector-row">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 14px;">
+                        <span>${sec.name}</span>
+                        <span>${formatCurrency(sec.value)} (${sec.percent.toFixed(1)}%)</span>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.1); height: 8px; border-radius: 4px; overflow: hidden;">
+                        <div style="background: var(--link-active); width: ${sec.percent}%; height: 100%;"></div>
+                    </div>
+                </div>
+            `;
+        });
+
+        html += `   </div>
+            </div>
+        `;
+
+        sectorContainer.innerHTML = html;
     };
 
     // Render Table
