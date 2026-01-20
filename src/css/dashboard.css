@@ -2,521 +2,524 @@
    DASHBOARD MAIN CONTENT LAYOUT
    ========================================================= */
 .contents {
-    padding: 25px 10px 10px 10px;
-    /* T, R, B, L */
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    gap: 10px;
+  padding: 25px 10px 10px 10px;
+  /* T, R, B, L */
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 10px;
 }
 
 /* Dashboard section heading */
 #sum-h {
-    text-align: center;
-    margin-bottom: 10px;
-    border-bottom: 1px solid;
+  text-align: center;
+  margin-bottom: 10px;
+  border-bottom: 1px solid;
 }
 
 /* =========================================================
    DASHBOARD CARD & SECTION WRAPPERS
    ========================================================= */
 
-
 .one {
-    min-width: 100%;
-    height: fit-content;
-    display: flex;
-    justify-content: space-between;
-    gap: 20px;
+  min-width: 100%;
+  height: fit-content;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
 }
 
 /* =========================================================
    CHART AREA (LEFT SIDE)
    ========================================================= */
 .chart {
-    max-width: 100%;
-    flex: 7;
-    background: linear-gradient(180deg, #111827 0%, #1f2933 50%, #334155 100%);
-    border-radius: 12px;
+  max-width: 100%;
+  flex: 7;
+  background: linear-gradient(180deg, #111827 0%, #1f2933 50%, #334155 100%);
+  border-radius: 12px;
 }
 
 /* =========================================================
    SUMMARY PANEL (RIGHT SIDE)
    ========================================================= */
 .summary {
-    min-width: 0%;
-    flex: 3;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 15px;
+  min-width: 0%;
+  flex: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
 }
 
 .all-summary {
-    min-width: 100%;
-    padding: 10px 15px;
-    background: linear-gradient(180deg, #0b1f3a 0%, #102a44 50%, #163a5f 100%);
-    border-radius: 12px;
+  min-width: 100%;
+  padding: 10px 15px;
+  background: linear-gradient(180deg, #0b1f3a 0%, #102a44 50%, #163a5f 100%);
+  border-radius: 12px;
 }
 
 .summary-data {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
 }
 
 /* =========================================================
    BUY / SELL SUMMARY BAR
    ========================================================= */
 .trade-summary-bar {
-    width: 100%;
-    height: 20px;
-    position: relative;
-    background-color: aqua;
-    border-radius: 10px;
-    overflow: hidden;
-    z-index: 0;
+  width: 100%;
+  height: 20px;
+  position: relative;
+  background-color: aqua;
+  border-radius: 10px;
+  overflow: hidden;
+  z-index: 0;
 }
 
 .buy-bar {
-    position: absolute;
-    left: 0;
-    height: 100%;
-    background: linear-gradient(90deg, #1db954, #0f9d58);
+  position: absolute;
+  left: 0;
+  height: 100%;
+  background: linear-gradient(90deg, #1db954, #0f9d58);
 }
 
 .sell-bar {
-    position: absolute;
-    right: 0;
-    height: 100%;
-    background: linear-gradient(90deg, #d32f2f, #ff5252);
+  position: absolute;
+  right: 0;
+  height: 100%;
+  background: linear-gradient(90deg, #d32f2f, #ff5252);
 }
 
 .buy-text,
 .sell-text {
-    min-height: 10px;
-    text-align: center;
-    margin-top: 3px;
-    font-size: 0.8rem;
+  min-height: 10px;
+  text-align: center;
+  margin-top: 3px;
+  font-size: 0.8rem;
 }
 
 .no-trade-text {
-    position: absolute;
-    inset: 0;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #ffffff;
-    z-index: 5;
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #ffffff;
+  z-index: 5;
 }
 
 /* =========================================================
    COLLATERAL UTILIZATION BAR
    ========================================================= */
 .collateral-bar {
-    height: 20px;
-    width: 100%;
-    position: relative;
-    background-color: aqua;
-    border-radius: 10px;
-    overflow: hidden;
-    display: flex;
-    margin-bottom: 12px;
+  height: 20px;
+  width: 100%;
+  position: relative;
+  background-color: aqua;
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  margin-bottom: 12px;
 }
 
 .collateral-utilized {
-    position: absolute;
-    background: linear-gradient(90deg, #f59e0b, #f97316);
-    height: 100%;
-    left: 0;
+  position: absolute;
+  background: linear-gradient(90deg, #f59e0b, #f97316);
+  height: 100%;
+  left: 0;
 }
 
 .collateral-available {
-    position: absolute;
-    background: linear-gradient(90deg, #22c55e, #16a34a);
-    height: 100%;
-    right: 0;
+  position: absolute;
+  background: linear-gradient(90deg, #22c55e, #16a34a);
+  height: 100%;
+  right: 0;
 }
 
 .percent-text {
-    width: 100%;
-    text-align: center;
-    margin-top: 3px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    z-index: 10;
+  width: 100%;
+  text-align: center;
+  margin-top: 3px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  z-index: 10;
 }
 
 /* =========================================================
    MARKET MOVERS SECTION
    ========================================================= */
 .two {
-    width: 100%;
-    height: 380px;
+  width: 100%;
+  height: 380px;
 }
 
 .mkt-mover {
-    display: flex;
-    width: 100%;
-    max-height: 380px;
-    gap: 10px;
+  display: flex;
+  width: 100%;
+  max-height: 380px;
+  gap: 10px;
 }
 
 .gnl {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    min-width: 0;
-    background: linear-gradient(180deg, #0b1220 0%, #141b2d 50%, #1c2740 100%);
-    border-radius: 12px;
-    height: 380px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  background: linear-gradient(180deg, #0b1220 0%, #141b2d 50%, #1c2740 100%);
+  border-radius: 12px;
+  height: 380px;
 }
 
 /* =========================================================
    DASHBOARD TABS (WATCHLIST / GAINERS / LOSERS)
    ========================================================= */
 .head {
-    display: flex;
-    justify-content: space-evenly;
-    gap: 20px;
-    height: 32px;
-    border-bottom: 1px solid rgb(255, 255, 255);
-    flex-shrink: 0;
-    margin-top: 5px;
+  display: flex;
+  justify-content: space-evenly;
+  gap: 20px;
+  height: 32px;
+  border-bottom: 1px solid rgb(255, 255, 255);
+  flex-shrink: 0;
+  margin-top: 5px;
 }
 
 .head a {
-    color: #fff;
-    text-decoration: none;
-    font-size: 13px;
-    padding: 5px 8px;
+  color: #fff;
+  text-decoration: none;
+  font-size: 13px;
+  padding: 5px 8px;
 }
 
 .head a:hover {
-    background-color: #2a5298;
-    border-radius: 4px;
+  background-color: #2a5298;
+  border-radius: 4px;
 }
 
 .topgnl {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
 }
 
 .flex {
-    display: flex;
-    align-items: center;
-    justify-content: end;
-    padding-right: 15px;
-    padding-top: 8px;
-    gap: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  padding-right: 15px;
+  padding-top: 8px;
+  gap: 280px;
 }
 
 .lin.active {
-    background: #0f9d58;
-    color: #ffffff;
-    border-radius: 5px;
-    font-weight: 600;
+  background: #0f9d58;
+  color: #ffffff;
+  border-radius: 5px;
+  font-weight: 600;
 }
 
 /* =========================================================
    WATCHLIST TABLE
    ========================================================= */
 .wch-table {
-    flex: 1;
-    min-height: 0;
-    padding: 10px;
+  flex: 1;
+  min-height: 0;
+  padding: 10px;
 }
 
 .watch-table-wrapper {
-    height: 100%;
-    overflow-y: auto;
+  height: 100%;
+  overflow-y: auto;
 }
 
 .watch-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 12px;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
 }
 
 .watch-table th,
 .watch-table td {
-    padding: 6px 8px;
-    text-align: right;
+  padding: 6px 8px;
+  text-align: right;
 }
 
 .watch-table th:first-child,
 .watch-table td:first-child {
-    text-align: left;
+  text-align: left;
 }
 
 .watch-table thead th {
-    position: sticky;
-    top: 0;
-    background: #3a548d;
-    z-index: 2;
+  position: sticky;
+  top: 0;
+  background: #3a548d;
+  z-index: 2;
 }
 
 .watch-table tbody tr {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .pos {
-    color: #22c55e;
+  color: #22c55e;
 }
 
 .neg {
-    color: #ef4444;
+  color: #ef4444;
 }
 
 /* =========================================================
    CUSTOM SCROLLBAR (DASHBOARD TABLES)
    ========================================================= */
 .watch-table-wrapper::-webkit-scrollbar {
-    width: 6px;
+  width: 6px;
 }
 
 .watch-table-wrapper::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 4px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
 }
 
 /* =========================================================
    TOP GAINERS / TOP LOSERS CARD
    ========================================================= */
 .top-mover-card {
-    width: 100%;
-    height: 320px;
-    background: linear-gradient(180deg, #0b1220, #1e293b);
-    border-radius: 14px;
-    padding: 12px;
-    box-sizing: border-box;
+  width: 100%;
+  height: 320px;
+  background: linear-gradient(180deg, #0b1220, #1e293b);
+  border-radius: 14px;
+  padding: 12px;
+  box-sizing: border-box;
 }
 
 .top-mover-body {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2px;
-    height: calc(100% - 35px);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  height: calc(100% - 35px);
 }
 
 .mover-table-wrapper {
-    height: 100%;
-    overflow-y: auto;
+  height: 100%;
+  overflow-y: auto;
 }
 
 .mover-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 13px;
-    padding: 5px;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  padding: 5px;
 }
 
 .mover-table th {
-    top: 0;
-    background: #3a548d;
-    z-index: 2;
-    padding: 6px;
-    font-weight: 600;
+  top: 0;
+  background: #3a548d;
+  z-index: 2;
+  padding: 6px;
+  font-weight: 600;
 }
 
 .mover-table th,
 .mover-table td {
-    padding: 6px 8px;
-    text-align: right;
+  padding: 6px 8px;
+  text-align: right;
 }
 
 .mover-table th:first-child,
 .mover-table td:first-child {
-    text-align: left;
+  text-align: left;
 }
 
 .positive {
-    color: #22c55e;
+  color: #22c55e;
 }
 
 .negative {
-    color: #ef4444;
+  color: #ef4444;
 }
 
 .mid-line {
-    background-color: white;
-    width: 1px;
-    height: 400px;
-    position: absolute;
-    margin-left: 22.91%;
+  background-color: white;
+  width: 1px;
+  height: 400px;
+  position: absolute;
+  margin-left: 22.91%;
 }
 
 .three {
-    display: flex;
-    gap: 10px;
-    max-height: 390px;
+  display: flex;
+  gap: 10px;
+  max-height: 390px;
 }
 
 .mid-box {
-    min-width: 50%;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    max-height: 380px;
+  min-width: 50%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-height: 380px;
 }
 
 .settlement-box {
-    background: linear-gradient(180deg, #0b1f3a 0%, #102a44 50%, #163a5f 100%);
+  background: linear-gradient(180deg, #0b1f3a 0%, #102a44 50%, #163a5f 100%);
 
-    border-radius: 12px;
-    padding: 10px;
-    height: 50%;
+  border-radius: 12px;
+  padding: 10px;
+  height: 50%;
 }
 
 .dp-holding {
-    background: linear-gradient(180deg, #0b1f3a 0%, #102a44 50%, #163a5f 100%);
+  background: linear-gradient(180deg, #0b1f3a 0%, #102a44 50%, #163a5f 100%);
 
-    border-radius: 12px;
-    padding: 10px;
-    height: 50%;
+  border-radius: 12px;
+  padding: 10px;
+  height: 50%;
 }
 
 .settle-row {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
 }
 
 hr {
-    margin-top: 10px;
+  margin-top: 10px;
 }
 
 .dp-row {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
 }
 
 .net.payable {
-    background: #7f1d1d;
-    margin-top: 10px;
-    text-align: center;
-    padding: 8px;
-    border-radius: 8px;
-    font-weight: 600;
+  background: #7f1d1d;
+  margin-top: 10px;
+  text-align: center;
+  padding: 8px;
+  border-radius: 8px;
+  font-weight: 600;
 }
 
 .net.receivable {
-    background: #14532d;
-    margin-top: 10px;
-    text-align: center;
-    padding: 8px;
-    border-radius: 8px;
-    font-weight: 600;
+  background: #14532d;
+  margin-top: 10px;
+  text-align: center;
+  padding: 8px;
+  border-radius: 8px;
+  font-weight: 600;
 }
 
 .net {
-    background: #40a8e4;
-    margin-top: 10px;
-    text-align: center;
-    padding: 8px;
-    border-radius: 8px;
-    font-weight: 600;
+  background: #40a8e4;
+  margin-top: 10px;
+  text-align: center;
+  padding: 8px;
+  border-radius: 8px;
+  font-weight: 600;
 }
 
 #dp-profit {
-    font-weight: 600;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 33px;
-    margin-top: 8px;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 33px;
+  margin-top: 8px;
 }
 
 tbody tr {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 #gnl {
-    max-width: 50%;
+  max-width: 50%;
 }
 
 .refresh-btn {
-    padding: 6px 12px;
-    border: none;
-    border-radius: 4px;
-    background: #2563eb;
-    color: #fff;
-    cursor: pointer;
-    font-size: 13px;
-    margin-bottom: 5px;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  background: #2563eb;
+  color: #fff;
+  cursor: pointer;
+  font-size: 13px;
+  margin-bottom: 5px;
 }
 
 .refresh-btn:disabled {
-    background: #9ca3af;
-    cursor: not-allowed;
+  background: #9ca3af;
+  cursor: not-allowed;
 }
 
 #refresh-turnover,
 #refresh-volume {
-    cursor: pointer;
-    user-select: none;
-    background-color: white;
-    padding: 5px;
-    color: black;
-    margin-bottom: 5px;
-    border-radius: 8px;
+  cursor: pointer;
+  user-select: none;
+  background-color: white;
+  padding: 5px;
+  color: black;
+  margin-bottom: 5px;
+  border-radius: 8px;
 }
 
 #refresh-turnover:hover,
 #refresh-volume:hover {
-    opacity: 0.8;
+  opacity: 0.8;
 }
 
 #refresh-turnover:active,
 #refresh-volume:active {
-    transform: scale(0.98);
+  transform: scale(0.98);
 }
 
 @media (max-width: 1300px) {
-    .mkt-mover {
-        flex-direction: column;
-        max-height: max-content;
-    }
+  .mkt-mover {
+    flex-direction: column;
+    min-height: max-content;
+  }
 
-    .three {
-        max-height: max-content;
-        flex-direction: column;
-    }
+  .two {
+    min-height: max-content;
+  }
 
-    #gnl {
-        max-width: 100%;
-    }
+  .three {
+    max-height: max-content;
+    flex-direction: column;
+  }
 
-    .mid-box {
-        min-width: 100%;
-        flex-direction: row;
-    }
+  #gnl {
+    max-width: 100%;
+  }
 
-    .settlement-box,
-    .dp-holding {
-        width: 50%;
-    }
+  .mid-box {
+    min-width: 100%;
+    flex-direction: row;
+  }
+
+  .settlement-box,
+  .dp-holding {
+    width: 50%;
+  }
 }
 
 @media (max-width: 900px) {
-    .one {
-        flex-direction: column;
-    }
+  .one {
+    flex-direction: column;
+  }
 
-    .settlement-box,
-    .dp-holding {
-        font-size: 14px;
-        width: 100%;
-    }
+  .settlement-box,
+  .dp-holding {
+    font-size: 14px;
+    width: 100%;
+  }
 }
 
 @media (max-width: 600px) {
-    .mid-box {
-        flex-direction: column;
-    }
+  .mid-box {
+    flex-direction: column;
+  }
 }
