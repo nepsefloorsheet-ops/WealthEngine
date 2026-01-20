@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="src/css/dashboard.css">
 </head>
 
-<body>
+<body class="page-index">
     <nav class="sidebar">
         <!-- Injected by layout.js -->
     </nav>
@@ -19,6 +19,18 @@
             <!-- Injected by layout.js -->
         </header>
         <div id="content">
+            <!-- Holdings Ticker Tape (Top) -->
+            <div id="holdings-ticker-wrapper" class="holdings-ticker-wrapper" style="display:none;">
+                <div class="holdings-ticker">
+                    <div class="ticker-label">PORTFOLIO</div>
+                    <div class="ticker-wrap">
+                        <div class="ticker-content" id="holdings-ticker-content">
+                            <!-- Holdings data will be injected here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="contents">
                 <div class="one">
                     <div class="chart">
