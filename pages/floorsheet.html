@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WealthEngine - Floorsheet</title>
+    <link rel="icon" type="image/png" href="/images/wealth.png">
+    <link rel="stylesheet" href="../src/css/style.css">
+    <link rel="stylesheet" href="../src/css/floorsheet.css">
+</head>
+
+<body>
+    <nav class="sidebar">
+        <!-- Injected by layout.js -->
+    </nav>
+    <main>
+        <header class="open">
+            <!-- Injected by layout.js -->
+        </header>
+
+        <div class="floorsheet-container">
+            <!-- Header Section -->
+            <div class="floorsheet-header">
+                <h1>Live Floorsheet</h1>
+                <div class="header-stats">
+                    <div class="stat-card">
+                        <span class="stat-label">Total Trades</span>
+                        <span class="stat-value" id="total-trades">-</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Total Amount</span>
+                        <span class="stat-value" id="total-amount">-</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Total Quantity</span>
+                        <span class="stat-value" id="total-qty">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters Section -->
+            <div class="filters-section">
+                <div class="search-box">
+                    <input type="text" id="search-symbol" placeholder="Search by Symbol..." />
+                </div>
+                <div class="filter-controls">
+                    <select id="page-size">
+                        <option value="50">50 rows</option>
+                        <option value="100">100 rows</option>
+                        <option value="200">200 rows</option>
+                        <option value="500" selected>500 rows</option>
+                    </select>
+                    <button class="btn-refresh" id="refresh-btn">
+                        <span>↻</span> Refresh
+                    </button>
+                </div>
+            </div>
+
+            <!-- Loading Indicator -->
+            <div class="loading-overlay" id="loading">
+                <div class="loading-spinner"></div>
+                <p>Loading floorsheet data...</p>
+            </div>
+
+            <!-- Table Section -->
+            <div class="table-wrapper">
+                <table class="floorsheet-table">
+                    <thead>
+                        <tr>
+                            <th>S.N.</th>
+                            <th>Symbol</th>
+                            <th>Buyer</th>
+                            <th>Seller</th>
+                            <th class="text-right">Qty</th>
+                            <th class="text-right">Rate</th>
+                            <th class="text-right">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody id="floorsheet-body">
+                        <!-- Data will be inserted here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination-section">
+                <div class="pagination-info">
+                    Showing <span id="showing-count">0</span> of <span id="total-count">0</span> records
+                </div>
+                <div class="pagination-controls">
+                    <button class="btn-page" id="prev-page" disabled>← Previous</button>
+                    <span class="page-indicator">Page <span id="current-page">1</span></span>
+                    <button class="btn-page" id="next-page">Next →</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>WealthEngine © <span id="we-year"></span></p>
+    </footer>
+
+    <script src="../src/js/dropdown.js"></script>
+    <script src="../src/js/layout.js"></script>
+    <script src="../src/js/global.js"></script>
+    <script src="../src/js/floorsheet.js"></script>
+</body>
+
+</html>

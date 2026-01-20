@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WealthEngine - Heatmap</title>
+    <link rel="icon" type="image/png" href="../images/wealth.png">
+    <link rel="stylesheet" href="../src/css/style.css">
+    <link rel="stylesheet" href="../src/css/heatmap.css">
+    <!-- ApexCharts CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+</head>
+
+<body class="no-scroll">
+    <nav class="sidebar"></nav>
+    <main style="padding-bottom: 35px;">
+        <header class="open"></header>
+
+        <div class="heatmap-container">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div class="heatmap-tabs">
+                    <button class="tab-btn" data-tab="company">Company Performance</button>
+                    <button class="tab-btn" data-tab="sector">Sector-wise View</button>
+                </div>
+                <div class="heatmap-instructions" style="margin-bottom: 0;">
+                    <i class="fas fa-info-circle"></i> Size = Turnover | Color = Performance
+                </div>
+            </div>
+
+            <!-- Sector Heatmap -->
+            <div class="heatmap-card" id="sectorTab" style="position: relative;">
+                <div id="sectorLoader" class="loading-overlay">
+                    <div class="loading-spinner"></div>
+                    <p style="margin-top:10px; color:var(--text-muted);">Processing Sector Data...</p>
+                </div>
+                <div class="heatmap-header">
+                    <div class="heatmap-title">
+                        <i class="fas fa-th-large"></i> Sector-wise Performance
+                    </div>
+                    <div class="heatmap-legend">
+                        <div class="legend-item"><div class="color-box" style="background:#ff4560;"></div> -3%+</div>
+                        <div class="legend-item"><div class="color-box" style="background:#404040;"></div> 0%</div>
+                        <div class="legend-item"><div class="color-box" style="background:#00e396;"></div> +3%+</div>
+                    </div>
+                </div>
+                <div id="sectorHeatmap"></div>
+            </div>
+
+            <!-- Company Heatmap -->
+            <div class="heatmap-card" id="companyTab" style="position: relative;">
+                <div id="companyLoader" class="loading-overlay">
+                    <div class="loading-spinner"></div>
+                    <p style="margin-top:10px; color:var(--text-muted);">Processing Company Data...</p>
+                </div>
+                <div class="heatmap-header">
+                    <div class="heatmap-title">
+                        <i class="fas fa-chart-pie"></i> Company Performance
+                    </div>
+                    <div class="heatmap-legend" style="align-items: center;">
+                        <select id="sectorFilter" class="sector-filter-select">
+                            <option value="all">All Sectors</option>
+                        </select>
+                        <div class="legend-item" style="margin-left: 10px;">Size: Turnover</div>
+                        <div class="legend-item">Color: % Change</div>
+                    </div>
+                </div>
+                <div id="companyHeatmap"></div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../src/js/layout.js"></script>
+    <script src="../src/js/dropdown.js"></script>
+    <script src="../src/js/global.js"></script>
+    <script src="../src/js/heatmap.js"></script>
+</body>
+
+</html>

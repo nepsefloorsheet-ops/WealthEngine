@@ -1,26 +1,47 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WealthEngine - Charts</title>
     <link rel="icon" type="image/png" href="/images/wealth.png">
-    <link rel="stylesheet" href="..//src/css/style.css">
+    <link rel="stylesheet" href="../src/css/style.css">
+    <script src="https://unpkg.com/lightweight-charts@3.8.0/dist/lightweight-charts.standalone.production.js"></script>
+    <link rel="stylesheet" href="../src/css/chart.css">
 </head>
 
 <body>
-    <nav class="sidebar">
-        <!-- Injected by layout.js -->
-    </nav>
+    <nav class="sidebar"></nav>
     <main>
-        <header class="open">
-            <!-- Injected by layout.js -->
-        </header>
+        <header class="open"></header>
+
+        <div class="chart-layout">
+            <!-- Controls -->
+            <div class="chart-controls">
+                <input type="text" id="symbolInput" class="symbol-input" placeholder="Symbol (e.g. NICA)" value="NEPSE">
+                <button class="btn-load" id="btnLoadChart">Load Chart</button>
+                <div style="margin-left: auto; color: var(--text-muted); font-size: 13px;">
+                    Data Source: Google Sheets (Daily)
+                </div>
+            </div>
+
+            <!-- Chart Area -->
+            <div id="chartContainer">
+                <div id="chartLegend" class="chart-legend"></div>
+                <div id="loader" class="loading-overlay" style="flex-direction: column;">
+                    <div class="loading-spinner"></div>
+                    <div style="margin-top: 15px; color: #9ca3af; font-family: sans-serif; font-size: 14px;">Loading
+                        Market History...</div>
+                </div>
+            </div>
+        </div>
     </main>
-    <script src="../src/js/dropdown.js"></script>
+
     <script src="../src/js/layout.js"></script>
-    <script src="../src/js/burger.js"></script>
+    <script src="../src/js/dropdown.js"></script>
+    <script src="../src/js/global.js"></script>
+    <script src="../src/js/charts.js"></script>
 </body>
 
 </html>

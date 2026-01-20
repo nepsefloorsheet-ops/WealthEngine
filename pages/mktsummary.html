@@ -19,6 +19,18 @@
             <!-- Injected by layout.js -->
         </header>
         <div id="content">
+            <div class="filter-section">
+                <div class="filter-group">
+                    <span class="filter-label">Select History Date (Last 1 Year)</span>
+                    <input type="date" id="historyDate" class="date-input">
+                </div>
+                <button id="searchBtn" class="btn-search">Search Date</button>
+            </div>
+
+            <div id="loading-overlay">
+                Loading Market Summary for selected date...
+            </div>
+
             <div class="nepse-table">
                 <table id="nepse-table">
                     <thead>
@@ -41,8 +53,8 @@
     </footer>
     <script src="../src/js/dropdown.js"></script>
     <script src="../src/js/layout.js"></script>
-    <script src="../src/js/burger.js"></script>
-    <script src="/src/js/mkt-summary.js"></script>
+    <script src="../src/js/global.js"></script>
+    <script src="../src/js/mkt-summary.js"></script>
 </body>
 
 </html>
