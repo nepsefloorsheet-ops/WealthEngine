@@ -218,7 +218,7 @@ function displayData(data) {
         row.innerHTML = `
                 <td class="middle"><strong>${item.symbol}</strong></td>
                 <td class="right">${formatNumber(item.lastTradedPrice)}</td>
-                <td class="right">-</td> <!-- LTV Not available in new API -->
+                <td class="right">${formatNumber(item.lastTradedVolume)}</td>
                 <td class="right">${formatNumber(item.change)}</td>
                 <td class="right">${item.percentageChange}%</td>
                 <td class="right">${formatNumber(item.openPrice)}</td>
