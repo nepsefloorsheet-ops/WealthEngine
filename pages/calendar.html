@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WealthEngine - Market Calendar</title>
+    <link rel="icon" type="image/png" href="../images/wealth.png">
+    <link rel="stylesheet" href="../src/css/style.css">
+    <link rel="stylesheet" href="../src/css/calendar.css">
+</head>
+
+<body>
+    <nav class="sidebar">
+        <!-- Injected by layout.js -->
+    </nav>
+    <main>
+        <header class="open">
+            <!-- Injected by layout.js -->
+        </header>
+
+        <section class="calendar-page">
+            <div class="calendar-header">
+                <h2>Market Calendar</h2>
+                <div class="calendar-nav">
+                    <button id="prev-month" class="nav-btn">&lt;</button>
+                    <button id="btn-today" class="today-btn">Today</button>
+                    <span id="current-month">January 2026</span>
+                    <button id="next-month" class="nav-btn">&gt;</button>
+                </div>
+            </div>
+
+            <div class="calendar-legend">
+                <span class="legend-item"><span class="dot trading"></span> Trading Day</span>
+                <span class="legend-item"><span class="dot holiday"></span> Holiday</span>
+                <span class="legend-item"><span class="dot weekend"></span> Weekend (Fri-Sat)</span>
+            </div>
+
+            <div class="calendar-grid" id="calendar-grid">
+                <!-- Calendar days will be injected here -->
+            </div>
+
+            <div class="calendar-events" id="calendar-events">
+                <h3>Upcoming Events</h3>
+                <ul id="events-list">
+                    <!-- Events will be listed here -->
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <script src="../src/js/dropdown.js"></script>
+    <script src="../src/js/layout.js"></script>
+    <script src="../src/js/global.js"></script>
+    <script src="../src/js/calendar.js"></script>
+</body>
+
+</html>
