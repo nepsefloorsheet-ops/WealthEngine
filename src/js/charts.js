@@ -120,25 +120,37 @@ function updateLegend(date, candle, volume) {
     const color = candle.close >= candle.open ? '#26a69a' : '#ef5350';
     const volVal = volume && volume.value !== undefined ? volume.value : 0;
 
-    // Format Date if needed (it comes as string based on our data)
-    // If it's an object {year, month, day}, convert to string
     let dateStr = date;
     if (typeof date === 'object') {
         dateStr = `${date.year}-${date.month}-${date.day}`;
     }
 
-    legend.innerHTML = `
-        <div style="font-size: 16px; font-weight: bold; margin-bottom: 5px; color: #e5e7eb;">
-            ${currentSymbol} <span style="font-size: 14px; color: #9ca3af; margin-left:8px;">${dateStr}</span>
-        </div>
-        <div style="display: flex; flex-wrap: wrap; gap: 15px;">
-            <span>O: <span class="val" style="color:${color}">${candle.open.toFixed(2)}</span></span>
-            <span>H: <span class="val" style="color:${color}">${candle.high.toFixed(2)}</span></span>
-            <span>L: <span class="val" style="color:${color}">${candle.low.toFixed(2)}</span></span>
-            <span>C: <span class="val" style="color:${color}">${candle.close.toFixed(2)}</span></span>
-            <span>Vol: <span class="val" style="color:#d1d5db">${volVal.toLocaleString()}</span></span>
-        </div>
-    `;
+    domUtils.clearNode(legend);
+    
+    const title = domUtils.createElement('div', {
+        styles: { fontSize: '16px', fontWeight: 'bold', marginBottom: '5px', color: '#e5e7eb' },
+        children: [
+            document.createTextNode(currentSymbol + ' '),
+            domUtils.createElement('span', {
+                styles: { fontSize: '14px', color: '#9ca3af', marginLeft: '8px' },
+                textContent: dateStr
+            })
+        ]
+    });
+
+    const stats = domUtils.createElement('div', {
+        styles: { display: 'flex', flexWrap: 'wrap', gap: '15px' },
+        children: [
+            domUtils.createElement('span', { children: [document.createTextNode('O: '), domUtils.createElement('span', { className: 'val', styles: { color: color }, textContent: candle.open.toFixed(2) })] }),
+            domUtils.createElement('span', { children: [document.createTextNode('H: '), domUtils.createElement('span', { className: 'val', styles: { color: color }, textContent: candle.high.toFixed(2) })] }),
+            domUtils.createElement('span', { children: [document.createTextNode('L: '), domUtils.createElement('span', { className: 'val', styles: { color: color }, textContent: candle.low.toFixed(2) })] }),
+            domUtils.createElement('span', { children: [document.createTextNode('C: '), domUtils.createElement('span', { className: 'val', styles: { color: color }, textContent: candle.close.toFixed(2) })] }),
+            domUtils.createElement('span', { children: [document.createTextNode('Vol: '), domUtils.createElement('span', { className: 'val', styles: { color: '#d1d5db' }, textContent: volVal.toLocaleString() })] })
+        ]
+    });
+
+    legend.appendChild(title);
+    legend.appendChild(stats);
 }
 
 // --- DATA FETCHING ---
@@ -265,3 +277,11 @@ function showLoader(show) {
     if (show) loader.classList.add('active');
     else loader.classList.remove('active');
 }
+
+// Ensure chart is destroyed on page unload to prevent memory leaks
+window.addEventListener('beforeunload', () => {
+    if (chart) {
+        chart.remove();
+        chart = null;
+    }
+});

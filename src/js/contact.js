@@ -8,17 +8,11 @@ form.addEventListener("submit", async (e) => {
   submitBtn.textContent = "Sending...";
 
   try {
-    const res = await fetch("https://contact-backend-jfer.onrender.com/api/contact", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name: form.name.value,
-        email: form.email.value,
-        message: form.message.value
-      })
+    const data = await apiClient.post("https://contact-backend-jfer.onrender.com/api/contact", {
+      name: form.name.value,
+      email: form.email.value,
+      message: form.message.value
     });
-
-    const data = await res.json();
 
     if (data.success) {
       showToast("Message sent successfully ✅", "success");
@@ -36,16 +30,17 @@ form.addEventListener("submit", async (e) => {
 });
 
 function showToast(message, type = "success") {
-            const toast = document.createElement("div");
-            toast.className = `toast ${type}`;
-            toast.textContent = message;
+  const toast = domUtils.createElement("div", {
+    className: `toast ${type}`,
+    textContent: message
+  });
 
-            document.body.appendChild(toast);
+  document.body.appendChild(toast);
 
-            setTimeout(() => toast.classList.add("show"), 100);
+  setTimeout(() => toast.classList.add("show"), 100);
 
-            setTimeout(() => {
-                toast.classList.remove("show");
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
-        }
+  setTimeout(() => {
+    toast.classList.remove("show");
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+}

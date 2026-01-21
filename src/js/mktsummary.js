@@ -30,40 +30,42 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-function fetchMktSummaryData() {
+async function fetchMktSummaryData() {
     const tableBody = document.getElementById("nepse-table-body");
-    if (tableBody) {
-        let skeletons = "";
-        for (let i = 0; i < 10; i++) {
-            skeletons += `
-                <tr>
-                    <td><div class="skeleton sk-cell"></div></td>
-                    <td><div class="skeleton sk-cell"></div></td>
-                    <td><div class="skeleton sk-cell"></div></td>
-                    <td><div class="skeleton sk-cell"></div></td>
-                    <td><div class="skeleton sk-cell"></div></td>
-                    <td><div class="skeleton sk-cell"></div></td>
-                </tr>
-            `;
-        }
-        tableBody.innerHTML = skeletons;
+    if (!tableBody) return;
+
+    domUtils.clearNode(tableBody);
+    for (let i = 0; i < 10; i++) {
+        const skeletonRow = domUtils.createElement('tr', {
+            children: Array(6).fill(0).map(() => 
+                domUtils.createElement('td', {
+                    children: [domUtils.createElement('div', { className: 'skeleton sk-cell' })]
+                })
+            )
+        });
+        tableBody.appendChild(skeletonRow);
     }
 
-    fetch(`${SUPABASE_URL}/rest/v1/mkt_summary?select=*&order=trade_date.desc&limit=all`, {
-        headers: {
-            "apikey": ANON_KEY,
-            "Authorization": `Bearer ${ANON_KEY}`
-        }
-    })
-        .then(response => response.json())
-        .then(data => {
-            allMktSummaryData = data;
-            renderMktSummaryTable(data);
-        })
-        .catch(error => {
-            console.error("Error fetching NEPSE data:", error);
-            if (tableBody) tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:red;">Failed to load data</td></tr>`;
+    try {
+        const data = await apiClient.get(`${SUPABASE_URL}/rest/v1/mkt_summary?select=*&order=trade_date.desc&limit=all`, {
+            headers: {
+                "apikey": ANON_KEY,
+                "Authorization": `Bearer ${ANON_KEY}`
+            }
         });
+        allMktSummaryData = data;
+        renderMktSummaryTable(data);
+    } catch (error) {
+        console.error("Error fetching NEPSE data:", error);
+        domUtils.clearNode(tableBody);
+        tableBody.appendChild(domUtils.createElement('tr', {
+            children: [domUtils.createElement('td', {
+                attributes: { colspan: '6' },
+                styles: { textAlign: 'center', color: 'red' },
+                textContent: 'Failed to load data'
+            })]
+        }));
+    }
 }
 
 function filterMktSummaryByDate(dateStr) {
@@ -73,7 +75,14 @@ function filterMktSummaryByDate(dateStr) {
     if (filtered.length === 0) {
         const tableBody = document.getElementById("nepse-table-body");
         if (tableBody) {
-            tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 40px; color: var(--text-muted);">No summary found for ${dateStr}.</td></tr>`;
+            domUtils.clearNode(tableBody);
+            tableBody.appendChild(domUtils.createElement('tr', {
+                children: [domUtils.createElement('td', {
+                    attributes: { colspan: '6' },
+                    styles: { textAlign: 'center', padding: '40px', color: 'var(--text-muted)' },
+                    textContent: `No summary found for ${dateStr}.`
+                })]
+            }));
         }
     }
 }
@@ -82,17 +91,18 @@ function renderMktSummaryTable(data) {
     const tableBody = document.getElementById("nepse-table-body");
     if (!tableBody) return;
 
-    tableBody.innerHTML = "";
+    domUtils.clearNode(tableBody);
     data.forEach((row, index) => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-            <td class="l">${index + 1}</td>
-            <td class="l">${row.trade_date}</td>
-            <td class="o">${formatNepaliNumber(row.turnover)}</td>
-            <td class="o">${formatNepaliNumber(row.volume, 0)}</td>
-            <td class="o">${formatNepaliNumber(row.txn, 0)}</td>
-            <td class="o">${formatNepaliNumber(row.scrip_traded, 0)}</td>
-                `;
+        const tr = domUtils.createElement("tr", {
+            children: [
+                domUtils.createElement("td", { className: "l", textContent: (index + 1).toString() }),
+                domUtils.createElement("td", { className: "l", textContent: row.trade_date }),
+                domUtils.createElement("td", { className: "o", textContent: formatNepaliNumber(row.turnover) }),
+                domUtils.createElement("td", { className: "o", textContent: formatNepaliNumber(row.volume, 0) }),
+                domUtils.createElement("td", { className: "o", textContent: formatNepaliNumber(row.txn, 0) }),
+                domUtils.createElement("td", { className: "o", textContent: formatNepaliNumber(row.scrip_traded, 0) })
+            ]
+        });
         tableBody.appendChild(tr);
     });
 }

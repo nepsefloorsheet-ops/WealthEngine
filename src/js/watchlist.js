@@ -119,8 +119,7 @@ async function loadWatchlistData() {
     showRefreshIndicator();
 
     try {
-        const res = await fetch("https://nepseapi-ouhd.onrender.com/api/live-nepse");
-        const json = await res.json();
+        const json = await apiClient.get("https://nepseapi-ouhd.onrender.com/api/live-nepse");
 
         // Handle array & object responses
         const data = Array.isArray(json)
@@ -179,7 +178,7 @@ function displayWatchlistData(data) {
         return;
     }
     
-    tbody.innerHTML = "";
+    domUtils.clearNode(tbody);
 
     if (!data.length) {
         showEmptyWatchlist();
@@ -192,82 +191,88 @@ function displayWatchlistData(data) {
             maximumFractionDigits: 2
         });
 
+    const fragment = document.createDocumentFragment();
+
     data.forEach(item => {
-        const row = document.createElement("tr");
         const percentageChange = parseFloat(item.percentageChange) || 0;
         const currentPrice = parseFloat(item.lastTradedPrice) || 0;
         
-        // Get previous price data
         const prevData = previousPrices[item.symbol];
-        // Only show change if price difference is significant (more than 0.01% or 0.01 units)
         const priceDiff = prevData ? Math.abs(currentPrice - prevData.price) : 0;
         const priceChangePercent = prevData && prevData.price > 0 ? (priceDiff / prevData.price) * 100 : 0;
         const priceChanged = prevData && (priceDiff > 0.01 || priceChangePercent > 0.01);
-        const significantChange = prevData && Math.abs(percentageChange - prevData.percentageChange) >= 1; // 1% change threshold
+        const significantChange = prevData && Math.abs(percentageChange - prevData.percentageChange) >= 1;
         
-        // Determine price direction indicator
-        let priceIndicator = '';
-        let priceChangeClass = '';
+        const rowClasses = ['draggable-row'];
+        let priceIndicator = null;
+
         if (priceChanged && prevData) {
             if (currentPrice > prevData.price) {
-                priceIndicator = '<span class="price-up">↑</span>';
-                priceChangeClass = 'price-increased';
+                priceIndicator = domUtils.createElement('span', { className: 'price-up', textContent: '↑' });
+                rowClasses.push('price-increased');
             } else if (currentPrice < prevData.price) {
-                priceIndicator = '<span class="price-down">↓</span>';
-                priceChangeClass = 'price-decreased';
+                priceIndicator = domUtils.createElement('span', { className: 'price-down', textContent: '↓' });
+                rowClasses.push('price-decreased');
             }
         }
 
         if (percentageChange > 0) {
-            row.classList.add("positive");
+            rowClasses.push("positive");
         } else if (percentageChange < 0) {
-            row.classList.add("negative");
+            rowClasses.push("negative");
         } else {
-            row.classList.add("unchanged");
+            rowClasses.push("unchanged");
         }
 
-        // Add significant change class for large moves (>8% or <-8%)
         if (Math.abs(percentageChange) >= 8) {
-            row.classList.add("significant-change");
+            rowClasses.push("significant-change");
         }
 
-        // Add classes for price change indicators
         if (priceChanged) {
-            row.classList.add('price-updated');
+            rowClasses.push('price-updated');
             if (significantChange) {
-                row.classList.add('significant-price-change');
+                rowClasses.push('significant-price-change');
             }
         }
-        if (priceChangeClass) {
-            row.classList.add(priceChangeClass);
-        }
 
-        // Make row draggable
-        row.draggable = true;
-        row.dataset.symbol = item.symbol;
-        row.classList.add('draggable-row');
+        const row = domUtils.createElement('tr', {
+            className: rowClasses,
+            attributes: { draggable: 'true', 'data-symbol': item.symbol },
+            children: [
+                domUtils.createElement('td', { className: 'drag-handle', attributes: { title: 'Drag to reorder' }, textContent: '☰' }),
+                domUtils.createElement('td', { 
+                    className: 'middle', 
+                    children: [
+                        domUtils.createElement('strong', { textContent: item.symbol }),
+                        document.createTextNode(' '),
+                        priceIndicator || document.createTextNode('')
+                    ] 
+                }),
+                domUtils.createElement('td', { className: ['right', 'price-cell'], textContent: formatNumber(item.lastTradedPrice) }),
+                domUtils.createElement('td', { className: 'right', textContent: String(item.lastTradedVolume) }),
+                domUtils.createElement('td', { className: 'right', textContent: formatNumber(item.change) }),
+                domUtils.createElement('td', { className: 'right', textContent: `${item.percentageChange}%` }),
+                domUtils.createElement('td', { className: 'right', textContent: formatNumber(item.openPrice) }),
+                domUtils.createElement('td', { className: 'right', textContent: formatNumber(item.highPrice) }),
+                domUtils.createElement('td', { className: 'right', textContent: formatNumber(item.lowPrice) }),
+                domUtils.createElement('td', { className: 'right', textContent: formatNumber(item.previousClose) }),
+                domUtils.createElement('td', { className: 'right', textContent: String(item.totalTradeQuantity) }),
+                domUtils.createElement('td', { className: 'right', textContent: formatNumber(item.totalTradeValue) }),
+                domUtils.createElement('td', { 
+                    className: 'middle', 
+                    children: [
+                        domUtils.createElement('button', {
+                            className: 'remove-btn',
+                            attributes: { 'data-symbol': item.symbol, title: 'Remove from watchlist' },
+                            textContent: '✕'
+                        })
+                    ]
+                })
+            ]
+        });
 
-        row.innerHTML = `
-            <td class="drag-handle" title="Drag to reorder">☰</td>
-            <td class="middle"><strong>${item.symbol}</strong> ${priceIndicator}</td>
-            <td class="right price-cell">${formatNumber(item.lastTradedPrice)}</td>
-            <td class="right">${item.lastTradedVolume}</td>
-            <td class="right">${formatNumber(item.change)}</td>
-            <td class="right">${item.percentageChange}%</td>
-            <td class="right">${formatNumber(item.openPrice)}</td>
-            <td class="right">${formatNumber(item.highPrice)}</td>
-            <td class="right">${formatNumber(item.lowPrice)}</td>
-            <td class="right">${formatNumber(item.previousClose)}</td>
-            <td class="right">${(item.totalTradeQuantity)}</td>
-            <td class="right">${formatNumber(item.totalTradeValue)}</td>
-            <td class="middle">
-                <button class="remove-btn" data-symbol="${item.symbol}" title="Remove from watchlist">✕</button>
-            </td>
-        `;
-
-        tbody.appendChild(row);
+        fragment.appendChild(row);
         
-        // Add flash animation if price changed
         if (priceChanged) {
             setTimeout(() => {
                 row.classList.add('flash-animation');
@@ -278,18 +283,18 @@ function displayWatchlistData(data) {
         }
     });
 
-    // Add event listeners to remove buttons
-    document.querySelectorAll('.remove-btn').forEach(btn => {
+    tbody.appendChild(fragment);
+
+    tbody.querySelectorAll('.remove-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             const symbol = e.target.getAttribute('data-symbol');
             if (confirm(`Remove ${symbol} from watchlist?`)) {
                 removeFromWatchlist(symbol);
-                loadWatchlistData(); // Reload data
+                loadWatchlistData();
             }
         });
     });
 
-    // Initialize drag and drop
     initDragAndDrop();
 }
 

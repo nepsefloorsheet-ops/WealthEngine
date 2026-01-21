@@ -56,6 +56,11 @@
   position: relative;
 }
 
+header.open {
+  display: flex !important;
+  visibility: visible !important;
+}
+
 .loading-overlay {
   position: absolute;
   inset: 0;

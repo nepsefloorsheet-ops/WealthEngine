@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
       } else return lastThree + "." + decPart;
     }
 
-    function clearElement(el) { if (el) el.innerHTML = ""; }
+    function clearElement(el) { domUtils.clearNode(el); }
 
     return { parseAmount, formatNepaliNumber, clearElement };
   })();
@@ -36,21 +36,24 @@ document.addEventListener("DOMContentLoaded", () => {
   ========================================================= */
   const Skeletons = (() => {
     function createTableRow(cols) {
-        let cells = "";
-        for(let i=0; i<cols; i++) {
-            cells += `<td><div class="skeleton sk-cell"></div></td>`;
-        }
-        return `<tr>${cells}</tr>`;
+        return domUtils.createElement('tr', {
+            children: Array(cols).fill(0).map(() => 
+                domUtils.createElement('td', {
+                    children: [domUtils.createElement('div', { className: 'skeleton sk-cell' })]
+                })
+            )
+        });
     }
 
     function show(containerId, cols, rows = 5) {
         const container = document.getElementById(containerId);
         if (!container) return;
-        let html = "";
+        domUtils.clearNode(container);
+        const fragment = document.createDocumentFragment();
         for(let i=0; i<rows; i++) {
-            html += createTableRow(cols);
+            fragment.appendChild(createTableRow(cols));
         }
-        container.innerHTML = html;
+        container.appendChild(fragment);
     }
 
     return { show };
@@ -224,46 +227,60 @@ document.addEventListener("DOMContentLoaded", () => {
       const activeHead = document.getElementById(`head-${type}`);
       if (activeHead) activeHead.style.display = "";
 
-      watchBody.innerHTML = "";
+      domUtils.clearNode(watchBody);
       
       if (watchData[type].length === 0) {
-        // If we are currently loading from API, don't show "No data available"
-        // as the Skeletons should be visible.
         if (LiveTopMarket && LiveTopMarket.isLoading && LiveTopMarket.isLoading()) {
             return; 
         }
-        watchBody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:20px; color:var(--text-muted);">No data available</td></tr>`;
+        watchBody.appendChild(domUtils.createElement('tr', {
+            children: [
+                domUtils.createElement('td', {
+                    attributes: { colspan: '7' },
+                    styles: { textAlign: 'center', padding: '20px', color: 'var(--text-muted)' },
+                    textContent: 'No data available'
+                })
+            ]
+        }));
         return;
       }
 
+      const fragment = document.createDocumentFragment();
+
       watchData[type].forEach(r => {
+        let row;
         if (type === "indwch") {
-          watchBody.insertAdjacentHTML("beforeend", `
-            <tr>
-              <td>${r.symbol}</td>
-              <td class="o">${Utils.formatNepaliNumber(r.ltp)}</td>
-              <td class="chg-driver o">${r.change}</td>
-              <td class="o">${r.pchange}%</td>
-            </tr>
-          `);
+          row = domUtils.createElement('tr', {
+              children: [
+                  domUtils.createElement('td', { textContent: r.symbol }),
+                  domUtils.createElement('td', { className: 'o', textContent: Utils.formatNepaliNumber(r.ltp) }),
+                  domUtils.createElement('td', { className: ['chg-driver', 'o'], textContent: String(r.change) }),
+                  domUtils.createElement('td', { className: 'o', textContent: `${r.pchange}%` })
+              ]
+          });
         } else {
-          watchBody.insertAdjacentHTML("beforeend", `
-            <tr>
-              <td>${r.symbol}</td>
-              <td class="o">${Utils.formatNepaliNumber(r.open)}</td>
-              <td class="o">${Utils.formatNepaliNumber(r.high)}</td>
-              <td class="o">${Utils.formatNepaliNumber(r.low)}</td>
-              <td class="o">${Utils.formatNepaliNumber(r.ltp)}</td>
-              <td class="chg-driver o">${(r.change).toLocaleString("en-IN", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-          })}</td>
-              <td class="o">${r.pchange}%</td>
-            </tr>
-          `);
+          row = domUtils.createElement('tr', {
+              children: [
+                  domUtils.createElement('td', { textContent: r.symbol }),
+                  domUtils.createElement('td', { className: 'o', textContent: Utils.formatNepaliNumber(r.open) }),
+                  domUtils.createElement('td', { className: 'o', textContent: Utils.formatNepaliNumber(r.high) }),
+                  domUtils.createElement('td', { className: 'o', textContent: Utils.formatNepaliNumber(r.low) }),
+                  domUtils.createElement('td', { className: 'o', textContent: Utils.formatNepaliNumber(r.ltp) }),
+                  domUtils.createElement('td', { 
+                      className: ['chg-driver', 'o'], 
+                      textContent: (r.change).toLocaleString("en-IN", {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2
+                      }) 
+                  }),
+                  domUtils.createElement('td', { className: 'o', textContent: `${r.pchange}%` })
+              ]
+          });
         }
+        fragment.appendChild(row);
       });
 
+      watchBody.appendChild(fragment);
       RowColor.apply();
     }
 
@@ -405,98 +422,55 @@ document.addEventListener("DOMContentLoaded", () => {
           }
       }
 
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout
-
-      Promise.allSettled([
-        fetch(API_URL, { signal: controller.signal }).then(r => r.json()), // Primary (Companies)
-        fetch(SECONDARY_API_URL, { signal: controller.signal }).then(r => r.json()) // Secondary (Summary/Indices)
-      ]).then(results => {
+      apiClient.request(API_URL).then(res => {
+          let companies = Array.isArray(res.data) ? res.data : (res.liveData || []);
           
-          let companies = [];
-          let subIndices = [];
-          let summary = {};
-
-          // Process Primary API (Companies)
-          if (results[0].status === 'fulfilled') {
-              const res = results[0].value;
-              // New API returns data in 'data' or 'liveData' field based on my tests
-              // 'data' was confirmed in latest test.
-              if (res.data && Array.isArray(res.data)) {
-                  companies = res.data;
-              } else if (res.liveData && Array.isArray(res.liveData)) {
-                  companies = res.liveData;
-              }
-          } else {
-              console.error("Primary API Failed:", results[0].reason);
-          }
-
-          // Process Secondary API (Summary + Indices)
-          if (results[1].status === 'fulfilled') {
-              const res = results[1].value;
-              subIndices = res.subIndices || [];
-              summary = res.marketSummary || {};
+          // Secondary fetch for summary/indices
+          return apiClient.get(SECONDARY_API_URL).then(res2 => {
+              const subIndices = res2.subIndices || [];
+              const summary = res2.marketSummary || {};
               
-              // Fallback for companies if Primary failed completely
-              if (companies.length === 0 && res.liveCompanyData) {
-                  console.warn("Using fallback company data from Secondary API");
-                  companies = res.liveCompanyData;
+              if (companies.length === 0 && res2.liveCompanyData) {
+                  companies = res2.liveCompanyData;
               }
-          } else {
-              console.error("Secondary API Failed:", results[1].reason);
-          }
 
-          // 1. Update Market Summary Cards
-          updateMarketSummaryCards(summary);
+              updateMarketSummaryCards(summary);
 
-          // 2. Filter unwanted sectors
-          const filtered = companies.filter(
-            d => !EXCLUDED_SECTORS.includes(d.sector)
-          );
+              const filtered = companies.filter(
+                d => !EXCLUDED_SECTORS.includes(d.sector)
+              );
 
-          /* ---------- TOP GAINERS ---------- */
-          gainers = filtered
-            .filter(d => (d.percentageChange || 0) > 0)
-            .sort((a, b) => b.percentageChange - a.percentageChange)
-            .slice(0, 10);
+              gainers = filtered
+                .filter(d => (d.percentageChange || 0) > 0)
+                .sort((a, b) => b.percentageChange - a.percentageChange)
+                .slice(0, 10);
 
-          /* ---------- TOP LOSERS ---------- */
-          losers = filtered
-            .filter(d => (d.percentageChange || 0) < 0)
-            .sort((a, b) => a.percentageChange - b.percentageChange)
-            .slice(0, 10);
+              losers = filtered
+                .filter(d => (d.percentageChange || 0) < 0)
+                .sort((a, b) => a.percentageChange - b.percentageChange)
+                .slice(0, 10);
 
-          /* ---------- TOP TURNOVER ---------- */
-          turnoverList = [...filtered]
-            .sort((a, b) => (b.totalTradeValue || 0) - (a.totalTradeValue || 0))
-            .slice(0, 10);
+              turnoverList = [...filtered]
+                .sort((a, b) => (b.totalTradeValue || 0) - (a.totalTradeValue || 0))
+                .slice(0, 10);
 
-          /* ---------- TOP VOLUME ---------- */
-          volumeList = [...filtered]
-            .sort((a, b) => (b.totalTradeQuantity || 0) - (a.totalTradeQuantity || 0))
-            .slice(0, 10);
+              volumeList = [...filtered]
+                .sort((a, b) => (b.totalTradeQuantity || 0) - (a.totalTradeQuantity || 0))
+                .slice(0, 10);
 
-          // Render all sections
-          renderGainers();
-          renderLosers();
-          renderTurnover();
-          renderVolume();
+              renderGainers();
+              renderLosers();
+              renderTurnover();
+              renderVolume();
 
-          // UPDATE WATCHLIST & SECTORS WITH LIVE DATA
-          Watchlist.updateFromLive(companies, subIndices);
-          
-          // Save valid data to cache
-          if (gainers.length > 0) saveToCache(companies, subIndices);
+              Watchlist.updateFromLive(companies, subIndices);
+              if (gainers.length > 0) saveToCache(companies, subIndices);
+          });
       })
         .catch((err) => {
-          if (err.name === 'AbortError') {
-              console.error("Dashboard Fetch Timed Out (15s limit)");
-          } else {
-              console.error("Dashboard Fetch Error:", err);
-          }
+            console.error("Dashboard Fetch Error:", err);
         })
         .finally(() => {
-          clearTimeout(timeoutId);
           if (btn) {
               btn.disabled = false;
               btn.classList.remove("spin");
@@ -532,18 +506,22 @@ document.addEventListener("DOMContentLoaded", () => {
       const el = document.getElementById("gainer-body");
       if (!el) return;
 
-      el.innerHTML = "";
+      domUtils.clearNode(el);
+      const fragment = document.createDocumentFragment();
+
       gainers.forEach(r => {
-        el.insertAdjacentHTML("beforeend", `
-        <tr>
-          <td>${r.symbol}</td>
-          <td class="o">${Utils.formatNepaliNumber(r.lastTradedPrice)}</td>
-          <td class="chg-driver o">${r.change}</td>
-          <td class="o">${r.percentageChange}%</td>
-        </tr>
-      `);
+        const row = domUtils.createElement('tr', {
+            children: [
+                domUtils.createElement('td', { textContent: r.symbol }),
+                domUtils.createElement('td', { className: 'o', textContent: Utils.formatNepaliNumber(r.lastTradedPrice) }),
+                domUtils.createElement('td', { className: ['chg-driver', 'o'], textContent: String(r.change) }),
+                domUtils.createElement('td', { className: 'o', textContent: `${r.percentageChange}%` })
+            ]
+        });
+        fragment.appendChild(row);
       });
 
+      el.appendChild(fragment);
       RowColor.apply();
     }
 
@@ -551,18 +529,22 @@ document.addEventListener("DOMContentLoaded", () => {
       const el = document.getElementById("loser-body");
       if (!el) return;
 
-      el.innerHTML = "";
+      domUtils.clearNode(el);
+      const fragment = document.createDocumentFragment();
+
       losers.forEach(r => {
-        el.insertAdjacentHTML("beforeend", `
-        <tr>
-          <td>${r.symbol}</td>
-          <td class="o">${Utils.formatNepaliNumber(r.lastTradedPrice)}</td>
-          <td class="chg-driver o">${r.change}</td>
-          <td class="o">${r.percentageChange}%</td>
-        </tr>
-      `);
+        const row = domUtils.createElement('tr', {
+            children: [
+                domUtils.createElement('td', { textContent: r.symbol }),
+                domUtils.createElement('td', { className: 'o', textContent: Utils.formatNepaliNumber(r.lastTradedPrice) }),
+                domUtils.createElement('td', { className: ['chg-driver', 'o'], textContent: String(r.change) }),
+                domUtils.createElement('td', { className: 'o', textContent: `${r.percentageChange}%` })
+            ]
+        });
+        fragment.appendChild(row);
       });
 
+      el.appendChild(fragment);
       RowColor.apply();
     }
 
@@ -570,32 +552,40 @@ document.addEventListener("DOMContentLoaded", () => {
       const el = document.getElementById("turnover-body");
       if (!el) return;
 
-      el.innerHTML = "";
+      domUtils.clearNode(el);
+      const fragment = document.createDocumentFragment();
+
       turnoverList.forEach(r => {
-        el.insertAdjacentHTML("beforeend", `
-        <tr>
-          <td>${r.symbol}</td>
-          <td class="o">${Utils.formatNepaliNumber(r.totalTradeValue)}</td>
-          <td class="o">${Utils.formatNepaliNumber(r.lastTradedPrice)}</td>
-        </tr>
-      `);
+        const row = domUtils.createElement('tr', {
+            children: [
+                domUtils.createElement('td', { textContent: r.symbol }),
+                domUtils.createElement('td', { className: 'o', textContent: Utils.formatNepaliNumber(r.totalTradeValue) }),
+                domUtils.createElement('td', { className: 'o', textContent: Utils.formatNepaliNumber(r.lastTradedPrice) })
+            ]
+        });
+        fragment.appendChild(row);
       });
+      el.appendChild(fragment);
     }
 
     function renderVolume() {
       const el = document.getElementById("volume-body");
       if (!el) return;
 
-      el.innerHTML = "";
+      domUtils.clearNode(el);
+      const fragment = document.createDocumentFragment();
+
       volumeList.forEach(r => {
-        el.insertAdjacentHTML("beforeend", `
-        <tr>
-          <td>${r.symbol}</td>
-          <td class="o">${Utils.formatNepaliNumber(r.totalTradeQuantity)}</td>
-          <td class="o">${Utils.formatNepaliNumber(r.lastTradedPrice)}</td>
-        </tr>
-      `);
+        const row = domUtils.createElement('tr', {
+            children: [
+                domUtils.createElement('td', { textContent: r.symbol }),
+                domUtils.createElement('td', { className: 'o', textContent: Utils.formatNepaliNumber(r.totalTradeQuantity) }),
+                domUtils.createElement('td', { className: 'o', textContent: Utils.formatNepaliNumber(r.lastTradedPrice) })
+            ]
+        });
+        fragment.appendChild(row);
       });
+      el.appendChild(fragment);
     }
 
     /* =========================================================
@@ -630,9 +620,80 @@ document.addEventListener("DOMContentLoaded", () => {
   })();
 
   /* =========================================================
+     DASHBOARD CHART MODULE
+  ========================================================= */
+  const DashboardChart = (() => {
+    const container = document.querySelector(".chart");
+    const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTTlkVfkIa77xY5_uD4php6FbtZkMVoAXoxw97ZFKfYX0wiztxlRgSiqtTxTIDRSFq2YblS7Hg-BlbK/pub?gid=0&single=true&output=csv';
+    
+    let chart = null;
+    let candleSeries = null;
+
+    async function init() {
+      if (!container || !window.LightweightCharts) return;
+      
+      domUtils.clearNode(container);
+      const chartEl = domUtils.createElement('div', { 
+        styles: { width: '100%', height: '100%' } 
+      });
+      container.appendChild(chartEl);
+
+      chart = LightweightCharts.createChart(chartEl, {
+        layout: { 
+          background: { color: 'transparent' }, 
+          textColor: '#9ca3af' 
+        },
+        grid: {
+          vertLines: { color: 'rgba(255, 255, 255, 0.05)' },
+          horzLines: { color: 'rgba(255, 255, 255, 0.05)' }
+        },
+        timeScale: { borderColor: 'rgba(255, 255, 255, 0.1)' }
+      });
+
+      candleSeries = chart.addCandlestickSeries({
+        upColor: '#26a69a', downColor: '#ef5350',
+        borderVisible: false, wickUpColor: '#26a69a', wickDownColor: '#ef5350'
+      });
+
+      try {
+        const res = await fetch(SHEET_URL);
+        const text = await res.text();
+        const lines = text.trim().split('\n').slice(1);
+        const data = lines.map(line => {
+          const cols = line.split(',');
+          if (cols.length < 6 || cols[1].trim() !== 'NEPSE') return null;
+          return {
+            time: cols[0].trim(),
+            open: parseFloat(cols[2]),
+            high: parseFloat(cols[3]),
+            low: parseFloat(cols[4]),
+            close: parseFloat(cols[5])
+          };
+        }).filter(d => d && !isNaN(d.close));
+
+        data.sort((a,b) => new Date(a.time) - new Date(b.time));
+        candleSeries.setData(data);
+      } catch (e) {
+        console.error("Dashboard Chart Error:", e);
+        container.textContent = "Failed to load chart data.";
+      }
+
+      window.addEventListener('resize', () => {
+        chart.applyOptions({ 
+          width: container.clientWidth, 
+          height: container.clientHeight 
+        });
+      });
+    }
+
+    return { init };
+  })();
+
+  /* =========================================================
      INITIAL LOAD
   ========================================================= */
   
+  DashboardChart.init();
   LiveTopMarket.init();
   // Initialize
   TradeSummary.update();

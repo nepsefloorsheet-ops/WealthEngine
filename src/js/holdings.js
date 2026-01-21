@@ -47,26 +47,31 @@ document.addEventListener('DOMContentLoaded', () => {
     const showToast = (title, message, type = 'info') => {
         let container = document.querySelector('.toast-container');
         if (!container) {
-            container = document.createElement('div');
-            container.className = 'toast-container';
+            container = domUtils.createElement('div', { className: 'toast-container' });
             document.body.appendChild(container);
         }
 
-        const toast = document.createElement('div');
-        toast.className = `toast toast-${type}`;
-        
         let icon = 'fa-info-circle';
         if (type === 'success') icon = 'fa-check-circle';
         if (type === 'danger') icon = 'fa-exclamation-triangle';
         if (type === 'warning') icon = 'fa-bell';
 
-        toast.innerHTML = `
-            <div class="toast-icon"><i class="fas ${icon}"></i></div>
-            <div class="toast-info">
-                <div class="toast-title">${title}</div>
-                <div class="toast-message">${message}</div>
-            </div>
-        `;
+        const toast = domUtils.createElement('div', {
+            className: ['toast', `toast-${type}`],
+            children: [
+                domUtils.createElement('div', { 
+                    className: 'toast-icon', 
+                    children: [domUtils.createElement('i', { className: ['fas', icon] })] 
+                }),
+                domUtils.createElement('div', {
+                    className: 'toast-info',
+                    children: [
+                        domUtils.createElement('div', { className: 'toast-title', textContent: title }),
+                        domUtils.createElement('div', { className: 'toast-message', textContent: message })
+                    ]
+                })
+            ]
+        });
 
         container.appendChild(toast);
 
@@ -326,8 +331,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         tickerWrapper.style.display = 'block';
+        domUtils.clearNode(tickerContent);
 
-        let html = "";
+        const fragment = document.createDocumentFragment();
         // Duplicate data for a seamless loop effect
         const displayData = [...data, ...data]; 
 
@@ -339,7 +345,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const pChange = prev > 0 ? (change / prev) * 100 : 0;
             
             let pnlClass = 'text-neutral';
-            let icon = '■'; // Square for unchange
+            let icon = '■';
             if (change > 0) {
                 pnlClass = 'text-success';
                 icon = '▲';
@@ -348,131 +354,164 @@ document.addEventListener('DOMContentLoaded', () => {
                 icon = '▼';
             }
 
-            html += `
-                <span class="holding-item">
-                    <span class="h-sym">${sym}</span>
-                    <span class="h-price">${ltp.toFixed(2)}</span>
-                    <span class="h-change ${pnlClass}">${icon} ${pChange.toFixed(2)}%</span>
-                </span>
-            `;
+            const span = domUtils.createElement('span', {
+                className: 'holding-item',
+                children: [
+                    domUtils.createElement('span', { className: 'h-sym', textContent: sym }),
+                    domUtils.createElement('span', { className: 'h-price', textContent: ltp.toFixed(2) }),
+                    domUtils.createElement('span', { 
+                        className: ['h-change', pnlClass], 
+                        textContent: `${icon} ${pChange.toFixed(2)}%` 
+                    })
+                ]
+            });
+            fragment.appendChild(span);
         });
 
-        tickerContent.innerHTML = html;
+        tickerContent.appendChild(fragment);
     };
 
     // Render Sector Analysis
     const renderSectorAnalysis = (data) => {
-        // Check if container exists, if not create it
         let sectorContainer = document.getElementById('sector-analysis-container');
         if (!sectorContainer) {
             const summaryContainer = document.querySelector('.holdings-summary-container');
             if (summaryContainer) {
-                // Insert after summary container
-                sectorContainer = document.createElement('div');
-                sectorContainer.id = 'sector-analysis-container';
-                sectorContainer.className = 'holdings-summary-container'; // Reuse analytics flex/grid style
-                sectorContainer.style.marginTop = '20px';
+                sectorContainer = domUtils.createElement('div', {
+                    id: 'sector-analysis-container',
+                    className: 'holdings-summary-container',
+                    styles: { marginTop: '20px' }
+                });
                 summaryContainer.parentNode.insertBefore(sectorContainer, summaryContainer.nextSibling);
             } else {
-                return; // Can't find place to insert
+                return;
             }
         }
 
-        // Calculate Sector Metrics
         const sectorMap = {};
         let totalPortfolioValue = 0;
 
         data.forEach(item => {
             const sector = item._sector || 'Unknown';
-            // Init if not exists
             if (!sectorMap[sector]) sectorMap[sector] = 0;
-            // Add value
             sectorMap[sector] += item._valLtp;
             totalPortfolioValue += item._valLtp;
         });
 
-        // Convert to Array & Sort
         const sortedSectors = Object.entries(sectorMap)
             .map(([name, value]) => ({
                 name,
                 value,
                 percent: totalPortfolioValue > 0 ? (value / totalPortfolioValue) * 100 : 0
             }))
-            .sort((a, b) => b.value - a.value); // Descending order
+            .sort((a, b) => b.value - a.value);
 
-        // Render HTML
-        let html = `
-            <div class="summary-card" style="grid-column: 1 / -1;">
-                <h3>Sector Allocation</h3>
-                <div class="sector-bars-wrapper" style="margin-top: 15px; display: grid; gap: 15px;">
-        `;
+        domUtils.clearNode(sectorContainer);
 
-        sortedSectors.forEach(sec => {
-            html += `
-                <div class="sector-row">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 14px;">
-                        <span>${sec.name}</span>
-                        <span>${formatCurrency(sec.value)} (${sec.percent.toFixed(1)}%)</span>
-                    </div>
-                    <div style="background: rgba(255,255,255,0.1); height: 8px; border-radius: 4px; overflow: hidden;">
-                        <div style="background: var(--link-active); width: ${sec.percent}%; height: 100%;"></div>
-                    </div>
-                </div>
-            `;
+        const card = domUtils.createElement('div', {
+            className: 'summary-card',
+            styles: { gridColumn: '1 / -1' },
+            children: [
+                domUtils.createElement('h3', { textContent: 'Sector Allocation' }),
+                domUtils.createElement('div', {
+                    className: 'sector-bars-wrapper',
+                    styles: { marginTop: '15px', display: 'grid', gap: '15px' },
+                    children: sortedSectors.map(sec => 
+                        domUtils.createElement('div', {
+                            className: 'sector-row',
+                            children: [
+                                domUtils.createElement('div', {
+                                    styles: { display: 'flex', justifyContent: 'space-between', marginBottom: '5px', fontSize: '14px' },
+                                    children: [
+                                        domUtils.createElement('span', { textContent: sec.name }),
+                                        domUtils.createElement('span', { textContent: `${formatCurrency(sec.value)} (${sec.percent.toFixed(1)}%)` })
+                                    ]
+                                }),
+                                domUtils.createElement('div', {
+                                    styles: { background: 'rgba(255,255,255,0.1)', height: '8px', borderRadius: '4px', overflow: 'hidden' },
+                                    children: [
+                                        domUtils.createElement('div', {
+                                            styles: { background: 'var(--link-active)', width: `${sec.percent}%`, height: '100%' }
+                                        })
+                                    ]
+                                })
+                            ]
+                        })
+                    )
+                })
+            ]
         });
 
-        html += `   </div>
-            </div>
-        `;
-
-        sectorContainer.innerHTML = html;
+        sectorContainer.appendChild(card);
     };
 
     // Render Table
     const renderTable = (data) => {
         if (!tableBody) return;
-        tableBody.innerHTML = '';
+        domUtils.clearNode(tableBody);
 
         if (!data || data.length === 0) {
-            tableBody.innerHTML = `
-                <tr class="empty-state">
-                    <td colspan="8" style="text-align: center; padding: 40px; color: var(--text-muted);">
-                        No holdings found.
-                    </td>
-                </tr>
-            `;
+            tableBody.appendChild(domUtils.createElement('tr', {
+                className: 'empty-state',
+                children: [
+                    domUtils.createElement('td', {
+                        attributes: { colspan: '8' },
+                        styles: { textAlign: 'center', padding: '40px', color: 'var(--text-muted)' },
+                        textContent: 'No holdings found.'
+                    })
+                ]
+            }));
             return;
         }
 
+        const fragment = document.createDocumentFragment();
+
         data.forEach(item => {
-            const row = document.createElement('tr');
-            row.style.cursor = 'pointer'; // Make it clear it's clickable
-            
             const symbol = item['Symbol'] || '-';
             const totalBal = parseFloat(item['CDS Total Balance']) || 0;
             const freeBal = parseFloat(item['CDS Free Balance']) || 0;
             const wealthEngine = item['WealthEngine'] || '-';
             const ltp = item._ltp || 0;
 
-            row.onclick = () => openOrderModal(symbol, ltp);
-            
-            // Highlight row if Free Balance is 0
+            const rowStyles = { cursor: 'pointer' };
             if (freeBal === 0) {
-                row.style.background = 'rgba(220, 38, 38, 0.1)';
+                rowStyles.background = 'rgba(220, 38, 38, 0.1)';
             }
 
-            row.innerHTML = `
-                <td><span class="scrip-name">${symbol}</span></td>
-                <td class="text-right">${formatNumber(totalBal)}</td>
-                <td class="text-right ${freeBal === 0 ? 'text-danger' : ''}">${formatNumber(freeBal)}</td>
-                <td class="text-right">${wealthEngine}</td>
-                <td class="text-right">${(item._prevClose).toLocaleString({maximumFractionDigits: 2, minimumFractionDigits: 2})}</td>
-                <td class="text-right">${(item._valCp).toLocaleString({maximumFractionDigits: 2, minimumFractionDigits: 2})}</td>
-                <td class="text-right">${(item._ltp).toLocaleString({maximumFractionDigits: 2, minimumFractionDigits: 2})}</td>
-                <td class="text-right fw-bold">${(item._valLtp).toLocaleString({maximumFractionDigits: 2, minimumFractionDigits: 2})}</td>
-            `;
-            tableBody.appendChild(row);
+            const row = domUtils.createElement('tr', {
+                styles: rowStyles,
+                children: [
+                    domUtils.createElement('td', { children: [domUtils.createElement('span', { className: 'scrip-name', textContent: symbol })] }),
+                    domUtils.createElement('td', { className: 'text-right', textContent: formatNumber(totalBal) }),
+                    domUtils.createElement('td', { 
+                        className: ['text-right', freeBal === 0 ? 'text-danger' : ''], 
+                        textContent: formatNumber(freeBal) 
+                    }),
+                    domUtils.createElement('td', { className: 'text-right', textContent: String(wealthEngine) }),
+                    domUtils.createElement('td', { 
+                        className: 'text-right', 
+                        textContent: (item._prevClose).toLocaleString("en-IN", { maximumFractionDigits: 2, minimumFractionDigits: 2 }) 
+                    }),
+                    domUtils.createElement('td', { 
+                        className: 'text-right', 
+                        textContent: (item._valCp).toLocaleString("en-IN", { maximumFractionDigits: 2, minimumFractionDigits: 2 }) 
+                    }),
+                    domUtils.createElement('td', { 
+                        className: 'text-right', 
+                        textContent: (item._ltp).toLocaleString("en-IN", { maximumFractionDigits: 2, minimumFractionDigits: 2 }) 
+                    }),
+                    domUtils.createElement('td', { 
+                        className: ['text-right', 'fw-bold'], 
+                        textContent: (item._valLtp).toLocaleString("en-IN", { maximumFractionDigits: 2, minimumFractionDigits: 2 }) 
+                    })
+                ]
+            });
+
+            row.addEventListener('click', () => openOrderModal(symbol, ltp));
+            fragment.appendChild(row);
         });
+
+        tableBody.appendChild(fragment);
     };
 
     // Sorting Function
@@ -544,31 +583,49 @@ document.addEventListener('DOMContentLoaded', () => {
     const fetchData = async () => {
         try {
             if(tableBody && tableBody.children.length === 0) {
-                tableBody.innerHTML = `<tr class="empty-state"><td colspan="8" style="text-align: center; padding: 20px;"><i class="fas fa-spinner fa-spin"></i> Loading...</td></tr>`;
+                domUtils.clearNode(tableBody);
+                tableBody.appendChild(domUtils.createElement('tr', {
+                    className: 'empty-state',
+                    children: [
+                        domUtils.createElement('td', {
+                            attributes: { colspan: '8' },
+                            styles: { textAlign: 'center', padding: '20px' },
+                            children: [
+                                domUtils.createElement('i', { className: ['fas', 'fa-spinner', 'fa-spin'] }),
+                                document.createTextNode(' Loading...')
+                            ]
+                        })
+                    ]
+                }));
             }
 
-            const response = await fetch(API_URL);
-            if (!response.ok) throw new Error('Network response was not ok');
+            const json = await apiClient.get(API_URL);
             
-            const json = await response.json();
-            
-            // Save symbols for DP Watchlist (Dashboard)
             if (Array.isArray(json)) {
                 const symbols = [...new Set(json.map(item => item['Symbol']))];
                 localStorage.setItem('holding_symbols', JSON.stringify(symbols));
             }
 
-            const enriched = enrichData(json); // Add prices
+            const enriched = enrichData(json);
             rawData = enriched;
             
-            // Render table only if existing
             if (tableBody) renderTable(enriched);
             updateSummary(enriched);
 
         } catch (error) {
             console.error('Error:', error);
             if (tableBody) {
-                tableBody.innerHTML = `<tr class="empty-state"><td colspan="8" style="text-align: center; color: var(--color-danger);">Failed to load data.</td></tr>`;
+                domUtils.clearNode(tableBody);
+                tableBody.appendChild(domUtils.createElement('tr', {
+                    className: 'empty-state',
+                    children: [
+                        domUtils.createElement('td', {
+                            attributes: { colspan: '8' },
+                            styles: { textAlign: 'center', color: 'var(--color-danger)' },
+                            textContent: 'Failed to load data.'
+                        })
+                    ]
+                }));
             }
         }
     };

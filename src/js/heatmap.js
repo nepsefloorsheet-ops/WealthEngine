@@ -108,8 +108,7 @@ const HeatmapEngine = (() => {
     async function fetchData() {
         showLoaders();
         try {
-            const response = await fetch(API_URL);
-            const json = await response.json();
+            const json = await apiClient.get(API_URL);
             allData = json.liveCompanyData || [];
             
             if (!allData.length) {
@@ -130,14 +129,11 @@ const HeatmapEngine = (() => {
         const filter = document.getElementById('sectorFilter');
         if (!filter) return;
 
-        // Keep the "All Sectors" option
-        filter.innerHTML = '<option value="all">All Sectors</option>';
+        domUtils.clearNode(filter);
+        filter.appendChild(domUtils.createElement('option', { attributes: { value: 'all' }, textContent: 'All Sectors' }));
         
         sectorsList.forEach(sector => {
-            const option = document.createElement('option');
-            option.value = sector;
-            option.textContent = sector;
-            filter.appendChild(option);
+            filter.appendChild(domUtils.createElement('option', { attributes: { value: sector }, textContent: sector }));
         });
     }
 

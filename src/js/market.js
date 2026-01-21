@@ -34,34 +34,26 @@ async function loadNepse() {
         // Shimmer logic: Only show if we have no data
         const tbody = document.getElementById("nepse-body");
         if (tbody && !allData.length) {
-            let skeletons = "";
+            domUtils.clearNode(tbody);
+            const fragment = document.createDocumentFragment();
             for (let i = 0; i < 20; i++) {
-                skeletons += `
-                    <tr>
-                        <td class="middle"><div class="skeleton sk-cell"></div></td>
-                        <td class="right"><div class="skeleton sk-cell"></div></td>
-                        <td class="right"><div class="skeleton sk-cell"></div></td>
-                        <td class="right"><div class="skeleton sk-cell"></div></td>
-                        <td class="right"><div class="skeleton sk-cell"></div></td>
-                        <td class="right"><div class="skeleton sk-cell"></div></td>
-                        <td class="right"><div class="skeleton sk-cell"></div></td>
-                        <td class="right"><div class="skeleton sk-cell"></div></td>
-                        <td class="right"><div class="skeleton sk-cell"></div></td>
-                        <td class="right"><div class="skeleton sk-cell"></div></td>
-                        <td class="right"><div class="skeleton sk-cell"></div></td>
-                        <td class="middle"><div class="skeleton sk-cell"></div></td>
-                    </tr>
-                `;
+                const tr = domUtils.createElement('tr', {
+                    children: Array(12).fill(0).map((_, idx) => 
+                        domUtils.createElement('td', {
+                            className: idx === 0 || idx === 11 ? 'middle' : 'right',
+                            children: [domUtils.createElement('div', { className: 'skeleton sk-cell' })]
+                        })
+                    )
+                });
+                fragment.appendChild(tr);
             }
-            if (tbody) tbody.innerHTML = skeletons;
+            tbody.appendChild(fragment);
         }
 
-        // user requested to switch to this faster API
-        const res = await fetch("https://nepseapi-ouhd.onrender.com/api/live-nepse");
-        const json = await res.json();
+        // Use centralized api client
+        const json = await apiClient.get("https://nepseapi-ouhd.onrender.com/api/live-nepse");
 
         // Handle new API structure: data is in `data` (direct array or wrapper)
-        // Based on analysis: json.data is the array
         const data = Array.isArray(json.data) ? json.data : (json.liveData || []);
 
         // Sort by latest update time (newest first)
@@ -76,7 +68,12 @@ async function loadNepse() {
 
         if (!data.length) {
             const tbody = document.getElementById("nepse-body");
-            if (tbody) tbody.innerHTML = "<tr><td colspan='11'>No data available</td></tr>";
+            if (tbody) {
+                domUtils.clearNode(tbody);
+                tbody.appendChild(domUtils.createElement('tr', {
+                    children: [domUtils.createElement('td', { attributes: { colspan: '12' }, textContent: 'No data available' })]
+                }));
+            }
             updateLastUpdated(null);
             scheduleNext();
             return;
@@ -177,10 +174,12 @@ function displayData(data) {
     const tbody = document.getElementById("nepse-body");
     if (!tbody) return;
     
-    tbody.innerHTML = "";
+    domUtils.clearNode(tbody);
 
     if (!data.length) {
-        tbody.innerHTML = "<tr><td colspan='11'>No data available</td></tr>";
+        tbody.appendChild(domUtils.createElement('tr', {
+            children: [domUtils.createElement('td', { attributes: { colspan: '12' }, textContent: 'No data available' })]
+        }));
         // Still update counts from allData
         updateCounts();
         return;
@@ -192,51 +191,64 @@ function displayData(data) {
             maximumFractionDigits: 2
         });
 
+    const fragment = document.createDocumentFragment();
+
     data.forEach(item => {
-        const row = document.createElement("tr");
         const percentageChange = parseFloat(item.percentageChange) || 0;
+        const classes = [];
 
         if (percentageChange > 0) {
-            row.classList.add("positive");
+            classes.push("positive");
         } else if (percentageChange < 0) {
-            row.classList.add("negative");
+            classes.push("negative");
         } else {
-            row.classList.add("unchanged");
+            classes.push("unchanged");
         }
 
-        // Add significant change class for large moves (>8% or <-8%)
         if (Math.abs(percentageChange) >= 8) {
-            row.classList.add("significant-change");
+            classes.push("significant-change");
         }
 
-        // Check if symbol is in watchlist
         const isWatched = window.watchlistUtils && window.watchlistUtils.isInWatchlist(item.symbol);
         const watchBtnClass = isWatched ? 'watch-btn active' : 'watch-btn';
-        const watchBtnIcon = isWatched ? '⭐' : '☆';
-        const watchBtnTitle = isWatched ? 'Remove from watchlist' : 'Add to watchlist';
+        
+        const row = domUtils.createElement("tr", {
+            className: classes,
+            children: [
+                domUtils.createElement('td', { className: 'middle', children: [domUtils.createElement('strong', { textContent: item.symbol })] }),
+                domUtils.createElement('td', { className: 'right', textContent: formatNumber(item.lastTradedPrice) }),
+                domUtils.createElement('td', { className: 'right', textContent: formatNumber(item.lastTradedVolume) }),
+                domUtils.createElement('td', { className: 'right', textContent: formatNumber(item.change) }),
+                domUtils.createElement('td', { className: 'right', textContent: `${item.percentageChange}%` }),
+                domUtils.createElement('td', { className: 'right', textContent: formatNumber(item.openPrice) }),
+                domUtils.createElement('td', { className: 'right', textContent: formatNumber(item.highPrice) }),
+                domUtils.createElement('td', { className: 'right', textContent: formatNumber(item.lowPrice) }),
+                domUtils.createElement('td', { className: 'right', textContent: formatNumber(item.lastTradedPrice - item.change) }),
+                domUtils.createElement('td', { className: 'right', textContent: String(item.totalTradeQuantity) }),
+                domUtils.createElement('td', { className: 'right', textContent: formatNumber(item.totalTradeValue) }),
+                domUtils.createElement('td', { 
+                    className: 'middle', 
+                    children: [
+                        domUtils.createElement('button', {
+                            className: watchBtnClass,
+                            attributes: { 
+                                'data-symbol': item.symbol,
+                                'title': isWatched ? 'Remove from watchlist' : 'Add to watchlist'
+                            },
+                            textContent: isWatched ? '⭐' : '☆'
+                        })
+                    ]
+                })
+            ]
+        });
 
-        row.innerHTML = `
-                <td class="middle"><strong>${item.symbol}</strong></td>
-                <td class="right">${formatNumber(item.lastTradedPrice)}</td>
-                <td class="right">${formatNumber(item.lastTradedVolume)}</td>
-                <td class="right">${formatNumber(item.change)}</td>
-                <td class="right">${item.percentageChange}%</td>
-                <td class="right">${formatNumber(item.openPrice)}</td>
-                <td class="right">${formatNumber(item.highPrice)}</td>
-                <td class="right">${formatNumber(item.lowPrice)}</td>
-                <td class="right">${formatNumber(item.lastTradedPrice - item.change)}</td>
-                <td class="right">${(item.totalTradeQuantity)}</td>
-                <td class="right">${formatNumber(item.totalTradeValue)}</td>
-                <td class="middle">
-                    <button class="${watchBtnClass}" data-symbol="${item.symbol}" title="${watchBtnTitle}">${watchBtnIcon}</button>
-                </td>
-            `;
-
-        tbody.appendChild(row);
+        fragment.appendChild(row);
     });
 
+    tbody.appendChild(fragment);
+
     // Add event listeners to watchlist buttons
-    document.querySelectorAll('.watch-btn').forEach(btn => {
+    tbody.querySelectorAll('.watch-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             const symbol = e.target.getAttribute('data-symbol');
             if (window.watchlistUtils) {

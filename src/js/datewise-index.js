@@ -30,47 +30,42 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-function fetchData() {
+async function fetchData() {
   const table = document.getElementById("nepse-table-body");
-  if (table) {
-      let skeletons = "";
-      for (let i = 0; i < 15; i++) {
-          skeletons += `
-              <tr>
-                  <td><div class="skeleton sk-cell"></div></td>
-                  <td><div class="skeleton sk-cell"></div></td>
-                  <td><div class="skeleton sk-cell"></div></td>
-                  <td><div class="skeleton sk-cell"></div></td>
-                  <td><div class="skeleton sk-cell"></div></td>
-                  <td><div class="skeleton sk-cell"></div></td>
-                  <td><div class="skeleton sk-cell"></div></td>
-                  <td><div class="skeleton sk-cell"></div></td>
-                  <td><div class="skeleton sk-cell"></div></td>
-                  <td><div class="skeleton sk-cell"></div></td>
-                  <td><div class="skeleton sk-cell"></div></td>
-                  <td><div class="skeleton sk-cell"></div></td>
-                  <td><div class="skeleton sk-cell"></div></td>
-              </tr>
-          `;
-      }
-      table.innerHTML = skeletons;
+  if (!table) return;
+
+  domUtils.clearNode(table);
+  for (let i = 0; i < 15; i++) {
+    const skeletonRow = domUtils.createElement('tr', {
+      children: Array(13).fill(0).map(() => 
+        domUtils.createElement('td', {
+          children: [domUtils.createElement('div', { className: 'skeleton sk-cell' })]
+        })
+      )
+    });
+    table.appendChild(skeletonRow);
   }
 
-  fetch(`${SUPABASE_URL}/rest/v1/nepase_data?select=*&order=trade_date.desc&limit=all`, {
-    headers: {
-      "apikey": ANON_KEY,
-      "Authorization": `Bearer ${ANON_KEY}`
-    }
-  })
-    .then(response => response.json())
-    .then(data => {
-      allNepseData = data;
-      renderTable(data);
-    })
-    .catch(error => {
-      console.error("Error fetching NEPSE data:", error);
-      if (table) table.innerHTML = `<tr><td colspan="13" style="text-align:center; color:red;">Failed to load data</td></tr>`;
+  try {
+    const data = await apiClient.get(`${SUPABASE_URL}/rest/v1/nepase_data?select=*&order=trade_date.desc&limit=all`, {
+      headers: {
+        "apikey": ANON_KEY,
+        "Authorization": `Bearer ${ANON_KEY}`
+      }
     });
+    allNepseData = data;
+    renderTable(data);
+  } catch (error) {
+    console.error("Error fetching NEPSE data:", error);
+    domUtils.clearNode(table);
+    table.appendChild(domUtils.createElement('tr', {
+      children: [domUtils.createElement('td', {
+        attributes: { colspan: '13' },
+        styles: { textAlign: 'center', color: 'red' },
+        textContent: 'Failed to load data'
+      })]
+    }));
+  }
 }
 
 function filterByDate(dateStr) {
@@ -79,7 +74,14 @@ function filterByDate(dateStr) {
 
   if (filtered.length === 0) {
     const table = document.getElementById("nepse-table-body");
-    table.innerHTML = `<tr><td colspan="13" style="text-align:center; padding: 40px; color: var(--text-muted);">No data found for ${dateStr}.</td></tr>`;
+    domUtils.clearNode(table);
+    table.appendChild(domUtils.createElement('tr', {
+      children: [domUtils.createElement('td', {
+        attributes: { colspan: '13' },
+        styles: { textAlign: 'center', padding: '40px', color: 'var(--text-muted)' },
+        textContent: `No data found for ${dateStr}.`
+      })]
+    }));
   }
 }
 
@@ -87,24 +89,25 @@ function renderTable(data) {
   const table = document.getElementById("nepse-table-body");
   if (!table) return;
   
-  table.innerHTML = "";
+  domUtils.clearNode(table);
   data.forEach((row, index) => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-            <td>${index + 1}</td>
-            <td>${row.trade_date}</td>
-            <td class="o">${formatNepaliNumber(row.open_price)}</td>
-            <td class="o">${formatNepaliNumber(row.high_price)}</td>
-            <td class="o">${formatNepaliNumber(row.low_price)}</td>
-            <td class="o">${formatNepaliNumber(row.close_price)}</td>
-            <td class="o">${formatNepaliNumber(row.pt_change)}</td>
-            <td class="o">${formatNepaliNumber(row.change_p)}</td>
-            <td class="o">${formatNepaliNumber(row.w52_high)}</td>
-            <td class="o">${formatNepaliNumber(row.w52_low)}</td>
-            <td class="o">${formatNepaliNumber(row.value)}</td>
-            <td class="o">${formatNepaliNumber(row.volume, 0)}</td>
-            <td class="o">${formatNepaliNumber(row.txn, 0)}</td>
-                `;
+    const tr = domUtils.createElement("tr", {
+      children: [
+        domUtils.createElement("td", { textContent: (index + 1).toString() }),
+        domUtils.createElement("td", { textContent: row.trade_date }),
+        domUtils.createElement("td", { className: "o", textContent: formatNepaliNumber(row.open_price) }),
+        domUtils.createElement("td", { className: "o", textContent: formatNepaliNumber(row.high_price) }),
+        domUtils.createElement("td", { className: "o", textContent: formatNepaliNumber(row.low_price) }),
+        domUtils.createElement("td", { className: "o", textContent: formatNepaliNumber(row.close_price) }),
+        domUtils.createElement("td", { className: "o", textContent: formatNepaliNumber(row.pt_change) }),
+        domUtils.createElement("td", { className: "o", textContent: formatNepaliNumber(row.change_p) }),
+        domUtils.createElement("td", { className: "o", textContent: formatNepaliNumber(row.w52_high) }),
+        domUtils.createElement("td", { className: "o", textContent: formatNepaliNumber(row.w52_low) }),
+        domUtils.createElement("td", { className: "o", textContent: formatNepaliNumber(row.value) }),
+        domUtils.createElement("td", { className: "o", textContent: formatNepaliNumber(row.volume, 0) }),
+        domUtils.createElement("td", { className: "o", textContent: formatNepaliNumber(row.txn, 0) })
+      ]
+    });
     table.appendChild(tr);
   });
 }

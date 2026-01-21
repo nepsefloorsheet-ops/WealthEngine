@@ -460,12 +460,15 @@ function calculatePriceBand() {
 
 // --- MARKET DEPTH ---
 function generateMarketDepth() {
-    let bidsHTML = "";
-    let asksHTML = "";
-    
     // Clear state arrays
     STATE.depth.bids = [];
     STATE.depth.asks = [];
+
+    const bidTable = document.getElementById('bidTable');
+    const askTable = document.getElementById('askTable');
+    
+    domUtils.clearNode(bidTable);
+    domUtils.clearNode(askTable);
 
     for (let i = 1; i <= 5; i++) {
         const bidPrice = parseFloat((STATE.ltp - (i * 0.5) - Math.random()).toFixed(1));
@@ -481,21 +484,26 @@ function generateMarketDepth() {
         STATE.depth.bids.push({ price: bidPrice, vol: bidVol });
         STATE.depth.asks.push({ price: askPrice, vol: askVol });
 
-        bidsHTML += `<tr onclick="fillPrice(${bidPrice})">
-                    <td class="depth-buy" style="color: var(--text-muted)">${bidOrders}</td> 
-                    <td class="depth-buy">${bidVol}</td>
-                    <td class="depth-buy" style="font-weight: bold;">${bidPrice}</td>
-                 </tr>`;
+        const bidRow = domUtils.createElement('tr', {
+            attributes: { onclick: `fillPrice(${bidPrice})` },
+            children: [
+                domUtils.createElement('td', { className: 'depth-buy', styles: { color: 'var(--text-muted)' }, textContent: bidOrders.toString() }),
+                domUtils.createElement('td', { className: 'depth-buy', textContent: bidVol.toString() }),
+                domUtils.createElement('td', { className: 'depth-buy', styles: { fontWeight: 'bold' }, textContent: bidPrice.toString() })
+            ]
+        });
+        bidTable.appendChild(bidRow);
 
-        asksHTML += `<tr onclick="fillPrice(${askPrice})">
-                    <td class="depth-sell" style="font-weight: bold;">${askPrice}</td>
-                    <td class="depth-sell">${askVol}</td>
-                    <td class="depth-sell" style="color: var(--text-muted)">${askOrders}</td>
-                 </tr>`;
+        const askRow = domUtils.createElement('tr', {
+            attributes: { onclick: `fillPrice(${askPrice})` },
+            children: [
+                domUtils.createElement('td', { className: 'depth-sell', styles: { fontWeight: 'bold' }, textContent: askPrice.toString() }),
+                domUtils.createElement('td', { className: 'depth-sell', textContent: askVol.toString() }),
+                domUtils.createElement('td', { className: 'depth-sell', styles: { color: 'var(--text-muted)' }, textContent: askOrders.toString() })
+            ]
+        });
+        askTable.appendChild(askRow);
     }
-
-    document.getElementById('bidTable').innerHTML = bidsHTML;
-    document.getElementById('askTable').innerHTML = asksHTML;
     
     // RENDER VISUALIZER
     renderDepthChart();
@@ -661,25 +669,39 @@ function addRecentOrder(side, qty, price) {
     const color = side === 'buy' ? 'var(--color-success)' : 'var(--color-danger)';
     const total = (qty * price).toFixed(2);
 
-    const row = `
-        <tr data-side="${side}" data-total="${total}" style="border-bottom: 1px solid rgba(255,255,255,0.05);">
-            <td style="padding: 10px;">${now}</td>
-            <td style="padding: 10px;">${STATE.symbol}</td>
-            <td style="padding: 10px; color: ${color}; font-weight: bold;">${side.toUpperCase()}</td>
-            <td style="padding: 10px;">${qty}</td>
-            <td style="padding: 10px;">${price}</td>
-             <td style="padding: 10px;">${total}</td>
-            <td style="padding: 10px; color: #fbbf24;">OPEN</td>
-            <td style="padding: 10px;">
-                <button class="action-btn edit" onclick="showToast('Edit feature coming soon', 'success')"><i class="fas fa-edit"></i></button>
-                <button class="action-btn cancel" onclick="cancelOrder(this)"><i class="fas fa-times"></i></button>
-            </td>
-        </tr>
-    `;
-
     const tbody = document.getElementById('recentOrdersBody');
-    if (tbody.innerText.includes("No orders")) tbody.innerHTML = "";
-    tbody.innerHTML = row + tbody.innerHTML;
+    if (tbody.innerText.includes("No orders")) domUtils.clearNode(tbody);
+
+    const row = domUtils.createElement('tr', {
+        attributes: { 'data-side': side, 'data-total': total },
+        styles: { borderBottom: '1px solid rgba(255,255,255,0.05)' },
+        children: [
+            domUtils.createElement('td', { styles: { padding: '10px' }, textContent: now }),
+            domUtils.createElement('td', { styles: { padding: '10px' }, textContent: STATE.symbol }),
+            domUtils.createElement('td', { styles: { padding: '10px', color: color, fontWeight: 'bold' }, textContent: side.toUpperCase() }),
+            domUtils.createElement('td', { styles: { padding: '10px' }, textContent: qty.toString() }),
+            domUtils.createElement('td', { styles: { padding: '10px' }, textContent: price.toString() }),
+            domUtils.createElement('td', { styles: { padding: '10px' }, textContent: total }),
+            domUtils.createElement('td', { styles: { padding: '10px', color: '#fbbf24' }, textContent: 'OPEN' }),
+            domUtils.createElement('td', {
+                styles: { padding: '10px' },
+                children: [
+                    domUtils.createElement('button', {
+                        className: 'action-btn edit',
+                        attributes: { onclick: "showToast('Edit feature coming soon', 'success')" },
+                        children: [domUtils.createElement('i', { className: 'fas fa-edit' })]
+                    }),
+                    domUtils.createElement('button', {
+                        className: 'action-btn cancel',
+                        attributes: { onclick: 'cancelOrder(this)' },
+                        children: [domUtils.createElement('i', { className: 'fas fa-times' })]
+                    })
+                ]
+            })
+        ]
+    });
+
+    tbody.insertBefore(row, tbody.firstChild);
 }
 
 window.cancelOrder = function (btn) {

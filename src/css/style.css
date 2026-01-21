@@ -387,10 +387,10 @@ body.no-scroll main {
   transition: left 0.3s;
 }
 
-/* Hide global ticker on index if we have the top one */
+/* Hide global ticker on index if we have the top one - User wants to see it
 .page-index .news-ticker {
   display: none !important;
-}
+} */
 
 /* Holdings Ticker Style (Top) */
 .holdings-ticker-wrapper {

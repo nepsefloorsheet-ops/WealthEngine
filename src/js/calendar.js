@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Render Calendar
     const renderCalendar = () => {
-        calendarGrid.innerHTML = '';
+        domUtils.clearNode(calendarGrid);
 
         // Day Headers
         dayNames.forEach(day => {
@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Render Upcoming Events
     const renderEvents = () => {
-        eventsList.innerHTML = '';
+        domUtils.clearNode(eventsList);
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
@@ -131,23 +131,30 @@ document.addEventListener('DOMContentLoaded', () => {
             .slice(0, 5);
 
         if (upcoming.length === 0) {
-            eventsList.innerHTML = '<li style="color: var(--text-muted);">No upcoming events</li>';
+            eventsList.appendChild(domUtils.createElement('li', {
+                styles: { color: 'var(--text-muted)' },
+                textContent: 'No upcoming events'
+            }));
             return;
         }
 
         upcoming.forEach(event => {
-            const li = document.createElement('li');
             const eventDate = new Date(event.date);
             const day = eventDate.getDate();
             const month = monthNames[eventDate.getMonth()].substring(0, 3);
 
-            li.innerHTML = `
-                <div class="event-date">${day} ${month}</div>
-                <div class="event-info">
-                    <div class="event-title">${event.name}</div>
-                    <div class="event-type">${event.type === 'holiday' ? 'Market Holiday' : event.type}</div>
-                </div>
-            `;
+            const li = domUtils.createElement('li', {
+                children: [
+                    domUtils.createElement('div', { className: 'event-date', textContent: `${day} ${month}` }),
+                    domUtils.createElement('div', {
+                        className: 'event-info',
+                        children: [
+                            domUtils.createElement('div', { className: 'event-title', textContent: event.name }),
+                            domUtils.createElement('div', { className: 'event-type', textContent: event.type === 'holiday' ? 'Market Holiday' : event.type })
+                        ]
+                    })
+                ]
+            });
             eventsList.appendChild(li);
         });
     };

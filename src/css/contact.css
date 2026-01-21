@@ -1,19 +1,17 @@
-/* Wrapper for Grid Layout */
 .contact-wrapper {
   display: grid;
-  grid-template-columns: 1fr;
-  /* Stack vertically */
+  grid-template-columns: 1.5fr 1fr; /* Two columns on desktop */
   gap: 30px;
-  max-width: 800px;
-  margin: 30px auto;
+  max-width: 1100px;
+  margin: 40px auto;
   padding: 0 20px;
   align-items: start;
 }
 
-/* Card */
 .contact-card,
 .contact-info-card {
-  max-width: 75%;
+  width: 100%;
+  max-width: 100%;
   margin: 0;
   /* Let grid handle spacing */
   padding: 24px;
@@ -71,7 +69,9 @@
   font-weight: 600;
   font-size: 16px;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .contact-btn:hover {
@@ -108,12 +108,10 @@
   font-size: 20px;
 }
 
-/* ===== CONTACT MAP ===== */
 .contact-map {
-  max-width: 1000px;
+  max-width: 1100px;
   margin: 30px auto;
   margin-bottom: 50px;
-  /* Add bottom margin */
   padding: 0 20px;
 }
 
@@ -221,8 +219,8 @@
 
 /* Brand Colors on Hover */
 .social-icon.whatsapp:hover {
-  background: #25D366;
-  border-color: #25D366;
+  background: #25d366;
+  border-color: #25d366;
 }
 
 .social-icon.linkedin:hover {
@@ -236,8 +234,8 @@
 }
 
 .social-icon.email:hover {
-  background: #EA4335;
-  border-color: #EA4335;
+  background: #ea4335;
+  border-color: #ea4335;
 }
 
 /* Update info-item icons */

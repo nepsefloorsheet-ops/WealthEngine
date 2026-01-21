@@ -120,10 +120,10 @@
     function inject() {
         // Inject Help Styles
         if (!document.getElementById('help-styles')) {
-            const link = document.createElement('link');
-            link.id = 'help-styles';
-            link.rel = 'stylesheet';
-            link.href = `${root}src/css/help.css`;
+            const link = domUtils.createElement('link', {
+                id: 'help-styles',
+                attributes: { rel: 'stylesheet', href: `${root}src/css/help.css` }
+            });
             document.head.appendChild(link);
         }
 
@@ -180,9 +180,9 @@
     function lazyLoadFontAwesome() {
         if (window.fontAwesomeLoaded) return;
         
-        const link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css';
+        const link = domUtils.createElement('link', {
+            attributes: { rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css' }
+        });
         document.head.appendChild(link);
         
         window.fontAwesomeLoaded = true;
@@ -193,51 +193,47 @@
         const content = document.getElementById("ticker-content");
         if (!content) return;
 
+        let newsItems = [];
+
         try {
-            const response = await fetch("https://sharehubnepal.com/data/api/v1/announcement?Size=12&Page=1");
-            const json = await response.json();
+            const json = await apiClient.get("https://sharehubnepal.com/data/api/v1/announcement?Size=12&Page=1");
             
-            if (json && json.data && json.data.content) {
-                const announcements = json.data.content;
-                let html = "";
-                // Duplicate items for seamless loop
-                const displayNews = [...announcements, ...announcements];
-                displayNews.forEach(item => {
-                    html += `
-                        <span class="news-item">
-                            <i class="fas fa-bullhorn"></i> ${item.title}
-                            <span class="sep">|</span>
-                        </span>
-                    `;
-                });
-                content.innerHTML = html;
-                return;
+            if (json && json.data && Array.isArray(json.data.content)) {
+                newsItems = json.data.content.map(item => ({ text: item.title }));
+            } else if (Array.isArray(json)) {
+                newsItems = json.map(item => ({ text: item.title || item.text }));
             }
         } catch (error) {
             console.warn("News API fetch failed, using fallback mock data:", error);
         }
 
-        // Fallback Mock Data
-        const news = [
-            { text: "NICA declares 10.5% Cash Dividend for the fiscal year 2080/81.", type: "dividend" },
-            { text: "NEPSE reaches a new 52-week high of 2,215.34 points.", type: "market" },
-            { text: "UPPER Tamakoshi to issue 1:1 Right Shares starting next Sunday.", type: "corporate" },
-            { text: "Market hours extended until 4:00 PM for upcoming festival season.", type: "notice" },
-            { text: "Trading of JLI suspended due to merger process with LI.", type: "corporate" },
-            { text: "Total market turnover crosses 12 Billion in a single trading day.", type: "market" }
-        ];
+        // If API failed or returned no data, use fallback
+        if (newsItems.length === 0) {
+            newsItems = [
+                { text: "NICA declares 10.5% Cash Dividend for the fiscal year 2080/81." },
+                { text: "NEPSE reaches a new 52-week high of 2,215.34 points." },
+                { text: "UPPER Tamakoshi to issue 1:1 Right Shares starting next Sunday." },
+                { text: "Market hours extended until 4:00 PM for upcoming festival season." },
+                { text: "Trading of JLI suspended due to merger process with LI." },
+                { text: "Total market turnover crosses 12 Billion in a single trading day." }
+            ];
+        }
 
-        let html = "";
-        const displayNews = [...news, ...news];
+        domUtils.clearNode(content);
+        // Duplicate for seamless loop
+        const displayNews = [...newsItems, ...newsItems];
+        
         displayNews.forEach(item => {
-            html += `
-                <span class="news-item">
-                    <i class="fas fa-bullhorn"></i> ${item.text}
-                    <span class="sep">|</span>
-                </span>
-            `;
+            const span = domUtils.createElement('span', {
+                className: 'news-item',
+                children: [
+                    domUtils.createElement('i', { className: 'fas fa-bullhorn' }),
+                    document.createTextNode(` ${item.text || 'News update...'} `),
+                    domUtils.createElement('span', { className: 'sep', textContent: '|' })
+                ]
+            });
+            content.appendChild(span);
         });
-        content.innerHTML = html;
     }
 
     function highlightActiveLink() {

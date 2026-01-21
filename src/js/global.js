@@ -68,7 +68,12 @@ document.addEventListener('layout-injected', () => {
         const optionsTime = { hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true };
         const timeStr = now.toLocaleTimeString('en-US', optionsTime);
 
-        el.innerHTML = `${dateStr}<br>${dayStr}<br>${timeStr}`;
+        domUtils.clearNode(el);
+        el.appendChild(document.createTextNode(dateStr));
+        el.appendChild(document.createElement('br'));
+        el.appendChild(document.createTextNode(dayStr));
+        el.appendChild(document.createElement('br'));
+        el.appendChild(document.createTextNode(timeStr));
     }
 
     showDateTime();
@@ -163,17 +168,17 @@ document.addEventListener('layout-injected', () => {
     // ---------------------------------------------------------
     // 6. Data Fetching (Turnover & NEPSE)
     // ---------------------------------------------------------
-    const TURNOVER_API = "https://turnover-19sr.onrender.com/market-turnover";
-    const NEPSE_API = "https://turnover-19sr.onrender.com/homepage-data";
+    const API_ENDPOINTS = {
+        TURNOVER: "https://turnover-19sr.onrender.com/market-turnover",
+        NEPSE_HOME: "https://turnover-19sr.onrender.com/homepage-data"
+    };
 
     async function fetchData() {
         try {
-            const [tRes, nRes] = await Promise.all([
-                fetch(TURNOVER_API),
-                fetch(NEPSE_API)
+            const [tData, nData] = await Promise.all([
+                apiClient.get(API_ENDPOINTS.TURNOVER),
+                apiClient.get(API_ENDPOINTS.NEPSE_HOME)
             ]);
-            const tData = await tRes.json();
-            const nData = await nRes.json();
 
             const t = tData.totalTurnover;
             const nepse = nData.indices.find(i => i.symbol === "NEPSE");
@@ -185,7 +190,6 @@ document.addEventListener('layout-injected', () => {
                 const pcent = ((change / prevVal) * 100).toFixed(2);
                 
                 const colorClass = change > 0 ? 'nepse-pos' : change < 0 ? 'nepse-neg' : 'nepse-neu';
-                const trendIcon = change > 0 ? '<i class="fas fa-caret-up"></i>' : change < 0 ? '<i class="fas fa-caret-down"></i>' : '';
                 const sign = change > 0 ? '+' : '';
 
                 document.querySelectorAll(".nepse-wrapper").forEach(el => {
@@ -205,7 +209,13 @@ document.addEventListener('layout-injected', () => {
                 });
 
                 document.querySelectorAll("#nepse-icon").forEach(el => {
-                    el.innerHTML = trendIcon;
+                    domUtils.clearNode(el);
+                    if (change !== 0) {
+                        const icon = domUtils.createElement('i', { 
+                            className: ['fas', change > 0 ? 'fa-caret-up' : 'fa-caret-down'] 
+                        });
+                        el.appendChild(icon);
+                    }
                 });
             }
 
