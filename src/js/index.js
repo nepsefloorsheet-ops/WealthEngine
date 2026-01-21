@@ -193,6 +193,20 @@ document.addEventListener("DOMContentLoaded", () => {
             change: d.change,
             pchange: d.percentageChange
           }));
+
+        // 3. Handle DP Watchlist (Holdings)
+        const holdingSymbols = JSON.parse(localStorage.getItem('holding_symbols') || '[]');
+        watchData.dpwch = liveData
+          .filter(d => holdingSymbols.includes(d.symbol))
+          .map(d => ({
+            symbol: d.symbol,
+            open: d.openPrice,
+            high: d.highPrice,
+            low: d.lowPrice,
+            ltp: d.lastTradedPrice,
+            change: d.change,
+            pchange: d.percentageChange
+          }));
       }
 
       // Re-render the active tab
@@ -284,52 +298,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return { apply };
   })();
 
-  const Settlement = (() => {
-    function render(data) {
-      if (!data) return;
-      const payableEl = document.getElementById("payable");
-      const receivableEl = document.getElementById("receivable");
-      const netEl = document.getElementById("net-status");
-      if (!payableEl || !receivableEl || !netEl) return;
 
-      const payable = Number(data.payable) || 0;
-      const receivable = Number(data.receivable) || 0;
-
-      payableEl.textContent = Utils.formatNepaliNumber(payable);
-      receivableEl.textContent = Utils.formatNepaliNumber(receivable);
-
-      const diff = receivable - payable;
-      netEl.className = "net"; // reset
-
-      if (diff > 0) {
-        netEl.textContent = `Net Receivable: ${Utils.formatNepaliNumber(diff)}`;
-        netEl.classList.add("receivable");
-      } else if (diff < 0) {
-        netEl.textContent = `Net Payable: ${Utils.formatNepaliNumber(Math.abs(diff))}`;
-        netEl.classList.add("payable");
-      } else {
-        netEl.textContent = "Settled";
-      }
-    }
-
-    return { render };
-  })();
-
-  const DPHolding = (() => {
-    function render(data) {
-      if (!data) return;
-      const count = document.getElementById("dp-count");
-      const amount = document.getElementById("dp-amount");
-      const pl = document.getElementById("dailypnl");
-      if (!count || !amount || !pl) return;
-
-      count.textContent = data.totalScrips || 0;
-      amount.textContent = Utils.formatNepaliNumber(data.totalAmount || 0);
-      pl.textContent = Utils.formatNepaliNumber(data.todayPL || 0);
-    }
-
-    return { render };
-  })();
 
 
   /* =========================================================
@@ -664,17 +633,27 @@ document.addEventListener("DOMContentLoaded", () => {
      INITIAL LOAD
   ========================================================= */
   
-  // Default data (placeholder) to prevent crash
-  const dashboardData = {
-    settlement: { payable: 0, receivable: 0 },
-    dpHolding: { totalScrips: 0, totalAmount: 0, todayPL: 0 }
-  };
-
   LiveTopMarket.init();
   // Initialize
   TradeSummary.update();
   Collateral.update();
   Watchlist.render("indwch");
-  Settlement.render(dashboardData.settlement);
-  DPHolding.render(dashboardData.dpHolding);
+
+  // Listen for live updates from market.js (which runs in background)
+  document.addEventListener('nepse:data', (e) => {
+    // Only update if we are not currently loading our own data to avoid flicker
+    if (!LiveTopMarket.isLoading()) {
+      Watchlist.updateFromLive(e.detail);
+    }
+  });
+
+  // Re-render watchlist when holdings are loaded/updated
+  document.addEventListener('holdings:updated', () => {
+      // Try to get current market data from cache to fill the watchlist immediately
+      const cachedMarket = sessionStorage.getItem('nepse_cache_data');
+      if (cachedMarket) {
+          const marketData = JSON.parse(cachedMarket);
+          Watchlist.updateFromLive(marketData);
+      }
+  });
 });

@@ -13,13 +13,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('holdings-search');
     const refreshBtn = document.getElementById('btn-refresh');
 
+    // Shared formatter for cross-page consistency
+    const sharedFormatter = new Intl.NumberFormat('en-IN', {
+        maximumFractionDigits: 2,
+        minimumFractionDigits: 2
+    });
+
     let rawData = []; // Store fetched data
+    let currentSort = {
+        column: localStorage.getItem('holdings_sort_col') || 'symbol',
+        direction: localStorage.getItem('holdings_sort_dir') || 'asc'
+    };
 
     // Utility function to format currency
     const formatCurrency = (value) => {
         return new Intl.NumberFormat('en-IN', {
             style: 'currency',
-            currency: 'INR',
+            currency: 'NPR',
             maximumFractionDigits: 2
         }).format(value || 0);
     };
@@ -29,56 +39,219 @@ document.addEventListener('DOMContentLoaded', () => {
         return new Intl.NumberFormat('en-IN').format(value || 0);
     };
 
+    // Volatility Alert Store (Prevent Spams)
+    let lastAlerts = {};
+    const ALERT_COOLDOWN = 300000; // 5 minutes
+
+    // Toast Utility
+    const showToast = (title, message, type = 'info') => {
+        let container = document.querySelector('.toast-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.className = 'toast-container';
+            document.body.appendChild(container);
+        }
+
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        
+        let icon = 'fa-info-circle';
+        if (type === 'success') icon = 'fa-check-circle';
+        if (type === 'danger') icon = 'fa-exclamation-triangle';
+        if (type === 'warning') icon = 'fa-bell';
+
+        toast.innerHTML = `
+            <div class="toast-icon"><i class="fas ${icon}"></i></div>
+            <div class="toast-info">
+                <div class="toast-title">${title}</div>
+                <div class="toast-message">${message}</div>
+            </div>
+        `;
+
+        container.appendChild(toast);
+
+        // Remove after 5s
+        setTimeout(() => {
+            toast.classList.add('removing');
+            setTimeout(() => toast.remove(), 300);
+        }, 5000);
+    };
+
+    // Check for high volatility in holdings
+    const checkVolatility = (stock) => {
+        const symbol = stock.symbol;
+        const holding = rawData.find(h => h['Symbol'] === symbol);
+        if (!holding) return;
+
+        const pChange = parseFloat(stock.percentChange) || 0;
+        const now = Date.now();
+
+        // 1. Circuit Breakers (±10%) - High Priority
+        if (Math.abs(pChange) >= 9.9) {
+            if (!lastAlerts[`circuit_${symbol}`] || (now - lastAlerts[`circuit_${symbol}`] > ALERT_COOLDOWN)) {
+                const move = pChange > 0 ? 'Upper' : 'Lower';
+                showToast(
+                    `🚨 ${symbol} Hit ${move} Circuit!`, 
+                    `${symbol} has hit the 10% daily limit at ${stock.lastTradedPrice}. Trading may be restricted.`,
+                    'warning'
+                );
+                lastAlerts[`circuit_${symbol}`] = now;
+            }
+        }
+
+        // 2. High Volatility Alerts (8%)
+        if (Math.abs(pChange) >= 8) {
+            if (!lastAlerts[symbol] || (now - lastAlerts[symbol] > ALERT_COOLDOWN)) {
+                const type = pChange > 0 ? 'success' : 'danger';
+                const move = pChange > 0 ? 'Surged' : 'Crashed';
+                showToast(
+                    `${symbol} ${move}!`, 
+                    `${symbol} is ${move} by ${pChange.toFixed(2)}% today. Current LTP: ${stock.lastTradedPrice}`,
+                    type
+                );
+                lastAlerts[symbol] = now;
+            }
+        }
+    };
+
+    // --- Order Modal Logic ---
+    const orderModal = document.getElementById('order-modal');
+    const orderSymbolInput = document.getElementById('order-symbol');
+    const orderQtyInput = document.getElementById('order-qty');
+    const orderPriceInput = document.getElementById('order-price');
+    const orderTotalEl = document.getElementById('order-total');
+    let currentOrderType = 'BUY';
+
+    const openOrderModal = (symbol, price) => {
+        if (!orderModal) return;
+        orderSymbolInput.value = symbol;
+        orderPriceInput.value = price;
+        orderQtyInput.value = '';
+        updateOrderTotal();
+        orderModal.style.display = 'flex';
+    };
+
+    const updateOrderTotal = () => {
+        const total = (parseFloat(orderQtyInput.value) || 0) * (parseFloat(orderPriceInput.value) || 0);
+        orderTotalEl.textContent = formatCurrency(total);
+    };
+
+    const setupModalEvents = () => {
+        const closeBtn = document.getElementById('close-modal');
+        const buyTab = document.getElementById('btn-type-buy');
+        const sellTab = document.getElementById('btn-type-sell');
+        const confirmBtn = document.getElementById('btn-confirm-order');
+
+        if (closeBtn) closeBtn.onclick = () => orderModal.style.display = 'none';
+        
+        if (buyTab && sellTab) {
+            buyTab.onclick = () => {
+                currentOrderType = 'BUY';
+                buyTab.classList.add('active');
+                sellTab.classList.remove('active');
+            };
+            sellTab.onclick = () => {
+                currentOrderType = 'SELL';
+                sellTab.classList.add('active');
+                buyTab.classList.remove('active');
+            };
+        }
+
+        if (confirmBtn) {
+            confirmBtn.onclick = () => {
+                const qty = orderQtyInput.value;
+                const price = orderPriceInput.value;
+                if (!qty || qty <= 0) {
+                    showToast('Invalid Order', 'Please enter a valid quantity.', 'danger');
+                    return;
+                }
+                showToast(
+                    'Order Placed', 
+                    `${currentOrderType} Order for ${qty} shares of ${orderSymbolInput.value} at ${price} sent to exchange.`,
+                    'success'
+                );
+                orderModal.style.display = 'none';
+            };
+        }
+
+        if (orderQtyInput) orderQtyInput.oninput = updateOrderTotal;
+        if (orderPriceInput) orderPriceInput.oninput = updateOrderTotal;
+
+        // Close on overlay click
+        if (orderModal) {
+            orderModal.onclick = (e) => {
+                if (e.target === orderModal) orderModal.style.display = 'none';
+            };
+        }
+    };
+
     // Live Market Data Store
     let liveMarketData = {};
+
+    // Helper to populate internal store from market data array
+    const populateLiveStore = (data) => {
+        if (!Array.isArray(data)) return;
+        data.forEach(stock => {
+            const ltp = parseFloat(stock.lastTradedPrice) || 0;
+            const prevClose = parseFloat(stock.previousClose) || parseFloat(stock.previousPrice) || 0;
+            
+            liveMarketData[stock.symbol] = {
+                ltp: ltp,
+                prevClose: prevClose,
+                sector: stock.sector || 'Others'
+            };
+        });
+    };
+
+    // 1. Initial Load from Cache (Snappy Startup)
+    const cachedMarket = sessionStorage.getItem('nepse_cache_data');
+    if (cachedMarket) {
+        populateLiveStore(JSON.parse(cachedMarket));
+    }
 
     // Listen for live market updates from market.js
     document.addEventListener('nepse:data', (e) => {
         const data = e.detail;
-        console.log('Received Nepse Data:', data); 
+        populateLiveStore(data);
+        
+        // If we have holdings, refresh everything
+        if (rawData.length > 0) {
+            const enriched = enrichData(rawData);
+            if (tableBody) renderTable(enriched);
+            updateSummary(enriched);
+            renderSectorAnalysis(enriched);
+        }
 
+        // Run volatility alerts
         if (Array.isArray(data)) {
-            data.forEach(stock => {
-                const ltp = parseFloat(stock.lastTradedPrice) || 0;
-                const prevClose = parseFloat(stock.previousClose) || parseFloat(stock.previousPrice) || 0;
-                
-                liveMarketData[stock.symbol] = {
-                    ltp: ltp,
-                    prevClose: prevClose,
-                    sector: stock.sector || 'Others' // Capture Sector
-                };
-            });
-            
-            // Re-render if we have holdings data
-            if (rawData.length > 0) {
-                const enriched = enrichData(rawData);
-                if (tableBody) renderTable(enriched);
-                updateSummary(enriched);
-                renderSectorAnalysis(enriched); // Render Sector Analysis
-            }
+            data.forEach(stock => checkVolatility(stock));
         }
     });
 
     // Enrich Data with Prices & Sector
     const enrichData = (data) => {
         return data.map(item => {
-            const symbol = item['Symbol'];
+            const symbol = item['Symbol'] || item['Scrip'] || '';
             
-            // ALWAYS use Live Data from market.js
+            // ALWAYS use Live Data from internal store
             const ltp = liveMarketData[symbol]?.ltp || 0;
             const prevClose = liveMarketData[symbol]?.prevClose || 0;
-            const sector = liveMarketData[symbol]?.sector || 'Unknown'; // Map Sector
-            const curBal = parseFloat(item['CDS Total Balance']) || 0;
+            const sector = liveMarketData[symbol]?.sector || 'Unknown'; 
+
+            // Flexible key mapping for balances
+            const curBal = parseFloat(item['CDS Total Balance'] || item['Total Balance'] || item['Balance'] || 0);
+            const prevCloseVal = prevClose || parseFloat(item['Prev Close'] || item['Previous Close'] || 0);
             
             return {
                 ...item,
+                Symbol: symbol, // Ensure normalized key
                 _ltp: ltp,
-                _prevClose: prevClose,
-                _valCp: curBal * prevClose,
+                _prevClose: prevCloseVal,
+                _valCp: curBal * prevCloseVal,
                 _valLtp: curBal * ltp,
-                _dayPnl: (curBal * ltp) - (curBal * prevClose),
+                _dayPnl: (curBal * ltp) - (curBal * prevCloseVal),
                 _source: 'live',
-                _sector: sector // Store for grouping
+                _sector: sector 
             };
         });
     };
@@ -121,15 +294,24 @@ document.addEventListener('DOMContentLoaded', () => {
         const dpAmountEl = document.getElementById('dp-amount');
         const dailyPnlEl = document.getElementById('dailypnl');
 
+        // Use standard number formatter for dashboard to maintain look
+        const dashboardFormatter = new Intl.NumberFormat('en-IN', {
+            maximumFractionDigits: 2,
+            minimumFractionDigits: 2
+        });
+
         if (dpCountEl) dpCountEl.textContent = data.length;
-        if (dpAmountEl) dpAmountEl.textContent = formatCurrency(totalStats.currentValue);
+        if (dpAmountEl) dpAmountEl.textContent = 'Rs.' + dashboardFormatter.format(totalStats.currentValue);
         if (dailyPnlEl) {
-             dailyPnlEl.textContent = formatCurrency(dayPnl);
-             dailyPnlEl.style.color = dayPnl >= 0 ? 'var(--color-success)' : 'var(--color-danger)';
+             dailyPnlEl.textContent = 'Rs.' + dashboardFormatter.format(dayPnl);
+             dailyPnlEl.style.color = dayPnl >= 0 ? '#0fc218' : '#ff0303';
         }
 
         // Update Top Ticker Tape (if on Index)
         renderTickerTape(data);
+        
+        // Notify other scripts (like index.js) that holdings data is ready/updated
+        document.dispatchEvent(new CustomEvent('holdings:updated', { detail: data }));
     };
 
     // Render Ticker Tape for Dashboard
@@ -264,11 +446,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         data.forEach(item => {
             const row = document.createElement('tr');
+            row.style.cursor = 'pointer'; // Make it clear it's clickable
             
             const symbol = item['Symbol'] || '-';
             const totalBal = parseFloat(item['CDS Total Balance']) || 0;
             const freeBal = parseFloat(item['CDS Free Balance']) || 0;
             const wealthEngine = item['WealthEngine'] || '-';
+            const ltp = item._ltp || 0;
+
+            row.onclick = () => openOrderModal(symbol, ltp);
             
             // Highlight row if Free Balance is 0
             if (freeBal === 0) {
@@ -280,10 +466,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td class="text-right">${formatNumber(totalBal)}</td>
                 <td class="text-right ${freeBal === 0 ? 'text-danger' : ''}">${formatNumber(freeBal)}</td>
                 <td class="text-right">${wealthEngine}</td>
-                <td class="text-right">${formatCurrency(item._prevClose)}</td>
-                <td class="text-right">${formatCurrency(item._valCp)}</td>
-                <td class="text-right">${formatCurrency(item._ltp)}</td>
-                <td class="text-right fw-bold">${formatCurrency(item._valLtp)}</td>
+                <td class="text-right">${(item._prevClose).toLocaleString({maximumFractionDigits: 2, minimumFractionDigits: 2})}</td>
+                <td class="text-right">${(item._valCp).toLocaleString({maximumFractionDigits: 2, minimumFractionDigits: 2})}</td>
+                <td class="text-right">${(item._ltp).toLocaleString({maximumFractionDigits: 2, minimumFractionDigits: 2})}</td>
+                <td class="text-right fw-bold">${(item._valLtp).toLocaleString({maximumFractionDigits: 2, minimumFractionDigits: 2})}</td>
             `;
             tableBody.appendChild(row);
         });
@@ -297,6 +483,10 @@ document.addEventListener('DOMContentLoaded', () => {
             currentSort.column = column;
             currentSort.direction = 'asc';
         }
+
+        // Persist sort settings
+        localStorage.setItem('holdings_sort_col', currentSort.column);
+        localStorage.setItem('holdings_sort_dir', currentSort.direction);
 
         const sorted = [...rawData].sort((a, b) => {
             let valA, valB;
@@ -361,6 +551,13 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) throw new Error('Network response was not ok');
             
             const json = await response.json();
+            
+            // Save symbols for DP Watchlist (Dashboard)
+            if (Array.isArray(json)) {
+                const symbols = [...new Set(json.map(item => item['Symbol']))];
+                localStorage.setItem('holding_symbols', JSON.stringify(symbols));
+            }
+
             const enriched = enrichData(json); // Add prices
             rawData = enriched;
             
@@ -378,7 +575,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initialize
     const init = () => {
-        fetchData();
+        setupModalEvents();
+        fetchData().then(() => {
+            // Apply persisted sort after first fetch
+            if (currentSort.column) {
+                // We need a temporary toggle because sortData flips the direction
+                const targetDir = currentSort.direction;
+                currentSort.direction = targetDir === 'asc' ? 'desc' : 'asc'; 
+                sortData(currentSort.column);
+            }
+        });
         setInterval(fetchData, REFRESH_INTERVAL);
 
         // Events
@@ -403,6 +609,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const downloadBtn = document.getElementById('btn-download');
         if (downloadBtn) downloadBtn.addEventListener('click', downloadCSV);
+
+        const printBtn = document.getElementById('btn-print');
+        if (printBtn) printBtn.addEventListener('click', () => window.print());
         
         // Attach Sort to Headers (Assuming fixed column order for now)
         const headers = document.querySelectorAll('.holdings-table th');

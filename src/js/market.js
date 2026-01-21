@@ -9,6 +9,28 @@ async function loadNepse() {
     showRefreshIndicator();
 
     try {
+        // Cache Logic: Check if we have valid data in sessionStorage
+        const cachedData = sessionStorage.getItem('nepse_cache_data');
+        const cachedTime = sessionStorage.getItem('nepse_cache_time');
+        const now = Date.now();
+
+        if (cachedData && cachedTime && (now - cachedTime < REFRESH_INTERVAL)) {
+            const data = JSON.parse(cachedData);
+            allData = data;
+            
+            const latestUpdateTime = data.length > 0 ? data[0].lastUpdatedDateTime : null;
+            updateLastUpdated(latestUpdateTime);
+
+            document.dispatchEvent(
+                new CustomEvent("nepse:data", { detail: data })
+            );
+
+            applyFilters();
+            hideRefreshIndicator();
+            scheduleNext();
+            return;
+        }
+
         // Shimmer logic: Only show if we have no data
         const tbody = document.getElementById("nepse-body");
         if (tbody && !allData.length) {
@@ -31,7 +53,7 @@ async function loadNepse() {
                     </tr>
                 `;
             }
-            tbody.innerHTML = skeletons;
+            if (tbody) tbody.innerHTML = skeletons;
         }
 
         // user requested to switch to this faster API
@@ -45,12 +67,16 @@ async function loadNepse() {
         // Sort by latest update time (newest first)
         data.sort((a, b) => new Date(b.lastUpdatedDateTime) - new Date(a.lastUpdatedDateTime));
 
+        // Update Cache
+        sessionStorage.setItem('nepse_cache_data', JSON.stringify(data));
+        sessionStorage.setItem('nepse_cache_time', Date.now());
+
         // Store all data for filtering
         allData = data;
 
         if (!data.length) {
             const tbody = document.getElementById("nepse-body");
-            tbody.innerHTML = "<tr><td colspan='11'>No data available</td></tr>";
+            if (tbody) tbody.innerHTML = "<tr><td colspan='11'>No data available</td></tr>";
             updateLastUpdated(null);
             scheduleNext();
             return;
@@ -149,6 +175,8 @@ function hideRefreshIndicator() {
 
 function displayData(data) {
     const tbody = document.getElementById("nepse-body");
+    if (!tbody) return;
+    
     tbody.innerHTML = "";
 
     if (!data.length) {
@@ -248,9 +276,13 @@ function updateCounts() {
         }
     });
 
-    document.getElementById("positiveCount").textContent = positive;
-    document.getElementById("negativeCount").textContent = negative;
-    document.getElementById("unchangedCount").textContent = unchanged;
+    const posEl = document.getElementById("positiveCount");
+    const negEl = document.getElementById("negativeCount");
+    const uncEl = document.getElementById("unchangedCount");
+
+    if (posEl) posEl.textContent = positive;
+    if (negEl) negEl.textContent = negative;
+    if (uncEl) uncEl.textContent = unchanged;
 }
 
 function scheduleNext() {
@@ -275,14 +307,17 @@ loadNepse();
 
 
 function updateMarketColor() {
-    const marketPill = document.getElementById('market-pill').innerText.toLowerCase();
+    const marketPill = document.getElementById('market-pill');
     const liveMarket = document.getElementById('live-market');
+    if (!marketPill || !liveMarket) return;
+
+    const pillText = marketPill.innerText.toLowerCase();
 
     // Reset color
     liveMarket.style.color = '';
 
     // Change color based on market-pill text
-    switch (marketPill) {
+    switch (pillText) {
         case 'market open':
             liveMarket.style.color = 'green';
             break;
@@ -303,7 +338,11 @@ function updateMarketColor() {
 // Make #live-market blink continuously
 function startBlinking() {
     const liveMarket = document.getElementById('live-market');
-    setInterval(() => {
+    if (!liveMarket) return;
+    
+    if (window.marketBlinkInterval) clearInterval(window.marketBlinkInterval);
+    
+    window.marketBlinkInterval = setInterval(() => {
         liveMarket.style.visibility = (liveMarket.style.visibility === 'hidden') ? 'visible' : 'hidden';
     }, 500); // Blink every 500ms
 }

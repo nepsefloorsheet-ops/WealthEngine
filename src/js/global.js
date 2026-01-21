@@ -178,11 +178,40 @@ document.addEventListener('layout-injected', () => {
             const t = tData.totalTurnover;
             const nepse = nData.indices.find(i => i.symbol === "NEPSE");
 
+            if (nepse) {
+                const curVal = nepse.currentValue;
+                const change = nepse.change;
+                const prevVal = curVal - change;
+                const pcent = ((change / prevVal) * 100).toFixed(2);
+                
+                const colorClass = change > 0 ? 'nepse-pos' : change < 0 ? 'nepse-neg' : 'nepse-neu';
+                const trendIcon = change > 0 ? '<i class="fas fa-caret-up"></i>' : change < 0 ? '<i class="fas fa-caret-down"></i>' : '';
+                const sign = change > 0 ? '+' : '';
+
+                document.querySelectorAll(".nepse-wrapper").forEach(el => {
+                    el.className = `nepse-wrapper ${colorClass}`;
+                });
+
+                document.querySelectorAll(".nepse").forEach(el => {
+                    el.textContent = curVal.toLocaleString("en-IN", { minimumFractionDigits: 2 });
+                });
+
+                document.querySelectorAll(".change").forEach(el => {
+                    el.textContent = `${sign}${change.toLocaleString("en-IN", { minimumFractionDigits: 2 })}`;
+                });
+
+                document.querySelectorAll("#nepse-pcent").forEach(el => {
+                    el.textContent = `(${sign}${pcent}%)`;
+                });
+
+                document.querySelectorAll("#nepse-icon").forEach(el => {
+                    el.innerHTML = trendIcon;
+                });
+            }
+
             document.querySelectorAll("#turnover").forEach(el => el.textContent = t.totalTradedValue.toLocaleString("en-IN"));
             document.querySelectorAll("#volume").forEach(el => el.textContent = t.totalTradedQuantity.toLocaleString("en-IN"));
             document.querySelectorAll("#transactions").forEach(el => el.textContent = t.transactionCount.toLocaleString("en-IN"));
-            document.querySelectorAll(".nepse").forEach(el => el.textContent = nepse.currentValue.toLocaleString("en-IN"));
-            document.querySelectorAll(".change").forEach(el => el.textContent = nepse.change.toLocaleString("en-IN"));
         } catch (error) {
             console.error("Global data fetch failed:", error);
         }

@@ -46,8 +46,7 @@
         <li class="link"><button class="butt" onclick="document.location='${root}index.html'">Home </button></li>
         <li class="link"><button class="butt" onclick="document.location='${pages}order.html'">Order </button></li>
         <li class="link"><button class="butt" onclick="document.location='${pages}market.html'">Market </button></li>
-        <li class="link"><button class="butt" onclick="document.location='${pages}heatmap.html'">Heatmap </button></li>
-        <li class="link"><button class="butt" onclick="document.location='${pages}floorsheet.html'">Floorsheet </button></li>
+        <li class="link"><button class="butt" onclick="document.location='${pages}heatmap.html'">Heatmap </button></li> 
         <li class="link"><button class="butt" onclick="document.location='${pages}watchlist.html'">Watchlist </button></li>
         <li class="link"><button class="butt" onclick="document.location='${pages}holdings.html'">Holdings </button></li>
         <li class="drop">
@@ -63,6 +62,7 @@
             <ul class="dropdown-menu">
                 <li class="link"><button class="butt" onclick="document.location='${pages}datewise-index.html'">Datewise Index </button></li>
                 <li class="link"><button class="butt" onclick="document.location='${pages}mktsummary.html'">Market Summary </button></li>
+                <li class="link"><button class="butt" onclick="document.location='${pages}calendar.html'">Market Calendar </button></li>
             </ul>
         </li>
         <li class="drop">
@@ -80,9 +80,13 @@
     <index>
         <nepse>
             <h4>NEPSE</h4>
-            <div style="display: flex; flex-direction: row; gap: 8px; align-items: center;">
+            <div class="nepse-wrapper">
+                <span id="nepse-icon" class="nepse-icon"></span>
                 <p class="nepse">0</p>
-                <p class="change">0</p>
+                <div class="nepse-change-info">
+                    <span class="change">0</span>
+                    <span id="nepse-pcent" class="nepse-pcent"></span>
+                </div>
             </div>
         </nepse>
         <data>
@@ -100,6 +104,7 @@
     </div>
   `;
 
+
     const tickerHTML = `
     <div class="news-ticker">
         <div class="ticker-label">NEWS</div>
@@ -113,9 +118,23 @@
 
     // 3. Inject
     function inject() {
+        // Inject Help Styles
+        if (!document.getElementById('help-styles')) {
+            const link = document.createElement('link');
+            link.id = 'help-styles';
+            link.rel = 'stylesheet';
+            link.href = `${root}src/css/help.css`;
+            document.head.appendChild(link);
+        }
+
         // Inject Sidebar
         const nav = document.querySelector("nav.sidebar");
-        if (nav) nav.innerHTML = sidebarHTML;
+        if (nav) {
+            nav.innerHTML = sidebarHTML;
+            // Lazy load Font Awesome on sidebar interaction
+            nav.addEventListener('mouseenter', lazyLoadFontAwesome, { once: true });
+            nav.addEventListener('click', lazyLoadFontAwesome, { once: true });
+        }
 
         // Inject Header
         const header = document.querySelector("header.open");
@@ -133,6 +152,41 @@
 
         // Dispatch Event so other scripts know DOM is ready
         document.dispatchEvent(new Event("layout-injected"));
+    }
+
+    function setupHelpEvents() {
+        const helpBtn = document.getElementById('btn-help');
+        const helpModal = document.getElementById('help-modal');
+        const closeHelp = document.getElementById('close-help');
+
+        if (helpBtn && helpModal) {
+            helpBtn.onclick = () => {
+                lazyLoadFontAwesome(); // Ensure icons are loaded when opening help
+                helpModal.style.display = 'flex';
+            };
+        }
+
+        if (closeHelp) {
+            closeHelp.onclick = () => helpModal.style.display = 'none';
+        }
+
+        if (helpModal) {
+            helpModal.onclick = (e) => {
+                if (e.target === helpModal) helpModal.style.display = 'none';
+            };
+        }
+    }
+
+    function lazyLoadFontAwesome() {
+        if (window.fontAwesomeLoaded) return;
+        
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css';
+        document.head.appendChild(link);
+        
+        window.fontAwesomeLoaded = true;
+        console.log("Font Awesome lazy-loaded");
     }
 
     async function populateTicker() {
