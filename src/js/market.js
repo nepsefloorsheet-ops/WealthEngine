@@ -5,99 +5,49 @@ let activeCountFilter = null; // Track active count filter: 'positive', 'negativ
 let activeSectorFilter = null; // Track active sector filter
 
 async function loadNepse() {
-    // Show refresh indicator
     showRefreshIndicator();
 
     try {
-        // Cache Logic: Check if we have valid data in sessionStorage
-        const cachedData = sessionStorage.getItem('nepse_cache_data');
-        const cachedTime = sessionStorage.getItem('nepse_cache_time');
-        const now = Date.now();
-
-        if (cachedData && cachedTime && (now - cachedTime < REFRESH_INTERVAL)) {
-            const data = JSON.parse(cachedData);
-            allData = data;
-            
-            const latestUpdateTime = data.length > 0 ? data[0].lastUpdatedDateTime : null;
-            updateLastUpdated(latestUpdateTime);
-
-            document.dispatchEvent(
-                new CustomEvent("nepse:data", { detail: data })
-            );
-
-            applyFilters();
-            hideRefreshIndicator();
-            scheduleNext();
-            return;
-        }
-
-        // Shimmer logic: Only show if we have no data
-        const tbody = document.getElementById("nepse-body");
-        if (tbody && !allData.length) {
-            domUtils.clearNode(tbody);
-            const fragment = document.createDocumentFragment();
-            for (let i = 0; i < 20; i++) {
-                const tr = domUtils.createElement('tr', {
-                    children: Array(12).fill(0).map((_, idx) => 
-                        domUtils.createElement('td', {
-                            className: idx === 0 || idx === 11 ? 'middle' : 'right',
-                            children: [domUtils.createElement('div', { className: 'skeleton sk-cell' })]
-                        })
-                    )
-                });
-                fragment.appendChild(tr);
+        // First, check cache for immediate render if allData is empty
+        if (!allData.length) {
+            const cached = apiClient.getCache('market_live_nepse');
+            if (cached) {
+                const data = Array.isArray(cached.data) ? cached.data : (cached.liveData || []);
+                if (data.length) {
+                    allData = data;
+                    processMarketData(data);
+                }
             }
-            tbody.appendChild(fragment);
         }
 
-        // Use centralized api client
-        const json = await apiClient.get("https://nepseapi-ouhd.onrender.com/api/live-nepse");
+        const json = await apiClient.get("https://nepseapi-production-9edf.up.railway.app/live-nepse", {
+            cacheKey: 'market_live_nepse'
+        });
 
-        // Handle new API structure: data is in `data` (direct array or wrapper)
         const data = Array.isArray(json.data) ? json.data : (json.liveData || []);
-
-        // Sort by latest update time (newest first)
         data.sort((a, b) => new Date(b.lastUpdatedDateTime) - new Date(a.lastUpdatedDateTime));
 
-        // Update Cache
-        sessionStorage.setItem('nepse_cache_data', JSON.stringify(data));
-        sessionStorage.setItem('nepse_cache_time', Date.now());
-
-        // Store all data for filtering
         allData = data;
-
-        if (!data.length) {
-            const tbody = document.getElementById("nepse-body");
-            if (tbody) {
-                domUtils.clearNode(tbody);
-                tbody.appendChild(domUtils.createElement('tr', {
-                    children: [domUtils.createElement('td', { attributes: { colspan: '12' }, textContent: 'No data available' })]
-                }));
-            }
-            updateLastUpdated(null);
-            scheduleNext();
-            return;
-        }
-
-        // Update last updated timestamp from the most recent data
-        const latestUpdateTime = data.length > 0 ? data[0].lastUpdatedDateTime : null;
-        updateLastUpdated(latestUpdateTime);
-
-        document.dispatchEvent(
-            new CustomEvent("nepse:data", { detail: data })
-        );
-
-        // Apply active filters (search and count filter)
-        applyFilters();
+        processMarketData(data);
 
     } catch (err) {
         console.error("NEPSE ERROR:", err);
         updateLastUpdated(null, true);
     } finally {
-        // Hide refresh indicator
         hideRefreshIndicator();
         scheduleNext();
     }
+}
+
+function processMarketData(data) {
+    const latestUpdateTime = data.length > 0 ? data[0].lastUpdatedDateTime : null;
+    updateLastUpdated(latestUpdateTime);
+
+    document.dispatchEvent(
+        new CustomEvent("nepse:data", { detail: data })
+    );
+
+    applyFilters();
 }
 
 // Format timestamp to readable format (e.g., "2:59 PM")
