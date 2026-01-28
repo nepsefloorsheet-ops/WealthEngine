@@ -119,7 +119,7 @@ async function loadWatchlistData() {
     showRefreshIndicator();
 
     try {
-        const json = await apiClient.get("https://nepseapi-ouhd.onrender.com/api/live-nepse");
+        const json = await apiClient.get("https://nepseapi-production-9edf.up.railway.app/live-nepse");
 
         // Handle array & object responses
         const data = Array.isArray(json)

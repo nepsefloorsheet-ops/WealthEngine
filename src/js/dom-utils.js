@@ -10,7 +10,7 @@ const domUtils = {
      * @returns {HTMLElement}
      */
     createElement(tag, options = {}) {
-        const { className, textContent, innerText, attributes = {}, datasets = {}, styles = {}, children = [] } = options;
+        const { className, textContent, innerText, attributes = {}, datasets = {}, styles = {}, events = {}, children = [] } = options;
         const el = document.createElement(tag);
 
         if (className) {
@@ -36,6 +36,10 @@ const domUtils = {
 
         Object.entries(styles).forEach(([key, value]) => {
             el.style[key] = value;
+        });
+
+        Object.entries(events).forEach(([type, listener]) => {
+            el.addEventListener(type, listener);
         });
 
         children.forEach(child => {

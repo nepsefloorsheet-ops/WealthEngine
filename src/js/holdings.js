@@ -147,23 +147,23 @@ document.addEventListener('DOMContentLoaded', () => {
         const sellTab = document.getElementById('btn-type-sell');
         const confirmBtn = document.getElementById('btn-confirm-order');
 
-        if (closeBtn) closeBtn.onclick = () => orderModal.style.display = 'none';
+        if (closeBtn) closeBtn.addEventListener('click', () => orderModal.style.display = 'none');
         
         if (buyTab && sellTab) {
-            buyTab.onclick = () => {
+            buyTab.addEventListener('click', () => {
                 currentOrderType = 'BUY';
                 buyTab.classList.add('active');
                 sellTab.classList.remove('active');
-            };
-            sellTab.onclick = () => {
+            });
+            sellTab.addEventListener('click', () => {
                 currentOrderType = 'SELL';
                 sellTab.classList.add('active');
                 buyTab.classList.remove('active');
-            };
+            });
         }
 
         if (confirmBtn) {
-            confirmBtn.onclick = () => {
+            confirmBtn.addEventListener('click', () => {
                 const qty = orderQtyInput.value;
                 const price = orderPriceInput.value;
                 if (!qty || qty <= 0) {
@@ -176,17 +176,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     'success'
                 );
                 orderModal.style.display = 'none';
-            };
+            });
         }
 
-        if (orderQtyInput) orderQtyInput.oninput = updateOrderTotal;
-        if (orderPriceInput) orderPriceInput.oninput = updateOrderTotal;
+        if (orderQtyInput) orderQtyInput.addEventListener('input', updateOrderTotal);
+        if (orderPriceInput) orderPriceInput.addEventListener('input', updateOrderTotal);
 
         // Close on overlay click
         if (orderModal) {
-            orderModal.onclick = (e) => {
+            orderModal.addEventListener('click', (e) => {
                 if (e.target === orderModal) orderModal.style.display = 'none';
-            };
+            });
         }
     };
 

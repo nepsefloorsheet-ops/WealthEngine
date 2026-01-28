@@ -34,20 +34,16 @@ async function fetchMktSummaryData() {
     const tableBody = document.getElementById("nepse-table-body");
     if (!tableBody) return;
 
-    domUtils.clearNode(tableBody);
-    for (let i = 0; i < 10; i++) {
-        const skeletonRow = domUtils.createElement('tr', {
-            children: Array(6).fill(0).map(() => 
-                domUtils.createElement('td', {
-                    children: [domUtils.createElement('div', { className: 'skeleton sk-cell' })]
-                })
-            )
-        });
-        tableBody.appendChild(skeletonRow);
+    // Check cache first for immediate render
+    const cached = apiClient.getCache('mkt_summary_all');
+    if (cached && !allMktSummaryData.length) {
+        allMktSummaryData = cached;
+        renderMktSummaryTable(cached);
     }
 
     try {
         const data = await apiClient.get(`${SUPABASE_URL}/rest/v1/mkt_summary?select=*&order=trade_date.desc&limit=all`, {
+            cacheKey: 'mkt_summary_all',
             headers: {
                 "apikey": ANON_KEY,
                 "Authorization": `Bearer ${ANON_KEY}`
@@ -57,14 +53,16 @@ async function fetchMktSummaryData() {
         renderMktSummaryTable(data);
     } catch (error) {
         console.error("Error fetching NEPSE data:", error);
-        domUtils.clearNode(tableBody);
-        tableBody.appendChild(domUtils.createElement('tr', {
-            children: [domUtils.createElement('td', {
-                attributes: { colspan: '6' },
-                styles: { textAlign: 'center', color: 'red' },
-                textContent: 'Failed to load data'
-            })]
-        }));
+        if (!allMktSummaryData.length) {
+            domUtils.clearNode(tableBody);
+            tableBody.appendChild(domUtils.createElement('tr', {
+                children: [domUtils.createElement('td', {
+                    attributes: { colspan: '6' },
+                    styles: { textAlign: 'center', color: 'red' },
+                    textContent: 'Failed to load data'
+                })]
+            }));
+        }
     }
 }
 

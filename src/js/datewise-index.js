@@ -34,20 +34,16 @@ async function fetchData() {
   const table = document.getElementById("nepse-table-body");
   if (!table) return;
 
-  domUtils.clearNode(table);
-  for (let i = 0; i < 15; i++) {
-    const skeletonRow = domUtils.createElement('tr', {
-      children: Array(13).fill(0).map(() => 
-        domUtils.createElement('td', {
-          children: [domUtils.createElement('div', { className: 'skeleton sk-cell' })]
-        })
-      )
-    });
-    table.appendChild(skeletonRow);
+  // Check cache first for immediate render
+  const cached = apiClient.getCache('nepse_data_all');
+  if (cached && !allNepseData.length) {
+    allNepseData = cached;
+    renderTable(cached);
   }
 
   try {
     const data = await apiClient.get(`${SUPABASE_URL}/rest/v1/nepase_data?select=*&order=trade_date.desc&limit=all`, {
+      cacheKey: 'nepse_data_all',
       headers: {
         "apikey": ANON_KEY,
         "Authorization": `Bearer ${ANON_KEY}`
@@ -57,14 +53,16 @@ async function fetchData() {
     renderTable(data);
   } catch (error) {
     console.error("Error fetching NEPSE data:", error);
-    domUtils.clearNode(table);
-    table.appendChild(domUtils.createElement('tr', {
-      children: [domUtils.createElement('td', {
-        attributes: { colspan: '13' },
-        styles: { textAlign: 'center', color: 'red' },
-        textContent: 'Failed to load data'
-      })]
-    }));
+    if (!allNepseData.length) {
+        domUtils.clearNode(table);
+        table.appendChild(domUtils.createElement('tr', {
+          children: [domUtils.createElement('td', {
+            attributes: { colspan: '13' },
+            styles: { textAlign: 'center', color: 'red' },
+            textContent: 'Failed to load data'
+          })]
+        }));
+    }
   }
 }
 
