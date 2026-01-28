@@ -1,334 +1,670 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>WealthEngine - Order</title>
-    <link rel="stylesheet" href="../src/css/style.css">
-    <link rel="stylesheet" href="../src/css/order.css">
+    <link rel="stylesheet" href="../src/css/style.css" />
+    <link rel="stylesheet" href="../src/css/order.css" />
     <!-- Content Security Policy -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://nepseapi-ouhd.onrender.com https://turnover-19sr.onrender.com https://script.google.com https://script.googleusercontent.com https://docs.google.com https://sharehubnepal.com;">
-</head>
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'nonce-WE-2026-SECURE-NONCE' https://unpkg.com https://cdn.jsdelivr.net; style-src 'self' 'nonce-WE-2026-SECURE-NONCE' https://cdnjs.cloudflare.com https://fonts.googleapis.com 'sha256-bo9/JAqIUBMiSHL1O4oiO3U5UHaFxqbagFBryI+8mwU=' 'sha256-zWpgYAIYQbPPXWm2cNN92poH5pezyiyARDiGUjuqbFU=' 'sha256-NDlUvbI0C5AhCY+uu2OxERc8b/zOZ5m/C3vpWbghG1M='; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://nepseapi-ouhd.onrender.com https://nepse-proxy-production-e1e2.up.railway.app https://script.google.com https://script.googleusercontent.com https://docs.google.com https://sharehubnepal.com https://nepseapi-production-9edf.up.railway.app https://dhanweb.up.railway.app https://*.googleusercontent.com https://*.docs.google.com;"
+    />
+  </head>
 
-<body>
+  <body>
     <!-- Layout Injection -->
     <nav class="sidebar"></nav>
     <main>
-        <header class="open"></header>
+      <header class="open"></header>
 
-        <div class="order-container">
-            <!-- Top Search Bar -->
-            <div class="search-area">
-                <div class="search-input-wrapper">
-                    <input type="text" id="symbolSearch" class="search-input"
-                        placeholder="Search Symbol ( / to focus)..." autocomplete="off">
-                </div>
-                <div class="market-status-ticker">
-                    <div class="ticker-item">LTP: <strong id="tickerLTP">--</strong></div>
-                    <div class="ticker-item">Change: <strong id="tickerChange">--</strong></div>
-                    <div class="ticker-item">High/Low: <strong id="tickerHighLow">-- / --</strong></div>
-                </div>
+      <div class="order-container">
+        <!-- Top Search Bar -->
+        <div class="search-area">
+          <div class="search-input-wrapper">
+            <input
+              type="text"
+              id="symbolSearch"
+              class="search-input"
+              placeholder="Search Symbol ( / to focus)..."
+              autocomplete="off"
+            />
+          </div>
+          <div class="market-status-ticker">
+            <div class="ticker-item">
+              LTP: <strong id="tickerLTP">--</strong>
+            </div>
+            <div class="ticker-item">
+              Change: <strong id="tickerChange">--</strong>
+            </div>
+            <div class="ticker-item">
+              High/Low: <strong id="tickerHighLow">-- / --</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Left Column: Market Depth -->
+        <div class="card">
+          <div class="market-stats-header u-mb-20">
+            <div class="u-flex-between u-mb-15">
+              <h3 class="u-m-0">Market Depth</h3>
+              <span class="u-font-12 u-color-muted"
+                >Click row to fill price</span
+              >
             </div>
 
-            <!-- Left Column: Market Depth -->
-            <div class="card">
-                <div class="market-stats-header" style="margin-bottom: 20px;">
+            <div class="stats-grid u-grid-4 u-font-13">
+              <div>
+                <span class="u-color-muted">LTP</span> <br /><strong
+                  id="depthLTP"
+                  class="u-font-15"
+                  >--</strong
+                >
+              </div>
+              <div>
+                <span class="u-color-muted">Change</span> <br /><strong
+                  id="depthChange"
+                  >--</strong
+                >
+              </div>
+              <div>
+                <span class="u-color-muted">High</span> <br /><strong
+                  id="depthHigh"
+                  >--</strong
+                >
+              </div>
+              <div>
+                <span class="u-color-muted">Low</span> <br /><strong
+                  id="depthLow"
+                  >--</strong
+                >
+              </div>
+              <div>
+                <span class="u-color-muted">Avg</span> <br /><strong
+                  id="depthAvg"
+                  >--</strong
+                >
+              </div>
+              <div>
+                <span class="u-color-muted">P.Close</span> <br /><strong
+                  id="depthPClose"
+                  >--</strong
+                >
+              </div>
+              <div>
+                <span class="u-color-muted">Vol</span> <br /><strong
+                  id="depthVol"
+                  >--</strong
+                >
+              </div>
+              <div>
+                <span class="u-color-muted">Turnover</span> <br /><strong
+                  id="depthTurnover"
+                  >--</strong
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Depth Visualizer -->
+          <div class="depth-visualizer-container">
+            <span class="depth-visualizer-label">Market Depth Visualizer</span>
+            <canvas id="depthVisualizer"></canvas>
+          </div>
+
+          <div class="u-flex u-flex-gap-10">
+            <!-- Buy Orders -->
+            <table class="depth-table">
+              <thead>
+                <tr>
+                  <th class="depth-header-buy">Orders</th>
+                  <th class="depth-header-buy">Buy Vol</th>
+                  <th class="depth-header-buy">Bid Price</th>
+                </tr>
+              </thead>
+              <tbody id="bidTable">
+                <!-- JS Injected -->
+              </tbody>
+            </table>
+
+            <!-- Sell Orders -->
+            <table class="depth-table">
+              <thead>
+                <tr>
+                  <th class="depth-header-sell">Offer Price</th>
+                  <th class="depth-header-sell">Sell Vol</th>
+                  <th class="depth-header-sell">Orders</th>
+                </tr>
+              </thead>
+              <tbody id="askTable">
+                <!-- JS Injected -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Right Column: Order Form -->
+        <div class="card order-form-card" id="orderCard">
+          <!-- Collateral Display -->
+          <div class="collateral-info">
+            <span class="collateral-label"
+              ><i class="fas fa-wallet"></i>Available Collateral</span
+            >
+            <strong id="userCollateral" class="collateral-value">--</strong>
+          </div>
+
+          <!-- 3-Way Toggle -->
+          <div class="buy-sell-toggle">
+            <div
+              class="toggle-btn buy active"
+              id="btnToggleBuy"
+              title="Shift + B"
+            >
+              BUY
+            </div>
+            <div class="toggle-btn sell" id="btnToggleSell" title="Shift + S">
+              SELL
+            </div>
+            <div class="toggle-btn dual" id="btnToggleDual" title="Shift + D">
+              BUY & SELL
+            </div>
+          </div>
+
+          <div class="dual-form-container">
+            <!-- BUY FORM -->
+            <div id="buySection" class="form-section buy-section active">
+              <h4 class="u-color-success u-mb-10 u-text-center">BUY</h4>
+              <form id="buyForm">
+                <div class="form-row">
+                  <label class="form-label">Symbol</label>
+                  <input
+                    type="text"
+                    id="buySymbol"
+                    class="form-input"
+                    readonly
+                    value=""
+                  />
+                </div>
+
+                <div class="form-row">
+                  <label class="form-label"
+                    >Qty (Min 10)
+                    <span style="font-size: 10px; opacity: 0.6"
+                      >[Alt+Q]</span
+                    ></label
+                  >
+                  <input
+                    type="number"
+                    id="buyQty"
+                    class="form-input"
+                    placeholder="Eq. 10 (Arrows to inc/dec)..."
+                    min="10"
+                    step="10"
+                  />
+                  <div class="shortcuts">
                     <div
-                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                        <h3 style="margin: 0;">Market Depth</h3>
-                        <span style="font-size: 12px; color: var(--text-muted);">Click row to fill price</span>
+                      class="chip"
+                      data-action="addQty"
+                      data-side="buy"
+                      data-val="100"
+                    >
+                      +100
+                    </div>
+                    <div
+                      class="chip"
+                      data-action="addQty"
+                      data-side="buy"
+                      data-val="500"
+                    >
+                      +500
+                    </div>
+                    <div
+                      class="chip"
+                      data-action="addQty"
+                      data-side="buy"
+                      data-val="1000"
+                    >
+                      +1000
+                    </div>
+                    <div
+                      class="chip"
+                      data-action="setPct"
+                      data-side="buy"
+                      data-val="0.25"
+                    >
+                      25%
+                    </div>
+                    <div
+                      class="chip"
+                      data-action="setPct"
+                      data-side="buy"
+                      data-val="0.5"
+                    >
+                      50%
+                    </div>
+                    <div
+                      class="chip"
+                      data-action="setPct"
+                      data-side="buy"
+                      data-val="1.0"
+                    >
+                      MAX
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <label class="form-label"
+                    >Price
+                    <span style="font-size: 10px; opacity: 0.6"
+                      >[Alt+P]</span
+                    ></label
+                  >
+                  <input
+                    type="number"
+                    id="buyPrice"
+                    class="form-input"
+                    placeholder="0.00"
+                    step="0.1"
+                  />
+                  <small
+                    id="buyPriceRange"
+                    style="color: var(--text-muted); font-size: 11px"
+                    >Range: --</small
+                  >
+                </div>
+
+                <!-- Risk Management (P/L Visualizer) -->
+                <div id="buyRRContainer" class="rr-container disabled">
+                  <div class="rr-toggle-btn" id="buyRRToggle">
+                    <div class="rr-header u-mb-0 u-flex">
+                      <span>Risk Management (Optional)</span>
+                      <span id="buyRRRatio" class="u-color-tertiary u-ml-10"
+                        >R:R --</span
+                      >
+                    </div>
+                    <i
+                      class="fas fa-chevron-down"
+                      style="color: var(--text-muted); font-size: 12px"
+                    ></i>
+                  </div>
+
+                  <div class="rr-content">
+                    <div class="rr-row">
+                      <div class="rr-label-row">
+                        <span class="rr-label">Target Profit (%)</span>
+                        <span class="rr-value" id="buyTargetPct">10%</span>
+                      </div>
+                      <input
+                        type="range"
+                        id="buyTargetSlider"
+                        class="rr-slider"
+                        min="1"
+                        max="100"
+                        value="10"
+                      />
                     </div>
 
-                    <div class="stats-grid"
-                        style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; font-size: 13px;">
-                        <div><span style="color: var(--text-muted);">LTP</span> <br><strong id="depthLTP"
-                                style="font-size: 15px;">--</strong></div>
-                        <div><span style="color: var(--text-muted);">Change</span> <br><strong
-                                id="depthChange">--</strong></div>
-                        <div><span style="color: var(--text-muted);">High</span> <br><strong id="depthHigh">--</strong>
-                        </div>
-                        <div><span style="color: var(--text-muted);">Low</span> <br><strong id="depthLow">--</strong>
-                        </div>
-
-                        <div><span style="color: var(--text-muted);">Avg</span> <br><strong id="depthAvg">--</strong>
-                        </div>
-                        <div><span style="color: var(--text-muted);">P.Close</span> <br><strong
-                                id="depthPClose">--</strong></div>
-                        <div><span style="color: var(--text-muted);">Vol</span> <br><strong id="depthVol">--</strong>
-                        </div>
-                        <div><span style="color: var(--text-muted);">Turnover</span> <br><strong
-                                id="depthTurnover">--</strong>
-                        </div>
+                    <div class="rr-row u-mb-0">
+                      <div class="rr-label-row">
+                        <span class="rr-label">Stop Loss (%)</span>
+                        <span class="rr-value" id="buyStopPct">5%</span>
+                      </div>
+                      <input
+                        type="range"
+                        id="buyStopSlider"
+                        class="rr-slider"
+                        min="1"
+                        max="25"
+                        value="5"
+                      />
                     </div>
+
+                    <div class="rr-gauge-container">
+                      <div class="rr-gauge">
+                        <div
+                          id="buyGaugeLoss"
+                          class="rr-gauge-loss"
+                          style="width: 30%"
+                        ></div>
+                        <div
+                          id="buyGaugeProfit"
+                          class="rr-gauge-profit"
+                          style="width: 70%"
+                        ></div>
+                      </div>
+                    </div>
+
+                    <div class="rr-stats">
+                      <div class="rr-stat-item">
+                        <span class="rr-label">Target Price</span>
+                        <span class="rr-stat-val" id="buyTargetPrice">--</span>
+                      </div>
+                      <div class="rr-stat-item">
+                        <span class="rr-label">Stop Price</span>
+                        <span class="rr-stat-val" id="buyStopPrice">--</span>
+                      </div>
+                    </div>
+                    <p class="u-font-10 u-color-muted u-mt-8 u-text-center">
+                      Set price to enable calculations
+                    </p>
+                  </div>
                 </div>
 
-                <!-- Depth Visualizer -->
-                <div class="depth-visualizer-container">
-                    <span class="depth-visualizer-label">Market Depth Visualizer</span>
-                    <canvas id="depthVisualizer"></canvas>
+                <div class="order-summary">
+                  <div class="summary-row total">
+                    <span>Total: </span>
+                    <span id="buyTotal">0.00</span>
+                  </div>
                 </div>
 
-                <div style="display: flex; gap: 10px;">
-                    <!-- Buy Orders -->
-                    <table class="depth-table">
-                        <thead>
-                            <tr>
-                                <th class="depth-header-buy">Orders</th>
-                                <th class="depth-header-buy">Buy Vol</th>
-                                <th class="depth-header-buy">Bid Price</th>
-                            </tr>
-                        </thead>
-                        <tbody id="bidTable">
-                            <!-- JS Injected -->
-                        </tbody>
-                    </table>
-
-                    <!-- Sell Orders -->
-                    <table class="depth-table">
-                        <thead>
-                            <tr>
-                                <th class="depth-header-sell">Offer Price</th>
-                                <th class="depth-header-sell">Sell Vol</th>
-                                <th class="depth-header-sell">Orders</th>
-                            </tr>
-                        </thead>
-                        <tbody id="askTable">
-                            <!-- JS Injected -->
-                        </tbody>
-                    </table>
-                </div>
+                <button
+                  type="submit"
+                  class="btn-submit btn-buy u-mt-10"
+                  title="Ctrl + Enter"
+                >
+                  BUY
+                </button>
+              </form>
             </div>
 
-            <!-- Right Column: Order Form -->
-            <div class="card order-form-card" id="orderCard">
-
-                <!-- Collateral Display -->
-                <div
-                    style="background: rgba(16, 185, 129, 0.1); border: 1px solid var(--color-success); padding: 10px 15px; border-radius: 8px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
-                    <span style="color: var(--color-success); font-weight: 500; font-size: 14px;"><i
-                            class="fas fa-wallet" style="margin-right: 8px;"></i>Available Collateral</span>
-                    <strong id="userCollateral" style="font-size: 16px; color: white;">--</strong>
+            <!-- SELL FORM -->
+            <div id="sellSection" class="form-section sell-section">
+              <h4 class="u-color-danger u-mb-10 u-text-center">SELL</h4>
+              <form id="sellForm">
+                <div class="form-row">
+                  <label class="form-label">Symbol</label>
+                  <input
+                    type="text"
+                    id="sellSymbol"
+                    class="form-input"
+                    readonly
+                    value="NICA"
+                  />
                 </div>
 
-                <!-- 3-Way Toggle -->
-                <div class="buy-sell-toggle">
-                    <div class="toggle-btn buy active" id="btnToggleBuy" onclick="setTradeMode('buy')" title="Shift + B">BUY</div>
-                    <div class="toggle-btn sell" id="btnToggleSell" onclick="setTradeMode('sell')" title="Shift + S">SELL</div>
-                    <div class="toggle-btn dual" id="btnToggleDual" onclick="setTradeMode('dual')" title="Shift + D">BUY & SELL</div>
-                </div>
-
-                <div class="dual-form-container">
-
-                    <!-- BUY FORM -->
-                    <div id="buySection" class="form-section buy-section active">
-                        <h4 style="color: var(--color-success); margin-bottom: 10px; text-align: center;">BUY</h4>
-                        <form onsubmit="event.preventDefault(); submitOrder('buy');">
-                            <div class="form-row">
-                                <label class="form-label">Symbol</label>
-                                <input type="text" id="buySymbol" class="form-input" readonly value="">
-                            </div>
-
-                            <div class="form-row">
-                                <label class="form-label">Qty (Min 10) <span style="font-size:10px; opacity:0.6;">[Alt+Q]</span></label>
-                                <input type="number" id="buyQty" class="form-input" placeholder="Eq. 10 (Arrows to inc/dec)..." min="10"
-                                    step="10" oninput="calculateTotal('buy')">
-                                <div class="shortcuts">
-                                    <div class="chip" onclick="addQty('buy', 100)">+100</div>
-                                    <div class="chip" onclick="addQty('buy', 500)">+500</div>
-                                    <div class="chip" onclick="addQty('buy', 1000)">+1000</div>
-                                    <div class="chip" onclick="setPct('buy', 0.25)">25%</div>
-                                    <div class="chip" onclick="setPct('buy', 0.5)">50%</div>
-                                    <div class="chip" onclick="setPct('buy', 1.0)">MAX</div>
-                                </div>
-                            </div>
-
-                            <div class="form-row">
-                                <label class="form-label">Price <span style="font-size:10px; opacity:0.6;">[Alt+P]</span></label>
-                                <input type="number" id="buyPrice" class="form-input" placeholder="0.00" step="0.1"
-                                    oninput="calculateTotal('buy')">
-                                <small id="buyPriceRange" style="color: var(--text-muted); font-size: 11px;">Range:
-                                    --</small>
-                            </div>
-
-                            <!-- Risk Management (P/L Visualizer) -->
-                            <div id="buyRRContainer" class="rr-container disabled">
-                                <div class="rr-toggle-btn" onclick="document.getElementById('buyRRContainer').classList.toggle('active')">
-                                    <div class="rr-header" style="margin-bottom:0; flex:1;">
-                                        <span>Risk Management (Optional)</span>
-                                        <span id="buyRRRatio" style="color:#408585; margin-left: 10px;">R:R --</span>
-                                    </div>
-                                    <i class="fas fa-chevron-down" style="color:var(--text-muted); font-size:12px;"></i>
-                                </div>
-                                
-                                <div class="rr-content">
-                                    <div class="rr-row">
-                                        <div class="rr-label-row">
-                                            <span class="rr-label">Target Profit (%)</span>
-                                            <span class="rr-value" id="buyTargetPct">10%</span>
-                                        </div>
-                                        <input type="range" id="buyTargetSlider" class="rr-slider" min="1" max="100" value="10">
-                                    </div>
-
-                                    <div class="rr-row" style="margin-bottom:0;">
-                                        <div class="rr-label-row">
-                                            <span class="rr-label">Stop Loss (%)</span>
-                                            <span class="rr-value" id="buyStopPct">5%</span>
-                                        </div>
-                                        <input type="range" id="buyStopSlider" class="rr-slider" min="1" max="25" value="5">
-                                    </div>
-
-                                    <div class="rr-gauge-container">
-                                        <div class="rr-gauge">
-                                            <div id="buyGaugeLoss" class="rr-gauge-loss" style="width: 30%"></div>
-                                            <div id="buyGaugeProfit" class="rr-gauge-profit" style="width: 70%"></div>
-                                        </div>
-                                    </div>
-
-                                    <div class="rr-stats">
-                                        <div class="rr-stat-item">
-                                            <span class="rr-label">Target Price</span>
-                                            <span class="rr-stat-val" id="buyTargetPrice">--</span>
-                                        </div>
-                                        <div class="rr-stat-item">
-                                            <span class="rr-label">Stop Price</span>
-                                            <span class="rr-stat-val" id="buyStopPrice">--</span>
-                                        </div>
-                                    </div>
-                                    <p style="font-size: 10px; color: var(--text-muted); margin-top: 8px; text-align: center;">Set price to enable calculations</p>
-                                </div>
-                            </div>
-
-                            <div class="order-summary">
-                                <div class="summary-row total">
-                                    <span>Total: </span>
-                                    <span id="buyTotal">0.00</span>
-                                </div>
-                            </div>
-
-                            <button type="submit" class="btn-submit btn-buy"
-                                style="margin-top: 10px; padding: 10px;" title="Ctrl + Enter">BUY</button>
-                        </form>
+                <div class="form-row">
+                  <label class="form-label"
+                    >Qty (Min 10)
+                    <span style="font-size: 10px; opacity: 0.6"
+                      >[Alt+Q]</span
+                    ></label
+                  >
+                  <input
+                    type="number"
+                    id="sellQty"
+                    class="form-input"
+                    placeholder="Eq. 10 (Arrows to inc/dec)..."
+                    min="10"
+                    step="10"
+                  />
+                  <div class="shortcuts">
+                    <div
+                      class="chip"
+                      data-action="addQty"
+                      data-side="sell"
+                      data-val="100"
+                    >
+                      +100
                     </div>
-
-                    <!-- SELL FORM -->
-                    <div id="sellSection" class="form-section sell-section">
-                        <h4 style="color: var(--color-danger); margin-bottom: 10px; text-align: center;">SELL</h4>
-                        <form onsubmit="event.preventDefault(); submitOrder('sell');">
-                            <div class="form-row">
-                                <label class="form-label">Symbol</label>
-                                <input type="text" id="sellSymbol" class="form-input" readonly value="NICA">
-                            </div>
-
-                            <div class="form-row">
-                                <label class="form-label">Qty (Min 10) <span style="font-size:10px; opacity:0.6;">[Alt+Q]</span></label>
-                                <input type="number" id="sellQty" class="form-input" placeholder="Eq. 10 (Arrows to inc/dec)..." min="10"
-                                    step="10" oninput="calculateTotal('sell')">
-                                <div class="shortcuts">
-                                    <div class="chip" onclick="addQty('sell', 100)">+100</div>
-                                    <div class="chip" onclick="addQty('sell', 500)">+500</div>
-                                    <div class="chip" onclick="addQty('sell', 1000)">+1000</div>
-                                    <div class="chip" onclick="setPct('sell', 0.25)">25%</div>
-                                    <div class="chip" onclick="setPct('sell', 0.5)">50%</div>
-                                    <div class="chip" onclick="setPct('sell', 1.0)">MAX</div>
-                                </div>
-                            </div>
-
-                            <div class="form-row">
-                                <label class="form-label">Price <span style="font-size:10px; opacity:0.6;">[Alt+P]</span></label>
-                                <input type="number" id="sellPrice" class="form-input" placeholder="0.00" step="0.1"
-                                    oninput="calculateTotal('sell')">
-                                <small id="sellPriceRange" style="color: var(--text-muted); font-size: 11px;">Range:
-                                    --</small>
-                            </div>
-
-                            <div class="order-summary">
-                                <div class="summary-row total">
-                                    <span>Total: </span>
-                                    <span id="sellTotal">0.00</span>
-                                </div>
-                            </div>
-
-                            <button type="submit" class="btn-submit btn-sell"
-                                style="margin-top: 10px; padding: 10px;" title="Ctrl + Enter">SELL</button>
-                        </form>
+                    <div
+                      class="chip"
+                      data-action="addQty"
+                      data-side="sell"
+                      data-val="500"
+                    >
+                      +500
                     </div>
-
+                    <div
+                      class="chip"
+                      data-action="addQty"
+                      data-side="sell"
+                      data-val="1000"
+                    >
+                      +1000
+                    </div>
+                    <div
+                      class="chip"
+                      data-action="setPct"
+                      data-side="sell"
+                      data-val="0.25"
+                    >
+                      25%
+                    </div>
+                    <div
+                      class="chip"
+                      data-action="setPct"
+                      data-side="sell"
+                      data-val="0.5"
+                    >
+                      50%
+                    </div>
+                    <div
+                      class="chip"
+                      data-action="setPct"
+                      data-side="sell"
+                      data-val="1.0"
+                    >
+                      MAX
+                    </div>
+                  </div>
                 </div>
-                <p style="margin-top: 15px; font-size: 12px; color: var(--text-muted); text-align: center;">
-                    By placing this order, you agree to the <a href="#" style="text-decoration: underline;">Risk
-                        Disclosure</a>.
-                </p>
+
+                <div class="form-row">
+                  <label class="form-label"
+                    >Price
+                    <span style="font-size: 10px; opacity: 0.6"
+                      >[Alt+P]</span
+                    ></label
+                  >
+                  <input
+                    type="number"
+                    id="sellPrice"
+                    class="form-input"
+                    placeholder="0.00"
+                    step="0.1"
+                  />
+                  <small
+                    id="sellPriceRange"
+                    style="color: var(--text-muted); font-size: 11px"
+                    >Range: --</small
+                  >
+                </div>
+
+                <div class="order-summary">
+                  <div class="summary-row total">
+                    <span>Total: </span>
+                    <span id="sellTotal">0.00</span>
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  class="btn-submit btn-sell u-mt-10"
+                  title="Ctrl + Enter"
+                >
+                  SELL
+                </button>
+              </form>
             </div>
+          </div>
+          <p
+            style="
+              margin-top: 15px;
+              font-size: 12px;
+              color: var(--text-muted);
+              text-align: center;
+            "
+          >
+            By placing this order, you agree to the
+            <a href="#" style="text-decoration: underline">Risk Disclosure</a>.
+          </p>
         </div>
+      </div>
 
-        <!-- Recent Orders (Optional Footer) -->
-        <div class="order-container" style="padding-top: 0;">
-            <div class="card" style="grid-column: 1 / -1; max-height: 300px; overflow-y: auto;">
-                <h3>Recent Orders</h3>
-                <table style="width: 100%; text-align: left; margin-top: 10px; border-collapse: collapse;">
-                    <thead>
-                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
-                            <th style="padding: 10px;">Time</th>
-                            <th style="padding: 10px;">Symbol</th>
-                            <th style="padding: 10px;">Type</th>
-                            <th style="padding: 10px;">Qty</th>
-                            <th style="padding: 10px;">Price</th>
-                            <th style="padding: 10px;">Total</th>
-                            <th style="padding: 10px;">Status</th>
-                            <th style="padding: 10px;">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="recentOrdersBody">
-                        <tr>
-                            <td colspan="6" style="padding: 20px; text-align: center; color: var(--text-muted);">No
-                                orders placed
-                                today.</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+      <!-- Recent Orders (Optional Footer) -->
+      <div class="order-container" style="padding-top: 0">
+        <div
+          class="card"
+          style="grid-column: 1 / -1; max-height: 300px; overflow-y: auto"
+        >
+          <h3>Recent Orders</h3>
+          <table
+            style="
+              width: 100%;
+              text-align: left;
+              margin-top: 10px;
+              border-collapse: collapse;
+            "
+          >
+            <thead>
+              <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.1)">
+                <th style="padding: 10px">Time</th>
+                <th style="padding: 10px">Symbol</th>
+                <th style="padding: 10px">Type</th>
+                <th style="padding: 10px">Qty</th>
+                <th style="padding: 10px">Price</th>
+                <th style="padding: 10px">Total</th>
+                <th style="padding: 10px">Status</th>
+                <th style="padding: 10px">Action</th>
+              </tr>
+            </thead>
+            <tbody id="recentOrdersBody">
+              <tr>
+                <td
+                  colspan="6"
+                  style="
+                    padding: 20px;
+                    text-align: center;
+                    color: var(--text-muted);
+                  "
+                >
+                  No orders placed today.
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
+      </div>
 
-        <div id="toast" class="toast-notification">Order Placed Successfully</div>
+      <div id="toast" class="toast-notification">Order Placed Successfully</div>
 
-        <!-- Hotkey Legend Modal -->
-        <div id="hotkeyLegend"
-            style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:var(--bg-secondary); border:1px solid #408585; padding:30px; border-radius:12px; z-index:2000; box-shadow:0 10px 40px rgba(0,0,0,0.8); min-width:400px;">
-            <h2 style="margin-top:0; color:#408585; display:flex; justify-content:space-between;">
-                Keyboard Shortcuts
-                <span onclick="document.getElementById('hotkeyLegend').style.display='none'"
-                    style="cursor:pointer; font-size:18px;">&times;</span>
-            </h2>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; font-size:14px;">
-                <div>
-                    <h4 style="color:var(--text-muted); margin-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.1);">Navigation</h4>
-                    <p style="margin:5px 0;"><strong>Shift + B</strong>: Buy Mode</p>
-                    <p style="margin:5px 0;"><strong>Shift + S</strong>: Sell Mode</p>
-                    <p style="margin:5px 0;"><strong>Shift + D</strong>: Dual Mode</p>
-                    <p style="margin:5px 0;"><strong>/</strong> or <strong>Alt + S</strong>: Search</p>
-                </div>
-                <div>
-                    <h4 style="color:var(--text-muted); margin-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.1);">Order Form</h4>
-                    <p style="margin:5px 0;"><strong>Alt + Q</strong>: Focus Quantity</p>
-                    <p style="margin:5px 0;"><strong>Alt + P</strong>: Focus Price</p>
-                    <p style="margin:5px 0;"><strong>Ctrl + Enter</strong>: Place Order</p>
-                    <p style="margin:5px 0;"><strong>&uarr; / &darr;</strong>: Inc/Dec Qty</p>
-                </div>
-            </div>
-            <p style="margin-top:20px; font-size:12px; color:var(--text-muted); text-align:center;">Press <strong>?</strong> to toggle this legend</p>
+      <!-- Hotkey Legend Modal -->
+      <div
+        id="hotkeyLegend"
+        style="
+          display: none;
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background: var(--bg-secondary);
+          border: 1px solid #408585;
+          padding: 30px;
+          border-radius: 12px;
+          z-index: 2000;
+          box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+          min-width: 400px;
+        "
+      >
+        <h2
+          style="
+            margin-top: 0;
+            color: #408585;
+            display: flex;
+            justify-content: space-between;
+          "
+        >
+          Keyboard Shortcuts
+          <span id="closeHotkeyLegend" style="cursor: pointer; font-size: 18px"
+            >&times;</span
+          >
+        </h2>
+        <div
+          style="
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            font-size: 14px;
+          "
+        >
+          <div>
+            <h4
+              style="
+                color: var(--text-muted);
+                margin-bottom: 10px;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+              "
+            >
+              Navigation
+            </h4>
+            <p style="margin: 5px 0"><strong>Shift + B</strong>: Buy Mode</p>
+            <p style="margin: 5px 0"><strong>Shift + S</strong>: Sell Mode</p>
+            <p style="margin: 5px 0"><strong>Shift + D</strong>: Dual Mode</p>
+            <p style="margin: 5px 0">
+              <strong>/</strong> or <strong>Alt + S</strong>: Search
+            </p>
+          </div>
+          <div>
+            <h4
+              style="
+                color: var(--text-muted);
+                margin-bottom: 10px;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+              "
+            >
+              Order Form
+            </h4>
+            <p style="margin: 5px 0">
+              <strong>Alt + Q</strong>: Focus Quantity
+            </p>
+            <p style="margin: 5px 0"><strong>Alt + P</strong>: Focus Price</p>
+            <p style="margin: 5px 0">
+              <strong>Ctrl + Enter</strong>: Place Order
+            </p>
+            <p style="margin: 5px 0">
+              <strong>&uarr; / &darr;</strong>: Inc/Dec Qty
+            </p>
+          </div>
         </div>
-
+        <p
+          style="
+            margin-top: 20px;
+            font-size: 12px;
+            color: var(--text-muted);
+            text-align: center;
+          "
+        >
+          Press <strong>?</strong> to toggle this legend
+        </p>
+      </div>
     </main>
 
     <!-- Core Scripts -->
-    <script src="../src/js/dom-utils.js"></script>
-    <script src="../src/js/api-client.js"></script>
-    <script src="../src/js/layout.js"></script>
-    <script src="../src/js/dropdown.js"></script>
-    <script src="../src/js/global.js"></script>
-    <!-- Order Page Logic -->
-    <script src="../src/js/order.js"></script>
-</body>
-
+    <script
+      nonce="WE-2026-SECURE-NONCE"
+      src="../src/js/dom-utils.js?v=1.1"
+    ></script>
+    <script
+      nonce="WE-2026-SECURE-NONCE"
+      src="../src/js/api-client.js?v=1.1"
+    ></script>
+    <script
+      nonce="WE-2026-SECURE-NONCE"
+      src="../src/js/layout.js?v=1.1"
+    ></script>
+    <script
+      nonce="WE-2026-SECURE-NONCE"
+      src="../src/js/dropdown.js?v=1.1"
+    ></script>
+    <script
+      nonce="WE-2026-SECURE-NONCE"
+      src="../src/js/global.js?v=1.1"
+    ></script>
+    <script
+      nonce="WE-2026-SECURE-NONCE"
+      src="../src/js/order.js?v=1.1"
+    ></script>
+  </body>
 </html>

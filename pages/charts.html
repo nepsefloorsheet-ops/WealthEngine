@@ -1,51 +1,82 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>WealthEngine - Charts</title>
-    <link rel="icon" type="image/png" href="../images/wealth.png">
-    <link rel="stylesheet" href="../src/css/style.css">
-    <script src="https://unpkg.com/lightweight-charts@3.8.0/dist/lightweight-charts.standalone.production.js" integrity="sha384-7/4mCPzNngsbDuJa6jilz7GgN9gBRDCcCq94wXAcJerUsOopCxf8NS/MS8530Xmu" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="../src/css/chart.css">
+    <link rel="icon" type="image/png" href="../images/wealth.png" />
+    <link rel="stylesheet" href="../src/css/style.css" />
+    <script
+      nonce="WE-2026-SECURE-NONCE"
+      src="https://unpkg.com/lightweight-charts@3.8.0/dist/lightweight-charts.standalone.production.js"
+      integrity="sha384-7/4mCPzNngsbDuJa6jilz7GgN9gBRDCcCq94wXAcJerUsOopCxf8NS/MS8530Xmu"
+      crossorigin="anonymous"
+    ></script>
+    <link rel="stylesheet" href="../src/css/chart.css" />
     <!-- Content Security Policy -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://nepseapi-ouhd.onrender.com https://turnover-19sr.onrender.com https://script.google.com https://script.googleusercontent.com https://docs.google.com https://sharehubnepal.com;">
-</head>
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'nonce-WE-2026-SECURE-NONCE' https://unpkg.com https://cdn.jsdelivr.net; style-src 'self' 'nonce-WE-2026-SECURE-NONCE' https://cdnjs.cloudflare.com https://fonts.googleapis.com 'sha256-bo9/JAqIUBMiSHL1O4oiO3U5UHaFxqbagFBryI+8mwU=' 'sha256-zWpgYAIYQbPPXWm2cNN92poH5pezyiyARDiGUjuqbFU=' 'sha256-NDlUvbI0C5AhCY+uu2OxERc8b/zOZ5m/C3vpWbghG1M='; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://nepseapi-ouhd.onrender.com https://nepse-proxy-production-e1e2.up.railway.app https://script.google.com https://script.googleusercontent.com https://docs.google.com https://sharehubnepal.com https://nepseapi-production-9edf.up.railway.app https://dhanweb.up.railway.app https://*.googleusercontent.com https://*.docs.google.com;"
+    />
+  </head>
 
-<body>
+  <body>
     <nav class="sidebar"></nav>
     <main>
-        <header class="open"></header>
+      <header class="open"></header>
 
-        <div class="chart-layout">
-            <!-- Controls -->
-            <div class="chart-controls">
-                <input type="text" id="symbolInput" class="symbol-input" placeholder="Symbol (e.g. NICA)" value="NEPSE">
-                <button class="btn-load" id="btnLoadChart">Load Chart</button>
-                <div style="margin-left: auto; color: var(--text-muted); font-size: 13px;">
-                    Data Source: Google Sheets (Daily)
-                </div>
-            </div>
-
-            <!-- Chart Area -->
-            <div id="chartContainer">
-                <div id="chartLegend" class="chart-legend"></div>
-                <div id="loader" class="loading-overlay" style="flex-direction: column;">
-                    <div class="loading-spinner"></div>
-                    <div style="margin-top: 15px; color: #9ca3af; font-family: sans-serif; font-size: 14px;">Loading
-                        Market History...</div>
-                </div>
-            </div>
+      <div class="chart-layout">
+        <!-- Controls -->
+        <div class="chart-controls">
+          <input
+            type="text"
+            id="symbolInput"
+            class="symbol-input"
+            placeholder="Symbol (e.g. NICA)"
+            value="NEPSE"
+          />
+          <button class="btn-load" id="btnLoadChart">Load Chart</button>
+          <div class="u-ml-auto u-color-muted u-font-13">
+            Data Source: Google Sheets (Daily)
+          </div>
         </div>
+
+        <!-- Chart Area -->
+        <div id="chartContainer">
+          <div id="chartLegend" class="chart-legend"></div>
+          <div id="loader" class="loading-overlay u-flex-column">
+            <div class="loading-spinner"></div>
+            <div class="u-mt-15 u-color-muted u-font-sans u-font-14">
+              Loading Market History...
+            </div>
+          </div>
+        </div>
+      </div>
     </main>
 
-    <script src="../src/js/dom-utils.js"></script>
-    <script src="../src/js/api-client.js"></script>
-    <script src="../src/js/layout.js"></script>
-    <script src="../src/js/dropdown.js"></script>
-    <script src="../src/js/global.js"></script>
-    <script src="../src/js/charts.js"></script>
-</body>
-
+    <script
+      nonce="WE-2026-SECURE-NONCE"
+      src="../src/js/dom-utils.js?v=1.1"
+    ></script>
+    <script
+      nonce="WE-2026-SECURE-NONCE"
+      src="../src/js/api-client.js?v=1.1"
+    ></script>
+    <script
+      nonce="WE-2026-SECURE-NONCE"
+      src="../src/js/layout.js?v=1.1"
+    ></script>
+    <script
+      nonce="WE-2026-SECURE-NONCE"
+      src="../src/js/dropdown.js?v=1.1"
+    ></script>
+    <script
+      nonce="WE-2026-SECURE-NONCE"
+      src="../src/js/global.js?v=1.1"
+    ></script>
+    <script
+      nonce="WE-2026-SECURE-NONCE"
+      src="../src/js/charts.js?v=1.1"
+    ></script>
+  </body>
 </html>

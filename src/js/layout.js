@@ -48,12 +48,6 @@
             },
             { text: 'Charts', url: `${pages}charts.html` },
             {
-                text: 'NEPSE Data', isDrop: true, children: [
-                    { text: 'Datewise Index', url: `${pages}datewise-index.html` },
-                    { text: 'Market Summary', url: `${pages}mktsummary.html` },
-                ]
-            },
-            {
                 text: 'Calculator', isDrop: true, children: [
                     { text: 'Buy/Sell Calculator', url: `${calc}buysell.html` },
                     { text: 'Dividend Calculator', url: `${calc}dividend.html` }
@@ -215,11 +209,11 @@
 
         try {
             const json = await apiClient.get("https://sharehubnepal.com/data/api/v1/announcement?Size=12&Page=1", { 
-                signal: layoutController.signal,
-                cacheKey: 'news_announcements'
+                signal: layoutController.signal
             });
             if (json && json.data && Array.isArray(json.data.content)) {
                 newsItems = json.data.content.map(item => ({ text: item.title }));
+                apiClient.setCache('news_announcements', newsItems);
                 renderTickerItems(content, newsItems);
             }
         } catch (error) {
@@ -233,7 +227,7 @@
     }
 
     function renderTickerItems(container, items) {
-        if (!items || items.length === 0) return;
+        if (!items || !Array.isArray(items) || items.length === 0) return;
         domUtils.clearNode(container);
         const displayNews = [...items, ...items];
         displayNews.forEach(item => {

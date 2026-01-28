@@ -1,106 +1,134 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>WealthEngine - Contact</title>
-    <link rel="icon" type="image/png" href="../images/wealth.png">
-    <link rel="stylesheet" href="../src/css/style.css">
-    <link rel="stylesheet" href="../src/css/contact.css">
+    <link rel="icon" type="image/png" href="../images/wealth.png" />
+    <link rel="stylesheet" href="../src/css/style.css" />
+    <link rel="stylesheet" href="../src/css/contact.css" />
     <!-- Content Security Policy -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://nepseapi-ouhd.onrender.com https://turnover-19sr.onrender.com https://script.google.com https://script.googleusercontent.com https://docs.google.com https://sharehubnepal.com;">
-</head>
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'nonce-WE-2026-SECURE-NONCE' https://unpkg.com https://cdn.jsdelivr.net; style-src 'self' 'nonce-WE-2026-SECURE-NONCE' https://cdnjs.cloudflare.com https://fonts.googleapis.com 'sha256-bo9/JAqIUBMiSHL1O4oiO3U5UHaFxqbagFBryI+8mwU=' 'sha256-zWpgYAIYQbPPXWm2cNN92poH5pezyiyARDiGUjuqbFU=' 'sha256-NDlUvbI0C5AhCY+uu2OxERc8b/zOZ5m/C3vpWbghG1M='; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://nepseapi-ouhd.onrender.com https://nepse-proxy-production-e1e2.up.railway.app https://script.google.com https://script.googleusercontent.com https://docs.google.com https://sharehubnepal.com https://nepseapi-production-9edf.up.railway.app https://dhanweb.up.railway.app https://*.googleusercontent.com https://*.docs.google.com;"
+    />
+  </head>
 
-<body>
+  <body>
     <nav class="sidebar">
-        <!-- Injected by layout.js -->
+      <!-- Injected by layout.js -->
     </nav>
     <main>
-        <header class="open">
-            <!-- Injected by layout.js -->
-        </header>
+      <header class="open">
+        <!-- Injected by layout.js -->
+      </header>
 
-        <div class="contact-wrapper">
-            <div class="contact-card">
-                <form class="contact-form" id="contact-form">
-                    <div class="form-group">
-                        <label>Name</label>
-                        <input id="name" type="text" placeholder="Your Name" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Email</label>
-                        <input id="email" type="email" placeholder="Your Email" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Message</label>
-                        <textarea id="message" rows="5" placeholder="Your Message" required></textarea>
-                    </div>
-
-                    <button id="submitBtn" type="submit" class="contact-btn">Send Message</button>
-                </form>
+      <div class="contact-wrapper">
+        <div class="contact-card">
+          <form class="contact-form" id="contact-form">
+            <div class="form-group">
+              <label>Name</label>
+              <input id="name" type="text" placeholder="Your Name" required />
             </div>
 
-            <!-- Contact Info Wrapper -->
-            <div class="contact-info-stack">
-                <div class="contact-info-card">
-                    <h3>Contact Information</h3>
-                    <div class="info-item">
-                        <i class="fas fa-envelope"></i>
-                        <p>support@wealthengine.com.np</p>
-                    </div>
-                    <div class="info-item">
-                        <i class="fas fa-phone-alt"></i>
-                        <p>+977-986*****52</p>
-                    </div>
-                    <div class="info-item">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <p>Kathmandu, Nepal</p>
-                    </div>
-                </div>
-
-                <!-- Office Hours -->
-                <div class="contact-info-card office-hours-card">
-                    <h3>Office Hours <i class="far fa-clock" style="font-size: 0.8em; opacity: 0.7;"></i></h3>
-                    <div class="hours-row">
-                        <span>Sun - Fri</span>
-                        <strong>10:00 AM - 5:00 PM</strong>
-                    </div>
-                    <div class="hours-row">
-                        <span>Sat</span>
-                        <strong>Closed</strong>
-                    </div>
-                </div>
-
-                <!-- Social Links -->
-                <div class="contact-info-card social-card">
-                    <h3>Connect With Us</h3>
-                    <div class="social-links">
-                        <a href="#" class="social-icon whatsapp" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
-                        <a href="#" class="social-icon linkedin" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                        <a href="#" class="social-icon telegram" title="Telegram"><i
-                                class="fab fa-telegram-plane"></i></a>
-                        <a href="#" class="social-icon email" title="Email"><i class="fas fa-envelope"></i></a>
-                    </div>
-                </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input
+                id="email"
+                type="email"
+                placeholder="Your Email"
+                required
+              />
             </div>
+
+            <div class="form-group">
+              <label>Message</label>
+              <textarea
+                id="message"
+                rows="5"
+                placeholder="Your Message"
+                required
+              ></textarea>
+            </div>
+
+            <button id="submitBtn" type="submit" class="contact-btn">
+              Send Message
+            </button>
+          </form>
         </div>
 
-        <div class="contact-map">
-            <iframe src="https://www.google.com/maps?q=Kathmandu,Nepal&output=embed" loading="lazy"
-                referrerpolicy="no-referrer-when-downgrade">
-            </iframe>
-        </div>
+        <!-- Contact Info Wrapper -->
+        <div class="contact-info-stack">
+          <div class="contact-info-card">
+            <h3>Contact Information</h3>
+            <div class="info-item">
+              <i class="fas fa-envelope"></i>
+              <p>support@wealthengine.com.np</p>
+            </div>
+            <div class="info-item">
+              <i class="fas fa-phone-alt"></i>
+              <p>+977-986*****52</p>
+            </div>
+            <div class="info-item">
+              <i class="fas fa-map-marker-alt"></i>
+              <p>Kathmandu, Nepal</p>
+            </div>
+          </div>
 
+          <!-- Office Hours -->
+          <div class="contact-info-card office-hours-card">
+            <h3>
+              Office Hours
+              <i
+                class="far fa-clock"
+                style="font-size: 0.8em; opacity: 0.7"
+              ></i>
+            </h3>
+            <div class="hours-row">
+              <span>Sun - Fri</span>
+              <strong>10:00 AM - 5:00 PM</strong>
+            </div>
+            <div class="hours-row">
+              <span>Sat</span>
+              <strong>Closed</strong>
+            </div>
+          </div>
+
+          <!-- Social Links -->
+          <div class="contact-info-card social-card">
+            <h3>Connect With Us</h3>
+            <div class="social-links">
+              <a href="#" class="social-icon whatsapp" title="WhatsApp"
+                ><i class="fab fa-whatsapp"></i
+              ></a>
+              <a href="#" class="social-icon linkedin" title="LinkedIn"
+                ><i class="fab fa-linkedin-in"></i
+              ></a>
+              <a href="#" class="social-icon telegram" title="Telegram"
+                ><i class="fab fa-telegram-plane"></i
+              ></a>
+              <a href="#" class="social-icon email" title="Email"
+                ><i class="fas fa-envelope"></i
+              ></a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="contact-map">
+        <iframe
+          src="https://www.google.com/maps?q=Kathmandu,Nepal&output=embed"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+        >
+        </iframe>
+      </div>
     </main>
-    <script src="../src/js/dom-utils.js"></script>
-    <script src="../src/js/api-client.js"></script>
-    <script src="../src/js/dropdown.js"></script>
-    <script src="../src/js/layout.js"></script>
-    <script src="../src/js/global.js"></script>
-    <script src="../src/js/contact.js"></script>
-</body>
-
+    <script nonce="WE-2026-SECURE-NONCE" src="../src/js/dom-utils.js"></script>
+    <script nonce="WE-2026-SECURE-NONCE" src="../src/js/api-client.js"></script>
+    <script nonce="WE-2026-SECURE-NONCE" src="../src/js/dropdown.js"></script>
+    <script nonce="WE-2026-SECURE-NONCE" src="../src/js/layout.js"></script>
+    <script nonce="WE-2026-SECURE-NONCE" src="../src/js/global.js"></script>
+    <script nonce="WE-2026-SECURE-NONCE" src="../src/js/contact.js"></script>
+  </body>
 </html>

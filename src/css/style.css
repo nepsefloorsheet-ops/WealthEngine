@@ -325,7 +325,7 @@ index {
 }
 
 .nepse-neg {
-  color: #ff4d4d;
+  color: #b81818;
   text-shadow: 0 0 10px rgba(255, 77, 77, 0.3);
 }
 
@@ -634,5 +634,126 @@ main.close ~ .news-ticker {
   to {
     transform: translateX(100%);
     opacity: 0;
+  }
+}
+
+/* CSP Utility Classes */
+.u-hidden {
+  display: none !important;
+}
+.u-text-center {
+  text-align: center !important;
+}
+.u-text-left {
+  text-align: left !important;
+}
+.u-text-right {
+  text-align: right !important;
+}
+.u-flex {
+  display: flex !important;
+}
+.u-flex-between {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+}
+.u-flex-column {
+  display: flex !important;
+  flex-direction: column !important;
+}
+.u-ml-auto {
+  margin-left: auto !important;
+}
+.u-mt-15 {
+  margin-top: 15px !important;
+}
+.u-font-sans {
+  font-family: sans-serif !important;
+}
+.u-flex-gap-10 {
+  gap: 10px !important;
+}
+.u-m-0 {
+  margin: 0 !important;
+}
+.u-mb-15 {
+  margin-bottom: 15px !important;
+}
+.u-mb-20 {
+  margin-bottom: 20px !important;
+}
+.u-pt-20 {
+  padding-top: 20px !important;
+}
+.u-w-50 {
+  width: 50% !important;
+}
+.u-grid-4 {
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 10px !important;
+}
+.u-font-12 {
+  font-size: 12px !important;
+}
+.u-font-13 {
+  font-size: 13px !important;
+}
+.u-font-14 {
+  font-size: 14px !important;
+}
+.u-font-15 {
+  font-size: 15px !important;
+}
+.u-font-bold {
+  font-weight: bold !important;
+}
+.u-color-muted {
+  color: var(--text-muted) !important;
+}
+.u-color-success {
+  color: #0fc218 !important;
+}
+.u-color-danger {
+  color: rgb(255, 3, 3) !important;
+}
+.u-pt-10 {
+  padding-top: 10px !important;
+}
+.u-grid-2 {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 10px !important;
+}
+
+/* Shimmer base */
+.shimmer {
+  position: relative;
+  overflow: hidden;
+  background-color: #b8b8b8;
+  color: transparent;
+  border-radius: 15px;
+}
+
+.shimmer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 150%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.6),
+    transparent
+  );
+  animation: shimmer 1.4s infinite;
+}
+
+@keyframes shimmer {
+  100% {
+    left: 150%;
   }
 }

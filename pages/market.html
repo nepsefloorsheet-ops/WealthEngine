@@ -1,99 +1,151 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>WealthEngine - Market</title>
-    <link rel="icon" type="image/png" href="../images/wealth.png">
-    <link rel="stylesheet" href="../src/css/style.css">
-    <link rel="stylesheet" href="../src/css/market.css">
+    <link rel="icon" type="image/png" href="../images/wealth.png" />
+    <link rel="stylesheet" href="../src/css/style.css" />
+    <link rel="stylesheet" href="../src/css/market.css" />
     <!-- Content Security Policy -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'nonce-WE-2026-SECURE-NONCE' https://unpkg.com https://cdn.jsdelivr.net; style-src 'self' 'nonce-WE-2026-SECURE-NONCE' https://cdnjs.cloudflare.com https://fonts.googleapis.com 'sha256-bo9/JAqIUBMiSHL1O4oiO3U5UHaFxqbagFBryI+8mwU=' 'sha256-zWpgYAIYQbPPXWm2cNN92poH5pezyiyARDiGUjuqbFU=' 'sha256-NDlUvbI0C5AhCY+uu2OxERc8b/zOZ5m/C3vpWbghG1M='; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://nepseapi-ouhd.onrender.com https://nepse-proxy-production-e1e2.up.railway.app https://script.google.com https://script.googleusercontent.com https://docs.google.com https://sharehubnepal.com https://nepseapi-production-9edf.up.railway.app https://*.googleusercontent.com https://*.docs.google.com;">
-</head>
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'nonce-WE-2026-SECURE-NONCE' https://unpkg.com https://cdn.jsdelivr.net; style-src 'self' 'nonce-WE-2026-SECURE-NONCE' https://cdnjs.cloudflare.com https://fonts.googleapis.com 'sha256-bo9/JAqIUBMiSHL1O4oiO3U5UHaFxqbagFBryI+8mwU=' 'sha256-zWpgYAIYQbPPXWm2cNN92poH5pezyiyARDiGUjuqbFU=' 'sha256-NDlUvbI0C5AhCY+uu2OxERc8b/zOZ5m/C3vpWbghG1M='; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://nepseapi-ouhd.onrender.com https://nepse-proxy-production-e1e2.up.railway.app https://script.google.com https://script.googleusercontent.com https://docs.google.com https://sharehubnepal.com https://nepseapi-production-9edf.up.railway.app https://dhanweb.up.railway.app https://*.googleusercontent.com https://*.docs.google.com;"
+    />
+  </head>
 
-<body>
+  <body>
     <nav class="sidebar">
-        <!-- Injected by layout.js -->
+      <!-- Injected by layout.js -->
     </nav>
     <main>
-        <header class="open">
-            <!-- Injected by layout.js -->
-        </header>
+      <header class="open">
+        <!-- Injected by layout.js -->
+      </header>
 
-        <section>
-            <div class="livetable top sticky-header" id="stickyHeader">
-                <!-- Count Adv. Dec. Unc. -->
-                <div class="count-container">
-                    <p class="positiveCount clickable-filter" id="filterPositive" data-filter="positive">Advances: <span
-                            id="positiveCount">0</span></p>
-                    <p class="negativeCount clickable-filter" id="filterNegative" data-filter="negative">Declines: <span
-                            id="negativeCount">0</span></p>
-                    <p class="unchangedCount clickable-filter" id="filterUnchanged" data-filter="unchanged">Neutral:
-                        <span id="unchangedCount">0</span>
-                    </p>
-                </div>
-                <h3 id="live-market"> Live Market</h3>
-                <div id="lastUpdated" class="last-updated">
-                    <span id="refreshIndicator" class="refresh-indicator u-hidden">⟳</span>
-                    <span id="lastUpdatedText">As of: --</span>
-                </div>
-            </div>
+      <section>
+        <div class="livetable top sticky-header" id="stickyHeader">
+          <!-- Count Adv. Dec. Unc. -->
+          <div class="count-container">
+            <p
+              class="positiveCount clickable-filter"
+              id="filterPositive"
+              data-filter="positive"
+            >
+              Advances: <span id="positiveCount">0</span>
+            </p>
+            <p
+              class="negativeCount clickable-filter"
+              id="filterNegative"
+              data-filter="negative"
+            >
+              Declines: <span id="negativeCount">0</span>
+            </p>
+            <p
+              class="unchangedCount clickable-filter"
+              id="filterUnchanged"
+              data-filter="unchanged"
+            >
+              Neutral:
+              <span id="unchangedCount">0</span>
+            </p>
+          </div>
+          <h3 id="live-market">Live Market</h3>
+          <div id="lastUpdated" class="last-updated">
+            <span id="refreshIndicator" class="refresh-indicator u-hidden"
+              >⟳</span
+            >
+            <span id="lastUpdatedText">As of: --</span>
+          </div>
+        </div>
 
-            <div class="search-container">
-                <select id="sectorFilter" class="sector-dropdown">
-                    <option value="">All Sectors</option>
-                    <option value="COMMERCIAL BANKS">COMMERCIAL BANKS</option>
-                    <option value="DEVELOPMENT BANKS">DEVELOPMENT BANKS</option>
-                    <option value="HYDRO POWER">HYDRO POWER</option>
-                    <option value="FINANCE">FINANCE</option>
-                    <option value="MICROFINANCE">MICROFINANCE</option>
-                    <option value="Mutual Fund">Mutual Fund</option>
-                    <option value="LIFE INSURANCE">LIFE INSURANCE</option>
-                    <option value="NON LIFE INSURANCE">NON LIFE INSURANCE</option>
-                    <option value="HOTELS AND TOURISM">HOTELS AND TOURISM</option>
-                    <option value="MANUFACTURING AND PROCESSING">MANUFACTURING AND PROCESSING</option>
-                    <option value="INVESTMENT">INVESTMENT</option>
-                    <option value="TRADINGS">TRADINGS</option>
-                    <option value="OTHERS">OTHERS</option>
-                </select>
-                <input type="text" id="symbolSearch" placeholder="Enter symbol to search..." />
-                <button id="searchBtn">Search</button>
-                <button id="clearBtn">Clear</button>
-            </div>
+        <div class="search-container">
+          <select id="sectorFilter" class="sector-dropdown">
+            <option value="">All Sectors</option>
+            <option value="COMMERCIAL BANKS">COMMERCIAL BANKS</option>
+            <option value="DEVELOPMENT BANKS">DEVELOPMENT BANKS</option>
+            <option value="HYDRO POWER">HYDRO POWER</option>
+            <option value="FINANCE">FINANCE</option>
+            <option value="MICROFINANCE">MICROFINANCE</option>
+            <option value="Mutual Fund">Mutual Fund</option>
+            <option value="LIFE INSURANCE">LIFE INSURANCE</option>
+            <option value="NON LIFE INSURANCE">NON LIFE INSURANCE</option>
+            <option value="HOTELS AND TOURISM">HOTELS AND TOURISM</option>
+            <option value="MANUFACTURING AND PROCESSING">
+              MANUFACTURING AND PROCESSING
+            </option>
+            <option value="INVESTMENT">INVESTMENT</option>
+            <option value="TRADINGS">TRADINGS</option>
+            <option value="OTHERS">OTHERS</option>
+          </select>
+          <input
+            type="text"
+            id="symbolSearch"
+            placeholder="Enter symbol to search..."
+          />
+          <button id="searchBtn">Search</button>
+          <button id="clearBtn">Clear</button>
+        </div>
 
-            <div class="livetable" id="tableContainer">
-                <div class="scroll-indicator scroll-indicator-left" id="scrollLeftIndicator">‹</div>
-                <div class="scroll-indicator scroll-indicator-right" id="scrollRightIndicator">›</div>
-                <table id="dataTable">
-                    <thead>
-                        <tr>
-                            <th>Symbol</th>
-                            <th class="right">LTP</th>
-                            <th class="right">LTV</th>
-                            <th class="right">Point Change</th>
-                            <th class="right">%Change</th>
-                            <th class="right">Open</th>
-                            <th class="right">High</th>
-                            <th class="right">Low</th>
-                            <th class="right">Prev Close</th>
-                            <th class="right">Volume</th>
-                            <th class="right">Turnover</th>
-                            <th class="middle">Watch</th>
-                        </tr>
-                    </thead>
+        <div class="livetable" id="tableContainer">
+          <div
+            class="scroll-indicator scroll-indicator-left"
+            id="scrollLeftIndicator"
+          >
+            ‹
+          </div>
+          <div
+            class="scroll-indicator scroll-indicator-right"
+            id="scrollRightIndicator"
+          >
+            ›
+          </div>
+          <table id="dataTable">
+            <thead>
+              <tr>
+                <th>Symbol</th>
+                <th class="right">LTP</th>
+                <th class="right">LTV</th>
+                <th class="right">Point Change</th>
+                <th class="right">%Change</th>
+                <th class="right">Open</th>
+                <th class="right">High</th>
+                <th class="right">Low</th>
+                <th class="right">Prev Close</th>
+                <th class="right">Volume</th>
+                <th class="right">Turnover</th>
+                <th class="middle">Watch</th>
+              </tr>
+            </thead>
 
-                    <tbody id="nepse-body"></tbody>
-                </table>
-            </div>
-        </section>
+            <tbody id="nepse-body"></tbody>
+          </table>
+        </div>
+      </section>
     </main>
-    <script nonce="WE-2026-SECURE-NONCE" src="../src/js/dom-utils.js?v=1.1"></script>
-    <script nonce="WE-2026-SECURE-NONCE" src="../src/js/api-client.js?v=1.1"></script>
-    <script nonce="WE-2026-SECURE-NONCE" src="../src/js/dropdown.js?v=1.1"></script>
-    <script nonce="WE-2026-SECURE-NONCE" src="../src/js/layout.js?v=1.1"></script>
-    <script nonce="WE-2026-SECURE-NONCE" src="../src/js/global.js?v=1.1"></script>
-    <script nonce="WE-2026-SECURE-NONCE" src="../src/js/market.js?v=1.1"></script>
-</body>
-
+    <script
+      nonce="WE-2026-SECURE-NONCE"
+      src="../src/js/dom-utils.js?v=1.1"
+    ></script>
+    <script
+      nonce="WE-2026-SECURE-NONCE"
+      src="../src/js/api-client.js?v=1.1"
+    ></script>
+    <script
+      nonce="WE-2026-SECURE-NONCE"
+      src="../src/js/dropdown.js?v=1.1"
+    ></script>
+    <script
+      nonce="WE-2026-SECURE-NONCE"
+      src="../src/js/layout.js?v=1.1"
+    ></script>
+    <script
+      nonce="WE-2026-SECURE-NONCE"
+      src="../src/js/global.js?v=1.1"
+    ></script>
+    <script
+      nonce="WE-2026-SECURE-NONCE"
+      src="../src/js/market.js?v=1.1"
+    ></script>
+  </body>
 </html>

@@ -1,78 +1,121 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>WealthEngine - Market</title>
-    <link rel="icon" type="image/png" href="../images/wealth.png">
-    <link rel="stylesheet" href="../src/css/style.css">
-    <link rel="stylesheet" href="../src/css/market.css">
-</head>
+    <link rel="icon" type="image/png" href="../images/wealth.png" />
+    <link rel="stylesheet" href="../src/css/style.css" />
+    <link rel="stylesheet" href="../src/css/market.css" />
+    <!-- Content Security Policy -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'nonce-WE-2026-SECURE-NONCE' https://unpkg.com https://cdn.jsdelivr.net; style-src 'self' 'nonce-WE-2026-SECURE-NONCE' https://cdnjs.cloudflare.com https://fonts.googleapis.com 'sha256-bo9/JAqIUBMiSHL1O4oiO3U5UHaFxqbagFBryI+8mwU=' 'sha256-zWpgYAIYQbPPXWm2cNN92poH5pezyiyARDiGUjuqbFU=' 'sha256-NDlUvbI0C5AhCY+uu2OxERc8b/zOZ5m/C3vpWbghG1M='; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://nepseapi-ouhd.onrender.com https://nepse-proxy-production-e1e2.up.railway.app https://script.google.com https://script.googleusercontent.com https://docs.google.com https://sharehubnepal.com https://nepseapi-production-9edf.up.railway.app https://dhanweb.up.railway.app https://*.googleusercontent.com https://*.docs.google.com;"
+    />
+  </head>
 
-<body>
+  <body>
     <nav class="sidebar">
-        <!-- Injected by layout.js -->
+      <!-- Injected by layout.js -->
     </nav>
     <main>
-        <header class="open">
-            <!-- Injected by layout.js -->
-        </header>
+      <header class="open">
+        <!-- Injected by layout.js -->
+      </header>
 
-        <section>
-            <div class="livetable top sticky-header" id="stickyHeader">
-                <div class="watchlist-stats">
-                    <span class="stat-item">Total: <strong id="totalStocks">0</strong></span>
-                    <span class="stat-item stat-gainers">Gainers: <strong id="totalGainers">0</strong></span>
-                    <span class="stat-item stat-losers">Losers: <strong id="totalLosers">0</strong></span>
-                    <span class="stat-item stat-unchanged">Neutral: <strong id="totalUnchanged">0</strong></span>
-                </div>
-                <h3 id="live-market" style="color: black;">My Watchlist</h3>
-                <div id="lastUpdated" class="last-updated">
-                    <span id="refreshIndicator" class="refresh-indicator" style="display: none;">⟳</span>
-                    <span id="lastUpdatedText">As of: --</span>
-                </div>
-            </div>
+      <section>
+        <div class="livetable top sticky-header" id="stickyHeader">
+          <div class="watchlist-stats">
+            <span class="stat-item"
+              >Total: <strong id="totalStocks">0</strong></span
+            >
+            <span class="stat-item stat-gainers"
+              >Gainers: <strong id="totalGainers">0</strong></span
+            >
+            <span class="stat-item stat-losers"
+              >Losers: <strong id="totalLosers">0</strong></span
+            >
+            <span class="stat-item stat-unchanged"
+              >Neutral: <strong id="totalUnchanged">0</strong></span
+            >
+          </div>
+          <h3 id="live-market" class="u-color-dark">My Watchlist</h3>
+          <div id="lastUpdated" class="last-updated">
+            <span id="refreshIndicator" class="refresh-indicator u-hidden"
+              >⟳</span
+            >
+            <span id="lastUpdatedText">As of: --</span>
+          </div>
+        </div>
 
-            <div class="watchlist-empty" id="emptyWatchlist" style="display: none;">
-                <p>Your watchlist is empty.</p>
-                <p>Go to <a href="market.html">Market</a> and click the ⭐ icon to add stocks to your watchlist.</p>
-            </div>
+        <div class="watchlist-empty u-hidden" id="emptyWatchlist">
+          <p>Your watchlist is empty.</p>
+          <p>
+            Go to <a href="market.html">Market</a> and click the ⭐ icon to add
+            stocks to your watchlist.
+          </p>
+        </div>
 
-            <div class="livetable" id="tableContainer">
-                <div class="scroll-indicator scroll-indicator-left" id="scrollLeftIndicator">‹</div>
-                <div class="scroll-indicator scroll-indicator-right" id="scrollRightIndicator">›</div>
-                <table id="dataTable">
-                    <thead>
-                        <tr>
-                            <th class="drag-handle-col">☰</th>
-                            <th>Symbol</th>
-                            <th class="right">LTP</th>
-                            <th class="right">LTV</th>
-                            <th class="right">Point Change</th>
-                            <th class="right">%Change</th>
-                            <th class="right">Open</th>
-                            <th class="right">High</th>
-                            <th class="right">Low</th>
-                            <th class="right">Prev Close</th>
-                            <th class="right">Volume</th>
-                            <th class="right">Turnover</th>
-                            <th class="middle">Action</th>
-                        </tr>
-                    </thead>
+        <div class="livetable" id="tableContainer">
+          <div
+            class="scroll-indicator scroll-indicator-left"
+            id="scrollLeftIndicator"
+          >
+            ‹
+          </div>
+          <div
+            class="scroll-indicator scroll-indicator-right"
+            id="scrollRightIndicator"
+          >
+            ›
+          </div>
+          <table id="dataTable">
+            <thead>
+              <tr>
+                <th class="drag-handle-col">☰</th>
+                <th>Symbol</th>
+                <th class="right">LTP</th>
+                <th class="right">LTV</th>
+                <th class="right">Point Change</th>
+                <th class="right">%Change</th>
+                <th class="right">Open</th>
+                <th class="right">High</th>
+                <th class="right">Low</th>
+                <th class="right">Prev Close</th>
+                <th class="right">Volume</th>
+                <th class="right">Turnover</th>
+                <th class="middle">Action</th>
+              </tr>
+            </thead>
 
-                    <tbody id="watchlist-body"></tbody>
-                </table>
-            </div>
-        </section>
-
+            <tbody id="watchlist-body"></tbody>
+          </table>
+        </div>
+      </section>
     </main>
-    <script src="../src/js/dom-utils.js"></script>
-    <script src="../src/js/api-client.js"></script>
-    <script src="../src/js/dropdown.js"></script>
-    <script src="../src/js/layout.js"></script>
-    <script src="../src/js/global.js"></script>
-    <script src="../src/js/watchlist.js"></script>
-</body>
-
+    <script
+      nonce="WE-2026-SECURE-NONCE"
+      src="../src/js/dom-utils.js?v=1.1"
+    ></script>
+    <script
+      nonce="WE-2026-SECURE-NONCE"
+      src="../src/js/api-client.js?v=1.1"
+    ></script>
+    <script
+      nonce="WE-2026-SECURE-NONCE"
+      src="../src/js/dropdown.js?v=1.1"
+    ></script>
+    <script
+      nonce="WE-2026-SECURE-NONCE"
+      src="../src/js/layout.js?v=1.1"
+    ></script>
+    <script
+      nonce="WE-2026-SECURE-NONCE"
+      src="../src/js/global.js?v=1.1"
+    ></script>
+    <script
+      nonce="WE-2026-SECURE-NONCE"
+      src="../src/js/watchlist.js?v=1.1"
+    ></script>
+  </body>
 </html>

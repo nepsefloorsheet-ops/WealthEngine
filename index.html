@@ -1,304 +1,333 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>WealthEngine</title>
-    <link rel="icon" type="image/png" href="./images/wealth.png">
-    <link rel="stylesheet" href="./src/css/style.css">
-    <link rel="stylesheet" href="./src/css/dashboard.css">
+    <link rel="icon" type="image/png" href="./images/wealth.png" />
+    <link rel="stylesheet" href="./src/css/style.css" />
+    <link rel="stylesheet" href="./src/css/dashboard.css" />
     <!-- Content Security Policy -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://nepseapi-ouhd.onrender.com https://turnover-19sr.onrender.com https://script.google.com https://script.googleusercontent.com https://docs.google.com https://sharehubnepal.com;">
-</head>
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'nonce-WE-2026-SECURE-NONCE' https://unpkg.com https://cdn.jsdelivr.net 'sha256-vvt4KWwuNr51XfE5m+hzeNEGhiOfZzG97ccfqGsPwvE='; style-src 'self' 'nonce-WE-2026-SECURE-NONCE' https://cdnjs.cloudflare.com https://fonts.googleapis.com 'sha256-bo9/JAqIUBMiSHL1O4oiO3U5UHaFxqbagFBryI+8mwU=' 'sha256-zWpgYAIYQbPPXWm2cNN92poH5pezyiyARDiGUjuqbFU=' 'sha256-NDlUvbI0C5AhCY+uu2OxERc8b/zOZ5m/C3vpWbghG1M='; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://nepseapi-ouhd.onrender.com https://script.google.com https://script.googleusercontent.com https://docs.google.com https://nepse-proxy-production-e1e2.up.railway.app https://sharehubnepal.com https://nepseapi-production-9edf.up.railway.app https://dhanweb.up.railway.app https://*.googleusercontent.com https://*.docs.google.com;"
+    />
+  </head>
 
-<body class="page-index">
+  <body class="page-index">
     <nav class="sidebar">
-        <!-- Injected by layout.js -->
+      <!-- Injected by layout.js -->
     </nav>
     <main>
-        <header class="open">
-            <!-- Injected by layout.js -->
-        </header>
-        <div id="content">
-            <!-- Holdings Ticker Tape (Top) -->
-            <div id="holdings-ticker-wrapper" class="holdings-ticker-wrapper" style="display:none;">
-                <div class="holdings-ticker">
-                    <div class="ticker-label">PORTFOLIO</div>
-                    <div class="ticker-wrap">
-                        <div class="ticker-content" id="holdings-ticker-content">
-                            <!-- Holdings data will be injected here -->
-                        </div>
-                    </div>
-                </div>
+      <header class="open">
+        <!-- Injected by layout.js -->
+      </header>
+      <div id="content">
+        <!-- Holdings Ticker Tape (Top) -->
+        <div
+          id="holdings-ticker-wrapper"
+          class="holdings-ticker-wrapper u-hidden"
+        >
+          <div class="holdings-ticker">
+            <div class="ticker-label">PORTFOLIO</div>
+            <div class="ticker-wrap">
+              <div class="ticker-content" id="holdings-ticker-content">
+                <!-- Holdings data will be injected here -->
+              </div>
             </div>
-
-            <div class="contents">
-                <div class="one">
-                    <div class="chart">
-                        <h2 style="text-align: center; padding-top: 20px;">Chart will go here</h2>
-                    </div>
-                    <div class="summary">
-                        <div class="all-summary">
-                            <h4 id="sum-h">Market Summary</h2>
-                                <div class="summary-data">
-                                    <p>Total turnover</p>
-                                    <p><span id="turnover">0</span></p>
-                                </div>
-                                <div class="summary-data">
-                                    <p>Total Traded Shares</p>
-                                    <span id="volume">0</span>
-                                </div>
-                                <div class="summary-data">
-                                    <p>Total Transactions</p>
-                                    <p><span id="transactions">0</span></p>
-                                </div>
-                        </div>
-                        <div class="all-summary">
-                            <h4 id="sum-h">My Trade Summary</h4>
-                            <div class="summary-data">
-                                <p>Total Shares Traded</p>
-                                <p>100</p>
-                            </div>
-                            <div class="summary-data">
-                                <p>Total Scrip Traded</p>
-                                <p>1</p>
-                            </div>
-                            <div class="summary-data">
-                                <p>Total Turnover</p>
-                                <p>17,995</p>
-                            </div>
-                            <div class="summary-data">
-                                <div style="width: 50%; font-size:14px; color: #0fc218;">
-                                    <p>Buy Count:<span id="buycnt">0</span></p>
-                                    <p>Buy Amount:<span id="buyamt">0</span></p>
-                                </div>
-                                <div style="width: 50%; text-align: left;font-size:14px; color: rgb(255, 3, 3);">
-                                    <p>Sell Count:<span id="sellcnt">2</span></p>
-                                    <p>Sell Amount:<span id="sellamt">17,995</span></p>
-                                </div>
-                            </div>
-                            <div class="trade-summary-bar">
-                                <div class="buy-bar">
-                                    <p class="buy-text"></p>
-                                </div>
-                                <div class="sell-bar">
-                                    <p class="sell-text"></p>
-                                </div>
-                                <div class="no-trade-text">No Trade</div>
-                            </div>
-                        </div>
-                        <div class="all-summary">
-                            <h4 id="sum-h">Collateral Summary</h4>
-                            <div class="collateral-bar">
-                                <div class="collateral-utilized">
-                                    <p class="percent-text utilized-percent">0%</p>
-                                </div>
-                                <div class="collateral-available">
-                                    <p class="percent-text available-percent">0%</p>
-                                </div>
-                            </div>
-                            <div class="summary-data">
-                                <div style="display: grid; gap: 2px;">
-                                    <span class="label utilized">Utilized</span>
-                                    <span class="value utilized-value">0</span>
-                                </div>
-                                <div style="display: grid; gap: 2px;">
-                                    <span class="label available">Available</span>
-                                    <span class="value available-value">50,00,000</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="two">
-                    <div class="mkt-mover">
-                        <div class="gnl">
-                            <div class="head">
-                                <a href="#indwch" class="lin active" data-target="head-indwch">Index Watch</a>
-                                <a href="#dpwch" class="lin" data-target="head-dpwch">DP Watchlist</a>
-                                <a href="#wch" class="lin" data-target="head-wch">Watchlist</a>
-                            </div>
-                            <div class="wch-table">
-                                <div class="watch-table-wrapper">
-                                    <table class="watch-table">
-                                        <thead id="head-indwch">
-                                            <tr>
-                                                <th>Sector</th>
-                                                <th class="o">LTP</th>
-                                                <th class="o">Change</th>
-                                                <th class="o">%Change</th>
-                                            </tr>
-                                        </thead>
-                                        <thead id="head-dpwch" style="display:none;">
-                                            <tr>
-                                                <th>Symbol</th>
-                                                <th class="o">Open</th>
-                                                <th class="o">High</th>
-                                                <th class="o">Low</th>
-                                                <th class="o">LTP</th>
-                                                <th class="o">Change</th>
-                                                <th class="o">%Change</th>
-                                            </tr>
-                                        </thead>
-                                        <thead id="head-wch" style="display:none;">
-                                            <tr>
-                                                <th>Symbol</th>
-                                                <th class="o">Open</th>
-                                                <th class="o">High</th>
-                                                <th class="o">Low</th>
-                                                <th class="o">LTP</th>
-                                                <th class="o">Change</th>
-                                                <th class="o">%Change</th>
-                                            </tr>
-                                        </thead>
-
-                                        <tbody id="watch-body">
-                                            <!-- JS inserts rows here -->
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="gnl">
-                            <!-- <span class="mid-line"></span> -->
-                            <div class="flex">
-                                <div class="topgnl">
-                                    <span>Top Gainer</span>
-                                    <span>Top Loser</span>
-                                </div>
-                                <button id="refresh-market" class="refresh-btn">
-                                    <span class="refresh">↻</span>
-                                </button>
-                            </div>
-
-                            <div class="top-mover-body wch-table">
-                                <!-- GAINER -->
-                                <div class="mover-table-wrapper">
-                                    <table class="mover-table">
-                                        <thead>
-                                            <tr>
-                                                <th>Symbol</th>
-                                                <th>LTP</th>
-                                                <th>Change</th>
-                                                <th>%Change</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="gainer-body"></tbody>
-                                    </table>
-                                </div>
-
-                                <!-- LOSER -->
-                                <div class="mover-table-wrapper">
-                                    <table class="mover-table">
-                                        <thead>
-                                            <tr>
-                                                <th>Symbol</th>
-                                                <th>LTP</th>
-                                                <th>Change</th>
-                                                <th>%Change</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="loser-body"></tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="three">
-                    <div class="gnl" id="gnl">
-                        <div style="padding: 9px;">
-                            <div class="head">
-                                <span id="refresh-turnover">Top
-                                    Turnover</span>
-                                <span id="refresh-volume">Top
-                                    Volume</span>
-                            </div>
-                            <div class="top-mover-body wch-table">
-                                <!-- GAINER -->
-                                <div class="mover-table-wrapper">
-                                    <table class="mover-table">
-                                        <thead>
-                                            <tr>
-                                                <th>Symbol</th>
-                                                <th>Turnover</th>
-                                                <th>LTP</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="turnover-body"></tbody>
-                                    </table>
-                                </div>
-
-                                <!-- LOSER -->
-                                <div class="mover-table-wrapper">
-                                    <table class="mover-table">
-                                        <thead>
-                                            <tr>
-                                                <th>Symbol</th>
-                                                <th>Volume</th>
-                                                <th>LTP</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="volume-body"></tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mid-box">
-                        <!-- SETTLEMENT -->
-                        <div class="settlement-box">
-                            <h4 class="head">Settlement</h4>
-                            <div class="settle-row">
-                                <span>Payable</span>
-                                <strong id="payable">0</strong>
-                            </div>
-                            <div class="settle-row">
-                                <span>Receivable</span>
-                                <strong id="receivable">0</strong>
-                            </div>
-                            <hr>
-                            <div class="settle-net receivable" id="net-status">
-                                Net Receivable
-                            </div>
-                        </div>
-                        <!-- DP HOLDING -->
-                        <div class="dp-holding">
-                            <h4 class="head">DP Holding</h4>
-                            <div class="dp-row">
-                                <span>Total Scrips</span>
-                                <strong id="dp-count">0</strong>
-                            </div>
-                            <div class="dp-row">
-                                <span>Total Amount</span>
-                                <strong id="dp-amount">0</strong>
-                            </div>
-                            <hr>
-                            <div id="dp-profit">
-                                <p>Today’s P/L:</p>
-                                <span id="dailypnl">0</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+          </div>
         </div>
+
+        <div class="contents">
+          <div class="one">
+            <div class="chart">
+              <h2 class="u-text-center u-pt-20"></h2>
+            </div>
+            <div class="summary">
+              <div class="all-summary">
+                <h4 class="summary-title">Market Summary</h4>
+                <div class="summary-data">
+                  <p>Total turnover</p>
+                  <p><span id="turnover" class="turnover">0</span></p>
+                </div>
+                <div class="summary-data">
+                  <p>Total Traded Shares</p>
+                  <span id="volume" class="volume">0</span>
+                </div>
+                <div class="summary-data">
+                  <p>Total Transactions</p>
+                  <p><span id="transactions" class="transactions">0</span></p>
+                </div>
+              </div>
+              <div class="all-summary">
+                <h4 class="summary-title">My Trade Summary</h4>
+                <div class="summary-data">
+                  <p>Total Shares Traded</p>
+                  <p>100</p>
+                </div>
+                <div class="summary-data">
+                  <p>Total Scrip Traded</p>
+                  <p>1</p>
+                </div>
+                <div class="summary-data">
+                  <p>Total Turnover</p>
+                  <p>17,995</p>
+                </div>
+                <div class="summary-data">
+                  <div class="u-w-50 u-font-14 u-color-success">
+                    <p>Buy Count:<span id="buycnt">0</span></p>
+                    <p>Buy Amount:<span id="buyamt">0</span></p>
+                  </div>
+                  <div class="u-w-50 u-text-left u-font-14 u-color-danger">
+                    <p>Sell Count:<span id="sellcnt">2</span></p>
+                    <p>Sell Amount:<span id="sellamt">17,995</span></p>
+                  </div>
+                </div>
+                <div class="trade-summary-bar">
+                  <div class="buy-bar">
+                    <p class="buy-text"></p>
+                  </div>
+                  <div class="sell-bar">
+                    <p class="sell-text"></p>
+                  </div>
+                  <div class="no-trade-text">No Trade</div>
+                </div>
+              </div>
+              <div class="all-summary">
+                <h4 id="sum-h">Collateral Summary</h4>
+                <div class="collateral-bar">
+                  <div class="collateral-utilized">
+                    <p class="percent-text utilized-percent">0%</p>
+                  </div>
+                  <div class="collateral-available">
+                    <p class="percent-text available-percent">0%</p>
+                  </div>
+                </div>
+                <div class="summary-data">
+                  <div>
+                    <span class="label utilized">Utilized</span>
+                    <span class="value utilized-value">0</span>
+                  </div>
+                  <div>
+                    <span class="label available">Available</span>
+                    <span class="value available-value">50,00,000</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="two">
+            <div class="mkt-mover">
+              <div class="gnl">
+                <div class="head">
+                  <a href="#indwch" class="lin active" data-target="head-indwch"
+                    >Index Watch</a
+                  >
+                  <a href="#dpwch" class="lin" data-target="head-dpwch"
+                    >DP Watchlist</a
+                  >
+                  <a href="#wch" class="lin" data-target="head-wch"
+                    >Watchlist</a
+                  >
+                </div>
+                <div class="wch-table">
+                  <div class="watch-table-wrapper">
+                    <table class="watch-table">
+                      <thead id="head-indwch">
+                        <tr>
+                          <th>Sector</th>
+                          <th class="o">LTP</th>
+                          <th class="o">Change</th>
+                          <th class="o">%Change</th>
+                        </tr>
+                      </thead>
+                      <thead id="head-dpwch" class="u-hidden">
+                        <tr>
+                          <th>Symbol</th>
+                          <th class="o">Open</th>
+                          <th class="o">High</th>
+                          <th class="o">Low</th>
+                          <th class="o">LTP</th>
+                          <th class="o">Change</th>
+                          <th class="o">%Change</th>
+                        </tr>
+                      </thead>
+                      <thead id="head-wch" class="u-hidden">
+                        <tr>
+                          <th>Symbol</th>
+                          <th class="o">Open</th>
+                          <th class="o">High</th>
+                          <th class="o">Low</th>
+                          <th class="o">LTP</th>
+                          <th class="o">Change</th>
+                          <th class="o">%Change</th>
+                        </tr>
+                      </thead>
+
+                      <tbody id="watch-body">
+                        <!-- JS inserts rows here -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <div class="gnl">
+                <!-- <span class="mid-line"></span> -->
+                <div class="flex">
+                  <div class="topgnl">
+                    <span>Top Gainer</span>
+                    <span>Top Loser</span>
+                  </div>
+                  <button id="refresh-market" class="refresh-btn">
+                    <span class="refresh">↻</span>
+                  </button>
+                </div>
+
+                <div class="top-mover-body wch-table">
+                  <!-- GAINER -->
+                  <div class="mover-table-wrapper">
+                    <table class="mover-table">
+                      <thead>
+                        <tr>
+                          <th>Symbol</th>
+                          <th>LTP</th>
+                          <th>Change</th>
+                          <th>%Change</th>
+                        </tr>
+                      </thead>
+                      <tbody id="gainer-body"></tbody>
+                    </table>
+                  </div>
+
+                  <!-- LOSER -->
+                  <div class="mover-table-wrapper">
+                    <table class="mover-table">
+                      <thead>
+                        <tr>
+                          <th>Symbol</th>
+                          <th>LTP</th>
+                          <th>Change</th>
+                          <th>%Change</th>
+                        </tr>
+                      </thead>
+                      <tbody id="loser-body"></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="three">
+            <div class="gnl" id="gnl">
+              <div class="u-pt-10">
+                <div class="head">
+                  <span id="refresh-turnover">Top Turnover</span>
+                  <span id="refresh-volume">Top Volume</span>
+                </div>
+                <div class="top-mover-body wch-table">
+                  <!-- GAINER -->
+                  <div class="mover-table-wrapper">
+                    <table class="mover-table">
+                      <thead>
+                        <tr>
+                          <th>Symbol</th>
+                          <th>Turnover</th>
+                          <th>LTP</th>
+                        </tr>
+                      </thead>
+                      <tbody id="turnover-body"></tbody>
+                    </table>
+                  </div>
+
+                  <!-- LOSER -->
+                  <div class="mover-table-wrapper">
+                    <table class="mover-table">
+                      <thead>
+                        <tr>
+                          <th>Symbol</th>
+                          <th>Volume</th>
+                          <th>LTP</th>
+                        </tr>
+                      </thead>
+                      <tbody id="volume-body"></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="mid-box">
+              <!-- SETTLEMENT -->
+              <div class="settlement-box">
+                <h4 class="head">Settlement</h4>
+                <div class="settle-row">
+                  <span>Payable</span>
+                  <strong id="payable">0</strong>
+                </div>
+                <div class="settle-row">
+                  <span>Receivable</span>
+                  <strong id="receivable">0</strong>
+                </div>
+                <hr />
+                <div class="settle-net receivable" id="net-status">
+                  Net Receivable
+                </div>
+              </div>
+              <!-- DP HOLDING -->
+              <div class="dp-holding">
+                <h4 class="head">DP Holding</h4>
+                <div class="dp-row">
+                  <span>Total Scrips</span>
+                  <strong id="dp-count">0</strong>
+                </div>
+                <div class="dp-row">
+                  <span>Total Amount</span>
+                  <strong id="dp-amount">0</strong>
+                </div>
+                <hr />
+                <div id="dp-profit">
+                  <p>Today’s P/L:</p>
+                  <span id="dailypnl">0</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </main>
     <footer>
-        <p>WealthEngine © <span id="we-year"></span></p>
+      <p>WealthEngine © <span id="we-year"></span></p>
     </footer>
-    </footer>
-    <script src="https://unpkg.com/lightweight-charts@3.8.0/dist/lightweight-charts.standalone.production.js" integrity="sha384-7/4mCPzNngsbDuJa6jilz7GgN9gBRDCcCq94wXAcJerUsOopCxf8NS/MS8530Xmu" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts" integrity="sha384-mrR3K8Jvv+o9bZ6Yu9HWI0M8tuzo5VWNi4fWcmmbFq3NbB+WvjW/tF/wnELivEnc" crossorigin="anonymous"></script>
-    <script src="src/js/dom-utils.js"></script>
-    <script src="src/js/api-client.js"></script>
-    <script src="src/js/dropdown.js"></script>
-    <script src="src/js/layout.js"></script>
-    <script src="src/js/global.js"></script>
-    <script src="src/js/market.js"></script>
-    <script src="src/js/holdings.js"></script>
-    <script src="src/js/index.js"></script>
-</body>
-
+    <script
+      nonce="WE-2026-SECURE-NONCE"
+      src="https://unpkg.com/lightweight-charts@3.8.0/dist/lightweight-charts.standalone.production.js"
+      integrity="sha384-7/4mCPzNngsbDuJa6jilz7GgN9gBRDCcCq94wXAcJerUsOopCxf8NS/MS8530Xmu"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      nonce="WE-2026-SECURE-NONCE"
+      src="https://cdn.jsdelivr.net/npm/apexcharts"
+      integrity="sha384-mrR3K8Jvv+o9bZ6Yu9HWI0M8tuzo5VWNi4fWcmmbFq3NbB+WvjW/tF/wnELivEnc"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      nonce="WE-2026-SECURE-NONCE"
+      src="src/js/dom-utils.js?v=1.1"
+    ></script>
+    <script
+      nonce="WE-2026-SECURE-NONCE"
+      src="src/js/api-client.js?v=1.1"
+    ></script>
+    <script
+      nonce="WE-2026-SECURE-NONCE"
+      src="src/js/dropdown.js?v=1.1"
+    ></script>
+    <script nonce="WE-2026-SECURE-NONCE" src="src/js/layout.js?v=1.1"></script>
+    <script nonce="WE-2026-SECURE-NONCE" src="src/js/global.js?v=1.1"></script>
+    <script nonce="WE-2026-SECURE-NONCE" src="src/js/market.js?v=1.1"></script>
+    <script
+      nonce="WE-2026-SECURE-NONCE"
+      src="src/js/holdings.js?v=1.1"
+    ></script>
+    <script nonce="WE-2026-SECURE-NONCE" src="src/js/index.js?v=1.1"></script>
+  </body>
 </html>

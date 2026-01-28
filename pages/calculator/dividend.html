@@ -1,86 +1,98 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>WealthEngine</title>
-    <link rel="icon" type="image/png" href="../../images/wealth.png">
-    <link rel="stylesheet" href="../../src/css/style.css">
-    <link rel="stylesheet" href="../../src/css/calculator.css">
+    <link rel="icon" type="image/png" href="../../images/wealth.png" />
+    <link rel="stylesheet" href="../../src/css/style.css" />
+    <link rel="stylesheet" href="../../src/css/calculator.css" />
     <!-- Content Security Policy -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://nepseapi-ouhd.onrender.com https://turnover-19sr.onrender.com https://script.google.com https://script.googleusercontent.com https://docs.google.com https://sharehubnepal.com;">
-</head>
+    <!-- Content Security Policy -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'nonce-WE-2026-SECURE-NONCE' https://unpkg.com https://cdn.jsdelivr.net; style-src 'self' 'nonce-WE-2026-SECURE-NONCE' https://cdnjs.cloudflare.com https://fonts.googleapis.com 'sha256-bo9/JAqIUBMiSHL1O4oiO3U5UHaFxqbagFBryI+8mwU=' 'sha256-zWpgYAIYQbPPXWm2cNN92poH5pezyiyARDiGUjuqbFU=' 'sha256-NDlUvbI0C5AhCY+uu2OxERc8b/zOZ5m/C3vpWbghG1M='; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://nepseapi-ouhd.onrender.com https://nepse-proxy-production-e1e2.up.railway.app https://script.google.com https://script.googleusercontent.com https://docs.google.com https://sharehubnepal.com https://nepseapi-production-9edf.up.railway.app https://dhanweb.up.railway.app https://*.googleusercontent.com https://*.docs.google.com;"
+    />
+  </head>
 
-<body>
+  <body>
     <nav class="sidebar">
-        <!-- Injected by layout.js -->
+      <!-- Injected by layout.js -->
     </nav>
     <main>
-        <header class="open">
-            <!-- Injected by layout.js -->
-        </header>
-        <div id="content">
-            <div id="#buycalculator" class="calculator">
-                <div class="calcalign">
-                    <div class="area">
-                        <div class="calhead">
-                            <p>Dividend Calculator</p>
-                        </div>
-                        <div class="maincalc">
-                            <div class="entry">
-                                <div class="inputs">
-                                    <div class="ite">
-                                        <p><strong>Quantity</strong></p>
-                                        <p><strong>% of Bonus</strong></p>
-                                        <p><strong>% of Cash</strong></p>
-                                        <p><strong>Paid-up Value per Share</strong></p>
-                                    </div>
-                                    <div class="ite">
-                                        <input id="qty" type="number" placeholder="Enter Buy Amount">
-                                        <input id="bonus" type="number" placeholder="Enter Buy Amount">
-                                        <input id="cash" type="number" placeholder="Enter Buy Amount">
-                                        <select id="paidup">
-                                            <option value="100">100</option>
-                                            <option value="50">50</option>
-                                            <option value="10">10</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="it">
-                                    <div class="butto">
-                                        <button id="calculate" type="button"
-                                            onclick="calculatedividend()">Calculate</button>
-                                        <button id="clear" type="reset"
-                                            onclick="clearDividendCalculator()">Clear</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="results">
-                                <div class="ite">
-                                    <p><strong>Cash Amount</strong></p>
-                                    <p><strong>Bonus Share Tax</strong></p>
-                                    <p><strong>Cash Amount Tax</strong></p>
-                                    <p><strong>Total Tax Payable</strong></p>
-                                    <p><strong>Receivable Bonus Quantity</strong></p>
-                                </div>
-                                <div class="itemm">
-                                    <p id="total">-</p>
-                                    <p id="bsharetax">-</p>
-                                    <p id="catax">-</p>
-                                    <p id="totaltax">-</p>
-                                    <p id="rbqty">-</p>
-                                </div>
-                            </div>
-                        </div>
+      <header class="open">
+        <!-- Injected by layout.js -->
+      </header>
+      <div id="content">
+        <div id="#buycalculator" class="calculator">
+          <div class="calcalign">
+            <div class="area">
+              <div class="calhead">
+                <p>Dividend Calculator</p>
+              </div>
+              <div class="maincalc">
+                <div class="entry">
+                  <div class="inputs">
+                    <div class="ite">
+                      <p><strong>Quantity</strong></p>
+                      <p><strong>% of Bonus</strong></p>
+                      <p><strong>% of Cash</strong></p>
+                      <p><strong>Paid-up Value per Share</strong></p>
                     </div>
+                    <div class="ite">
+                      <input
+                        id="qty"
+                        type="number"
+                        placeholder="Enter Buy Amount"
+                      />
+                      <input
+                        id="bonus"
+                        type="number"
+                        placeholder="Enter Buy Amount"
+                      />
+                      <input
+                        id="cash"
+                        type="number"
+                        placeholder="Enter Buy Amount"
+                      />
+                      <select id="paidup">
+                        <option value="100">100</option>
+                        <option value="50">50</option>
+                        <option value="10">10</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="it">
+                    <div class="butto">
+                      <button id="clear" type="reset">Clear</button>
+                    </div>
+                  </div>
                 </div>
+                <hr />
+                <div class="results">
+                  <div class="ite">
+                    <p><strong>Cash Amount</strong></p>
+                    <p><strong>Bonus Share Tax</strong></p>
+                    <p><strong>Cash Amount Tax</strong></p>
+                    <p><strong>Total Tax Payable</strong></p>
+                    <p><strong>Receivable Bonus Quantity</strong></p>
+                  </div>
+                  <div class="itemm">
+                    <p id="total">-</p>
+                    <p id="bsharetax">-</p>
+                    <p id="catax">-</p>
+                    <p id="totaltax">-</p>
+                    <p id="rbqty">-</p>
+                  </div>
+                </div>
+              </div>
             </div>
+          </div>
         </div>
+      </div>
     </main>
     <footer>
-        <p>WealthEngine © <span id="we-year"></span></p>
+      <p>WealthEngine © <span id="we-year"></span></p>
     </footer>
     <script src="../../src/js/dom-utils.js"></script>
     <script src="../../src/js/api-client.js"></script>
@@ -88,6 +100,5 @@
     <script src="../../src/js/layout.js"></script>
     <script src="../../src/js/global.js"></script>
     <script src="../../src/js/dividend.js"></script>
-</body>
-
+  </body>
 </html>

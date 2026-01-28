@@ -33,7 +33,7 @@
    CHART AREA (LEFT SIDE)
    ========================================================= */
 .chart {
-  max-width: 100%;
+  min-width: 50%;
   flex: 7;
   background: linear-gradient(180deg, #111827 0%, #1f2933 50%, #334155 100%);
   border-radius: 12px;
@@ -63,6 +63,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 12px;
+  min-width: 100%;
 }
 
 /* =========================================================
@@ -510,7 +511,7 @@ tbody tr {
   }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1190px) {
   .one {
     flex-direction: column;
   }

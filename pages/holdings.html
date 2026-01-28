@@ -1,136 +1,179 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>WealthEngine - Holdings</title>
-    <link rel="icon" type="image/png" href="../images/wealth.png">
-    <link rel="stylesheet" href="../src/css/style.css">
-    <link rel="stylesheet" href="../src/css/holdings.css">
-</head>
+    <link rel="icon" type="image/png" href="../images/wealth.png" />
+    <link rel="stylesheet" href="../src/css/style.css" />
+    <link rel="stylesheet" href="../src/css/holdings.css" />
+    <!-- Content Security Policy -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'nonce-WE-2026-SECURE-NONCE' https://unpkg.com https://cdn.jsdelivr.net; style-src 'self' 'nonce-WE-2026-SECURE-NONCE' https://cdnjs.cloudflare.com https://fonts.googleapis.com 'sha256-bo9/JAqIUBMiSHL1O4oiO3U5UHaFxqbagFBryI+8mwU=' 'sha256-zWpgYAIYQbPPXWm2cNN92poH5pezyiyARDiGUjuqbFU=' 'sha256-NDlUvbI0C5AhCY+uu2OxERc8b/zOZ5m/C3vpWbghG1M='; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://nepseapi-ouhd.onrender.com https://nepse-proxy-production-e1e2.up.railway.app https://script.google.com https://script.googleusercontent.com https://docs.google.com https://sharehubnepal.com https://nepseapi-production-9edf.up.railway.app https://dhanweb.up.railway.app https://*.googleusercontent.com https://*.docs.google.com;"
+    />
+  </head>
 
-<body>
+  <body>
     <nav class="sidebar">
-        <!-- Injected by layout.js -->
+      <!-- Injected by layout.js -->
     </nav>
     <main>
-        <header class="open">
-            <!-- Injected by layout.js -->
-        </header>
-        
-        <div id="content" class="holdings-page">
-            <div class="contents">
-                <div class="holdings-header-section">
-                    <h2>Holdings <span class="holding-count" id="holding-count">(0)</span></h2>
-                </div>
+      <header class="open">
+        <!-- Injected by layout.js -->
+      </header>
 
-                <!-- Summary Cards -->
-                <div class="holdings-summary-container">
-                    <div class="summary-card">
-                        <h3>Total Investment</h3>
-                        <p class="summary-value" id="total-investment">0.00</p>
-                    </div>
-                    <div class="summary-card">
-                        <h3>Current Value</h3>
-                        <p class="summary-value" id="current-value">0.00</p>
-                    </div>
-                    <div class="summary-card">
-                        <h3>Day's P/L</h3>
-                        <div class="pnl-wrapper">
-                            <span class="pnl-value" id="day-pnl">0.00</span>
-                            <span class="pnl-percent" id="day-pnl-percent">(0.00%)</span>
-                        </div>
-                    </div>
-                </div>
+      <div id="content" class="holdings-page">
+        <div class="contents">
+          <div class="holdings-header-section">
+            <h2>
+              Holdings <span class="holding-count" id="holding-count">(0)</span>
+            </h2>
+          </div>
 
-                <!-- Controls & Actions -->
-                <div class="holdings-controls">
-                    <div class="search-wrapper">
-                        <i class="fas fa-search"></i>
-                        <input type="text" id="holdings-search" placeholder="Search by scrip...">
-                    </div>
-                    <div class="holdings-actions">
-                        <button class="btn-action" id="btn-refresh"><i class="fas fa-sync-alt"></i></button>
-                        <button class="btn-action" id="btn-print"><i class="fas fa-print"></i> Print</button>
-                        <button class="btn-action" id="btn-download"><i class="fas fa-download"></i> Download</button>
-                    </div>
-                </div>
-
-                <!-- Holdings Data Table -->
-                <div class="holdings-table-wrapper">
-                    <table class="holdings-table">
-                        <thead>
-                            <tr>
-                                <th>Symbol</th>
-                                <th class="text-right">CDS Total Balance</th>
-                                <th class="text-right">CDS Free Balance</th>
-                                <th class="text-right">WealthEngine</th>
-                                <th class="text-right">Prev. Close</th>
-                                <th class="text-right">Value (CP)</th>
-                                <th class="text-right">LTP</th>
-                                <th class="text-right">Value (LTP)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="holdings-list-body">
-                            <tr class="empty-state">
-                                <td colspan="8" style="text-align: center; padding: 20px; color: var(--text-muted);">
-                                    <i class="fas fa-spinner fa-spin"></i> Loading data...
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+          <!-- Summary Cards -->
+          <div class="holdings-summary-container">
+            <div class="summary-card">
+              <h3>Total Investment</h3>
+              <p class="summary-value" id="total-investment">0.00</p>
             </div>
+            <div class="summary-card">
+              <h3>Current Value</h3>
+              <p class="summary-value" id="current-value">0.00</p>
+            </div>
+            <div class="summary-card">
+              <h3>Day's P/L</h3>
+              <div class="pnl-wrapper">
+                <span class="pnl-value" id="day-pnl">0.00</span>
+                <span class="pnl-percent" id="day-pnl-percent">(0.00%)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Controls & Actions -->
+          <div class="holdings-controls">
+            <div class="search-wrapper">
+              <i class="fas fa-search"></i>
+              <input
+                type="text"
+                id="holdings-search"
+                placeholder="Search by scrip..."
+              />
+            </div>
+            <div class="holdings-actions">
+              <button class="btn-action" id="btn-refresh">
+                <i class="fas fa-sync-alt"></i>
+              </button>
+              <button class="btn-action" id="btn-print">
+                <i class="fas fa-print"></i> Print
+              </button>
+              <button class="btn-action" id="btn-download">
+                <i class="fas fa-download"></i> Download
+              </button>
+            </div>
+          </div>
+
+          <!-- Holdings Data Table -->
+          <div class="holdings-table-wrapper">
+            <table class="holdings-table">
+              <thead>
+                <tr>
+                  <th>Symbol</th>
+                  <th class="text-right">CDS Total Balance</th>
+                  <th class="text-right">CDS Free Balance</th>
+                  <th class="text-right">WealthEngine</th>
+                  <th class="text-right">Prev. Close</th>
+                  <th class="text-right">Value (CP)</th>
+                  <th class="text-right">LTP</th>
+                  <th class="text-right">Value (LTP)</th>
+                </tr>
+              </thead>
+              <tbody id="holdings-list-body">
+                <tr class="empty-state">
+                  <td colspan="8" class="u-text-center u-font-20 u-color-muted">
+                    <i class="fas fa-spinner fa-spin"></i> Loading data...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
+      </div>
     </main>
 
     <!-- Order Entry Modal -->
-    <div id="order-modal" class="modal-overlay" style="display: none;">
-        <div class="order-modal">
-            <div class="modal-header">
-                <h3>Place Order</h3>
-                <button id="close-modal" class="btn-close">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="order-type-toggle">
-                    <button id="btn-type-buy" class="type-btn active">BUY</button>
-                    <button id="btn-type-sell" class="type-btn">SELL</button>
-                </div>
-                
-                <div class="form-group">
-                    <label>Symbol</label>
-                    <input type="text" id="order-symbol" readonly>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Quantity</label>
-                        <input type="number" id="order-qty" placeholder="0">
-                    </div>
-                    <div class="form-group">
-                        <label>Expected Price</label>
-                        <input type="number" id="order-price" step="0.01" placeholder="0.00">
-                    </div>
-                </div>
-
-                <div class="order-summary">
-                    <span>Estimated Total:</span>
-                    <strong id="order-total">0.00</strong>
-                </div>
-
-                <button id="btn-confirm-order" class="btn-confirm">Place Order</button>
-            </div>
+    <div id="order-modal" class="modal-overlay u-hidden">
+      <div class="order-modal">
+        <div class="modal-header">
+          <h3>Place Order</h3>
+          <button id="close-modal" class="btn-close">&times;</button>
         </div>
+        <div class="modal-body">
+          <div class="order-type-toggle">
+            <button id="btn-type-buy" class="type-btn active">BUY</button>
+            <button id="btn-type-sell" class="type-btn">SELL</button>
+          </div>
+
+          <div class="form-group">
+            <label>Symbol</label>
+            <input type="text" id="order-symbol" readonly />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Quantity</label>
+              <input type="number" id="order-qty" placeholder="0" />
+            </div>
+            <div class="form-group">
+              <label>Expected Price</label>
+              <input
+                type="number"
+                id="order-price"
+                step="0.01"
+                placeholder="0.00"
+              />
+            </div>
+          </div>
+
+          <div class="order-summary">
+            <span>Estimated Total:</span>
+            <strong id="order-total">0.00</strong>
+          </div>
+
+          <button id="btn-confirm-order" class="btn-confirm">
+            Place Order
+          </button>
+        </div>
+      </div>
     </div>
 
-    <script src="../src/js/dom-utils.js"></script>
-    <script src="../src/js/api-client.js"></script>
-    <script src="../src/js/dropdown.js"></script>
-    <script src="../src/js/layout.js"></script>
-    <script src="../src/js/global.js"></script>
-    <script src="../src/js/market.js"></script>
-    <script src="../src/js/holdings.js"></script>
-</body>
-
+    <script
+      nonce="WE-2026-SECURE-NONCE"
+      src="../src/js/dom-utils.js?v=1.1"
+    ></script>
+    <script
+      nonce="WE-2026-SECURE-NONCE"
+      src="../src/js/api-client.js?v=1.1"
+    ></script>
+    <script
+      nonce="WE-2026-SECURE-NONCE"
+      src="../src/js/dropdown.js?v=1.1"
+    ></script>
+    <script
+      nonce="WE-2026-SECURE-NONCE"
+      src="../src/js/layout.js?v=1.1"
+    ></script>
+    <script
+      nonce="WE-2026-SECURE-NONCE"
+      src="../src/js/global.js?v=1.1"
+    ></script>
+    <script
+      nonce="WE-2026-SECURE-NONCE"
+      src="../src/js/market.js?v=1.1"
+    ></script>
+    <script
+      nonce="WE-2026-SECURE-NONCE"
+      src="../src/js/holdings.js?v=1.1"
+    ></script>
+  </body>
 </html>

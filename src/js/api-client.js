@@ -108,13 +108,41 @@ class ApiClient {
      * Cache utility
      */
     setCache(key, data) {
+        const cacheKey = `we_cache_${key}`;
+        const cacheValue = JSON.stringify({
+            timestamp: Date.now(),
+            data: data
+        });
+
         try {
-            localStorage.setItem(`we_cache_${key}`, JSON.stringify({
-                timestamp: Date.now(),
-                data: data
-            }));
+            localStorage.setItem(cacheKey, cacheValue);
         } catch (e) {
-            console.warn("Failed to set cache:", e);
+            if (e.name === 'QuotaExceededError' || e.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                console.warn("Storage quota exceeded, clearing WealthEngine cache and retrying...");
+                this._clearOldCache();
+                try {
+                    localStorage.setItem(cacheKey, cacheValue);
+                } catch (retryError) {
+                    console.warn("Failed to set cache even after clearing old entries:", retryError);
+                }
+            } else {
+                console.warn("Failed to set cache:", e);
+            }
+        }
+    }
+
+    _clearOldCache() {
+        try {
+            const keysToRemove = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && key.startsWith('we_cache_')) {
+                    keysToRemove.push(key);
+                }
+            }
+            keysToRemove.forEach(key => localStorage.removeItem(key));
+        } catch (e) {
+            console.error("Error clearing old cache:", e);
         }
     }
 
